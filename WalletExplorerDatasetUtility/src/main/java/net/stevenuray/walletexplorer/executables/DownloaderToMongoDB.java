@@ -69,7 +69,7 @@ public class DownloaderToMongoDB {
 
 	private final static Logger LOG = getLog();
 	private final static String LOGIN = "developer";
-	private final static String CALLER = "stevenuray.net";
+	private final static String CALLER = "WalletExplorerDatasetUtility";
 	private final static Charset ENCODING = StandardCharsets.UTF_8;
 	private final static int MONGODB_PORT = 27017;
 	private final static String MONGODB_HOST = "localhost";
