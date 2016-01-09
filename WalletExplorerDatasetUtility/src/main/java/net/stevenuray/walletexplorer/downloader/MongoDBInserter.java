@@ -9,6 +9,8 @@ import java.util.Map;
 import java.util.concurrent.BlockingQueue;
 
 import net.sf.json.JSONObject;
+import net.stevenuray.walletexplorer.mongodb.MongoDBClientSingleton;
+import net.stevenuray.walletexplorer.mongodb.MongoDBConnectionService;
 import net.stevenuray.walletexplorer.walletattribute.dto.WalletAttribute;
 import net.stevenuray.walletexplorer.walletattribute.dto.WalletEOF;
 import net.stevenuray.walletexplorer.walletattribute.dto.WalletHeader;
@@ -62,6 +64,8 @@ public class MongoDBInserter implements Runnable {
 		this.threadId = threadId;	
 		this.log = log;
 		this.maximumInserts = maximumInserts;
+		mongoClient = MongoDBClientSingleton.getInstance();
+		database = MongoDBConnectionService.getMongoDatabase();
 		log.debug("DB Loader " + this.threadId + "  instantiated");
 	}	
 	
@@ -105,13 +109,6 @@ public class MongoDBInserter implements Runnable {
 		}
 
 		log.debug("DB Loader " + this.threadId + " stopped");
-	}
-
-	public MongoDBInserter withLogin(String databaseName,String host, int port)
-			throws Exception {
-		mongoClient = new MongoClient(host, port);
-		database = mongoClient.getDatabase(databaseName);
-		return this;
 	}
 
 	private void addBatchedTransactions(List<JSONObject> subTransactions) {

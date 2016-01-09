@@ -8,7 +8,7 @@ import com.mongodb.MongoClient;
  * the relevant data. 
  * @author Steven Uray 2015-10-21
  */
-public class MongoClientSingleton {
+public class MongoDBClientSingleton {
 	private final static String MONGODB_HOST = "localhost";
 	private final static int MONGODB_PORT = 27017;
 	private static MongoClient instance;

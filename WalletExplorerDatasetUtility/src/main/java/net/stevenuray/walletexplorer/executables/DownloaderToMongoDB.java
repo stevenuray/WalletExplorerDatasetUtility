@@ -21,6 +21,8 @@ import net.sf.json.JSONObject;
 import net.sf.json.JSONSerializer;
 import net.stevenuray.walletexplorer.downloader.MongoDBInserter;
 import net.stevenuray.walletexplorer.downloader.WalletExplorerAPIConfigSingleton;
+import net.stevenuray.walletexplorer.mongodb.MongoDBClientSingleton;
+import net.stevenuray.walletexplorer.mongodb.MongoDBConnectionService;
 import net.stevenuray.walletexplorer.mongodb.WalletCollection;
 import net.stevenuray.walletexplorer.mongodb.queries.WalletExplorerCollectionLatestTimeQuerier;
 import net.stevenuray.walletexplorer.walletattribute.dto.WalletAttribute;
@@ -67,14 +69,11 @@ import com.sun.jersey.core.util.MultivaluedMapImpl;
  * 
  */
 public class DownloaderToMongoDB {
-	private final static Logger LOG = getLog();	
-	private final static int MONGODB_PORT = 27017;
-	private final static String MONGODB_HOST = "localhost";
+	private final static Logger LOG = getLog();		
 	private static final int MAX_QUEUE_LENGTH = 1024;
 	private static final int MAXIMUM_INSERTS = 100;
 	private static final int EXTRACT_HIGH_WATER_MARK=100;
-	private static final int DB_THREADS = 7;
-	private static final String WALLET_DB ="walletexplorerData";
+	private static final int DB_THREADS = 7;	
 	private static final String credentials = System.getProperty("credentials");	
 	private static Optional<String> credentialLocation = Optional
 			.fromNullable(credentials);	
@@ -127,10 +126,9 @@ public class DownloaderToMongoDB {
 					MAX_QUEUE_LENGTH);
 
 			try {
-				String login = WalletExplorerAPIConfigSingleton.LOGIN;
+				String login = WalletExplorerAPIConfigSingleton.LOGIN;			
 				mongoDBLoad[i] = new MongoDBInserter(LOG,"thread" + i,
-						walletTransactionsQueue[i],MAXIMUM_INSERTS).withLogin(WALLET_DB,
-						MONGODB_HOST, MONGODB_PORT);
+						walletTransactionsQueue[i],MAXIMUM_INSERTS);
 			} catch (Exception e) {
 				e.printStackTrace();
 				LOG.fatal("Error Creating Insertion Thread: "+i);
@@ -294,8 +292,8 @@ public class DownloaderToMongoDB {
 	}
 
 	private WalletCollection getMongoCollection(String walletName) {
-		MongoClient mongoClient = new MongoClient(MONGODB_HOST, MONGODB_PORT);
-		MongoDatabase database = mongoClient.getDatabase(WALLET_DB);			
+		MongoClient mongoClient = MongoDBClientSingleton.getInstance();
+		MongoDatabase database = MongoDBConnectionService.getMongoDatabase();			
 		WalletCollection mongoCollection = 
 				new WalletCollection(mongoClient,database,walletName);
 		return mongoCollection;
