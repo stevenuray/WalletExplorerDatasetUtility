@@ -9,6 +9,13 @@ Current Working Features:
 -Aggregates transaction amounts by Wallet and Category on a per month basis. 
 -Creates JavaFX graphs to show transaction volume in USD by user defined categories or by service name. 
 
+Current Instructions: 
+-Ensure the MongoDB instance used by the program is running. The default instance is the default local MongoDB instance. 
+-Run DownloaderToMongoDB until all wallets have been downloaded. Note this may take over a day. 
+-Run TransactionConverter until all wallets have been converted. This has taken me around 5 hours on average. 
+-Run TransactionAggregator. This has taken me around 2 hours on average. 
+-Use CategoryReviewer or WalletReviewer to view some graphs of the dataset. Classes and interfaces exist for getting data out of MongoDB in a structured way. 
+
 Project Goals: 
 -An abstract persistence layer, so users can use whatever they want. 
 -Ease of dataset use, users should be provided with a strong set of tools that make getting the data in and out of storage as easy as possible, so they can focus on the data. 
