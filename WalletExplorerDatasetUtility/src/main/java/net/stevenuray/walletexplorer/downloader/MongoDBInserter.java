@@ -107,7 +107,7 @@ public class MongoDBInserter implements Runnable {
 		log.debug("DB Loader " + this.threadId + " stopped");
 	}
 
-	public MongoDBInserter withLogin(String databaseName,String login, String host, int port)
+	public MongoDBInserter withLogin(String databaseName,String host, int port)
 			throws Exception {
 		mongoClient = new MongoClient(host, port);
 		database = mongoClient.getDatabase(databaseName);

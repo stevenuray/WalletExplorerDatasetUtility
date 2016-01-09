@@ -20,6 +20,7 @@ import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import net.sf.json.JSONSerializer;
 import net.stevenuray.walletexplorer.downloader.MongoDBInserter;
+import net.stevenuray.walletexplorer.downloader.WalletExplorerAPIConfigSingleton;
 import net.stevenuray.walletexplorer.mongodb.WalletCollection;
 import net.stevenuray.walletexplorer.mongodb.queries.WalletExplorerCollectionLatestTimeQuerier;
 import net.stevenuray.walletexplorer.walletattribute.dto.WalletAttribute;
@@ -66,11 +67,7 @@ import com.sun.jersey.core.util.MultivaluedMapImpl;
  * 
  */
 public class DownloaderToMongoDB {
-
-	private final static Logger LOG = getLog();
-	private final static String LOGIN = "developer";
-	private final static String CALLER = "WalletExplorerDatasetUtility";
-	private final static Charset ENCODING = StandardCharsets.UTF_8;
+	private final static Logger LOG = getLog();	
 	private final static int MONGODB_PORT = 27017;
 	private final static String MONGODB_HOST = "localhost";
 	private static final int MAX_QUEUE_LENGTH = 1024;
@@ -84,11 +81,13 @@ public class DownloaderToMongoDB {
 	private static final String wallets = System.getProperty("wallets");
 	private static Optional<String> walletsLocation = Optional
 			.fromNullable(wallets);
+	
 	public static void main(String[] args) {
 		disableMongoLogInfo();
 		DownloaderToMongoDB walletExplorerDownloader = new DownloaderToMongoDB();
 		walletExplorerDownloader.downloadAndSaveAllWalletTransactions();
 	}
+	
 	private static void disableMongoLogInfo(){
 		java.util.logging.Logger mongoLogger = java.util.logging.Logger.getLogger("org.mongodb.driver");
 		mongoLogger.setLevel(Level.WARNING);
@@ -128,8 +127,9 @@ public class DownloaderToMongoDB {
 					MAX_QUEUE_LENGTH);
 
 			try {
+				String login = WalletExplorerAPIConfigSingleton.LOGIN;
 				mongoDBLoad[i] = new MongoDBInserter(LOG,"thread" + i,
-						walletTransactionsQueue[i],MAXIMUM_INSERTS).withLogin(WALLET_DB,LOGIN,
+						walletTransactionsQueue[i],MAXIMUM_INSERTS).withLogin(WALLET_DB,
 						MONGODB_HOST, MONGODB_PORT);
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -208,12 +208,13 @@ public class DownloaderToMongoDB {
 
 		int fromCount = 0;
 		int toCount = EXTRACT_HIGH_WATER_MARK;
+		String caller = WalletExplorerAPIConfigSingleton.CALLER;
 		MultivaluedMapImpl queryParams = new MultivaluedMapImpl();
 		queryParams = new MultivaluedMapImpl();
 		queryParams.add("wallet", walletName);
 		queryParams.add("from", fromCount);
 		queryParams.add("count", toCount);
-		queryParams.add("caller", CALLER);
+		queryParams.add("caller", caller);
 
 		ClientResponse response = webResource.queryParams(queryParams)
 				.type("application/json").get(ClientResponse.class);
@@ -231,14 +232,14 @@ public class DownloaderToMongoDB {
 		LOG.info("Started extract and load of " + walletName + " with "
 				+ txsCount + " transactions to process");
 				*/
-		walletTransactionsQueue[queueId].put(new WalletHeader(walletName));
+		walletTransactionsQueue[queueId].put(new WalletHeader(walletName));		
 		for (int i = 0, j = 0; i < txsCount; i += 100, j++) {
 			fromCount = i;
 			queryParams = new MultivaluedMapImpl();
 			queryParams.add("wallet", walletName);
 			queryParams.add("from", fromCount);
 			queryParams.add("count", toCount);
-			queryParams.add("caller", CALLER);
+			queryParams.add("caller", caller);
 			
 			//TODO global config var this or refactor
 			int maxConnectionAttempts = 3;
@@ -327,10 +328,11 @@ public class DownloaderToMongoDB {
 		return latestTransactionTime;
 	}	
 	
-	private Iterator<String> getWalletNames() throws Exception {		
+	private Iterator<String> getWalletNames() throws Exception {	
+		Charset encoding = WalletExplorerAPIConfigSingleton.ENCODING;
 		File file = new File("resources/wallets.txt");
 		Path path = file.toPath();
-		Iterator<String> wallets = Files.readAllLines(path, ENCODING).iterator();
+		Iterator<String> wallets = Files.readAllLines(path, encoding).iterator();
 		return wallets;
 	}
 }
