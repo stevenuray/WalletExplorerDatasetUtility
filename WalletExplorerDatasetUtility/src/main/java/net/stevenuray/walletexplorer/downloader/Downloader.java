@@ -2,16 +2,13 @@ package net.stevenuray.walletexplorer.downloader;
 
 import java.util.Date;
 import java.util.Iterator;
-import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 import net.stevenuray.walletexplorer.conversion.collection.QueueLoader;
 import net.stevenuray.walletexplorer.conversion.objects.Converter;
-import net.stevenuray.walletexplorer.conversion.objects.FutureQueueConverterCallable;
 import net.stevenuray.walletexplorer.conversion.objects.QueueConverterCallable;
 import net.stevenuray.walletexplorer.dto.BulkOperationResult;
 import net.stevenuray.walletexplorer.persistence.DataConsumer;
