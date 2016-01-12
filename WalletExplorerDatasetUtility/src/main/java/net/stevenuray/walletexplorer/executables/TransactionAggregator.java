@@ -13,6 +13,7 @@ import net.stevenuray.walletexplorer.aggregator.CollectionAggregator;
 import net.stevenuray.walletexplorer.aggregator.WalletTransactionSum;
 import net.stevenuray.walletexplorer.aggregator.aggregationperiod.AggregationPeriod;
 import net.stevenuray.walletexplorer.aggregator.aggregationperiod.AggregationPeriodFactory;
+import net.stevenuray.walletexplorer.conversion.objects.Converter;
 import net.stevenuray.walletexplorer.mongodb.CollectionNameService;
 import net.stevenuray.walletexplorer.mongodb.MongoDBConnectionService;
 import net.stevenuray.walletexplorer.mongodb.MongoDBConsumer;
@@ -21,7 +22,6 @@ import net.stevenuray.walletexplorer.mongodb.WalletCollection;
 import net.stevenuray.walletexplorer.mongodb.converters.ConvertedWalletTransactionDocumentConverter;
 import net.stevenuray.walletexplorer.mongodb.converters.WalletTransactionSumDocumentConverter;
 import net.stevenuray.walletexplorer.mongodb.queries.WalletExplorerCollectionEarliestTimeQuerier;
-import net.stevenuray.walletexplorer.persistence.Converter;
 import net.stevenuray.walletexplorer.persistence.DataConsumer;
 import net.stevenuray.walletexplorer.persistence.DataProducer;
 import net.stevenuray.walletexplorer.persistence.ProducerConsumerPair;
@@ -153,11 +153,10 @@ public class TransactionAggregator {
 
 	private static DataConsumer<WalletTransactionSum> getMongoDBAggregatedTransactionsConsumer(
 			WalletCollection unAggregatedCollection,AggregationPeriod aggregationPeriod) {
-		WalletCollection aggregateWalletCollection = getAggregateCollection(unAggregatedCollection,aggregationPeriod);
-		MongoCollection<Document> aggregateCollection = aggregateWalletCollection.getCollection();
+		WalletCollection aggregateWalletCollection = getAggregateCollection(unAggregatedCollection,aggregationPeriod);		
 		Converter<WalletTransactionSum, Document> converter = new WalletTransactionSumDocumentConverter();
 		@SuppressWarnings({ "rawtypes", "unchecked" })
-		DataConsumer<WalletTransactionSum> consumer = new MongoDBConsumer(aggregateCollection,converter);
+		DataConsumer<WalletTransactionSum> consumer = new MongoDBConsumer(aggregateWalletCollection,converter);
 		return consumer;
 	}
 	

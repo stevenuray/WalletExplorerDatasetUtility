@@ -15,6 +15,7 @@ import net.stevenuray.walletexplorer.conversion.currency.CoindeskBpiConverter;
 import net.stevenuray.walletexplorer.conversion.currency.HistoricalBTCToUSDConverter;
 import net.stevenuray.walletexplorer.conversion.currency.HistoricalWalletTransactionCurrencyConverter;
 import net.stevenuray.walletexplorer.conversion.currency.WalletTransactionCurrencyConverter;
+import net.stevenuray.walletexplorer.conversion.objects.Converter;
 import net.stevenuray.walletexplorer.mongodb.MongoDBConnectionService;
 import net.stevenuray.walletexplorer.mongodb.MongoDBConsumer;
 import net.stevenuray.walletexplorer.mongodb.MongoDBProducer;
@@ -22,7 +23,6 @@ import net.stevenuray.walletexplorer.mongodb.WalletCollection;
 import net.stevenuray.walletexplorer.mongodb.converters.ConvertedWalletTransactionDocumentConverter;
 import net.stevenuray.walletexplorer.mongodb.converters.WalletTransactionDocumentConverter;
 import net.stevenuray.walletexplorer.mongodb.queries.WalletExplorerCollectionLatestTimeQuerier;
-import net.stevenuray.walletexplorer.persistence.Converter;
 import net.stevenuray.walletexplorer.persistence.DataConsumer;
 import net.stevenuray.walletexplorer.persistence.DataProducer;
 import net.stevenuray.walletexplorer.persistence.ProducerConsumerPair;
@@ -154,7 +154,7 @@ public class TransactionConverter {
 		buildAscendingDateIndex(convertedCollection);
 		Converter<ConvertedWalletTransaction, Document> converter = new ConvertedWalletTransactionDocumentConverter();
 		@SuppressWarnings({ "rawtypes", "unchecked" })
-		DataConsumer<WalletTransaction> consumer = new MongoDBConsumer(convertedCollection,converter);
+		DataConsumer<WalletTransaction> consumer = new MongoDBConsumer(convertedWalletCollection,converter);
 		return consumer;
 	}
 

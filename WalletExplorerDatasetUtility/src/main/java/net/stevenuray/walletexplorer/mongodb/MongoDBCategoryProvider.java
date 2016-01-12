@@ -6,8 +6,8 @@ import java.util.List;
 
 import net.stevenuray.walletexplorer.categories.CategoryProvider;
 import net.stevenuray.walletexplorer.categories.WalletCategory;
+import net.stevenuray.walletexplorer.conversion.objects.Converter;
 import net.stevenuray.walletexplorer.mongodb.converters.ConvertedWalletTransactionDocumentConverter;
-import net.stevenuray.walletexplorer.persistence.Converter;
 import net.stevenuray.walletexplorer.persistence.DataProducer;
 import net.stevenuray.walletexplorer.walletattribute.dto.ConvertedWalletTransaction;
 

@@ -1,4 +1,4 @@
-package net.stevenuray.walletexplorer.persistence;
+package net.stevenuray.walletexplorer.conversion.objects;
 
 import java.util.Iterator;
 

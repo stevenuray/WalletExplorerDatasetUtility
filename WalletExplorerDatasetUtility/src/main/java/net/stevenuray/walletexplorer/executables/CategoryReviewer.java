@@ -35,7 +35,7 @@ public class CategoryReviewer extends Application{
 	
 	public static void main(String[] args) {		
 		setMongoLoggerLevel();			
-		WalletCategory category = ManualCategories.getExchanges();
+		WalletCategory category = ManualCategories.getGamblingServices();
 		AggregationTimespan timespan = getAggregationTimespan();		
 		try {
 			setWalletCategoryTransactionSums(category,timespan);

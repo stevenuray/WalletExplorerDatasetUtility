@@ -2,7 +2,7 @@ package net.stevenuray.walletexplorer.mongodb.converters;
 
 import net.stevenuray.walletexplorer.aggregator.WalletTransactionSum;
 import net.stevenuray.walletexplorer.aggregator.aggregationperiod.IntervalSum;
-import net.stevenuray.walletexplorer.persistence.Converter;
+import net.stevenuray.walletexplorer.conversion.objects.Converter;
 
 import org.bson.Document;
 import org.joda.time.Interval;

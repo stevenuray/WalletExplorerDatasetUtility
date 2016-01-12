@@ -6,11 +6,11 @@ import java.util.logging.Logger;
 
 import net.stevenuray.walletexplorer.aggregator.WalletTransactionSum;
 import net.stevenuray.walletexplorer.aggregator.WalletTransactionSums;
+import net.stevenuray.walletexplorer.conversion.objects.Converter;
 import net.stevenuray.walletexplorer.mongodb.MongoDBConnectionService;
 import net.stevenuray.walletexplorer.mongodb.MongoDBProducer;
 import net.stevenuray.walletexplorer.mongodb.WalletCollection;
 import net.stevenuray.walletexplorer.mongodb.converters.WalletTransactionSumDocumentConverter;
-import net.stevenuray.walletexplorer.persistence.Converter;
 import net.stevenuray.walletexplorer.persistence.DataProducer;
 import net.stevenuray.walletexplorer.views.TransactionAggregateReviewGraph;
 
@@ -27,7 +27,7 @@ import com.mongodb.MongoClient;
 import com.mongodb.client.MongoDatabase;
 
 public class WalletReviewer extends Application{	
-	private final static String TARGET_WALLET_NAME = "Instawallet.org";
+	private final static String TARGET_WALLET_NAME = "BTCC.com";
 	private final static String TEST_COLLECTION = TARGET_WALLET_NAME+"_To_USD_Per_Month"; 
 	private static WalletTransactionSums transactionSums;
 	

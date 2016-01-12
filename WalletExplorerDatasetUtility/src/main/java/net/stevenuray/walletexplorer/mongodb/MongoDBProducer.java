@@ -2,11 +2,11 @@ package net.stevenuray.walletexplorer.mongodb;
 
 import java.util.Iterator;
 
+import net.stevenuray.walletexplorer.conversion.objects.Converter;
+import net.stevenuray.walletexplorer.conversion.objects.IteratorAdapter;
 import net.stevenuray.walletexplorer.persistence.AscendingTimeIterator;
 import net.stevenuray.walletexplorer.persistence.AscendingTimeIteratorInstance;
-import net.stevenuray.walletexplorer.persistence.Converter;
 import net.stevenuray.walletexplorer.persistence.DataProducer;
-import net.stevenuray.walletexplorer.persistence.IteratorAdapter;
 
 import org.bson.Document;
 import org.joda.time.Interval;

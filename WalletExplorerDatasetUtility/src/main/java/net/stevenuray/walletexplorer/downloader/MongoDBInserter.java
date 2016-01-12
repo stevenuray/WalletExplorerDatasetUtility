@@ -196,8 +196,7 @@ public class MongoDBInserter implements Runnable {
 
 	}
 
-	private List<Map<String, Object>> generateOutputs(String walletName,
-			JSONObject detail) {
+	private List<Map<String, Object>> generateOutputs(String walletName,JSONObject detail) {
 		boolean invalidFound = false;
 		List<Map<String, Object>> outputs = new ArrayList<Map<String, Object>>();
 		if (detail.has("outputs")) {

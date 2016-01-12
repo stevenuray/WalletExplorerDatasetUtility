@@ -2,16 +2,10 @@ package net.stevenuray.walletexplorer.executables;
 
 import java.io.File;
 import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.logging.Level;
@@ -31,23 +25,17 @@ import net.stevenuray.walletexplorer.walletattribute.dto.WalletHeader;
 import net.stevenuray.walletexplorer.walletattribute.dto.WalletTrailer;
 import net.stevenuray.walletexplorer.walletattribute.dto.WalletTransactions;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Appender;
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.ConsoleAppender;
 import org.apache.log4j.Layout;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PatternLayout;
-import org.bson.Document;
 import org.joda.time.DateTime;
 
 import com.google.common.base.Optional;
-import com.google.common.collect.Iterables;
-import com.mongodb.BasicDBObject;
 import com.mongodb.MongoClient;
-import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
-import com.mongodb.client.model.IndexOptions;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
@@ -69,7 +57,7 @@ import com.sun.jersey.core.util.MultivaluedMapImpl;
  * 
  */
 public class DownloaderToMongoDB {
-	private final static Logger LOG = getLog();		
+	private static final Logger LOG = getLog();		
 	private static final int MAX_QUEUE_LENGTH = 1024;
 	private static final int MAXIMUM_INSERTS = 100;
 	private static final int EXTRACT_HIGH_WATER_MARK=100;

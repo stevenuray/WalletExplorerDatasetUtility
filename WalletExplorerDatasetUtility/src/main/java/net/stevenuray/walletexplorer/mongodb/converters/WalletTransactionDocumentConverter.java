@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 
-import net.stevenuray.walletexplorer.persistence.Converter;
+import net.stevenuray.walletexplorer.conversion.objects.Converter;
 import net.stevenuray.walletexplorer.walletattribute.dto.TransactionOutput;
 import net.stevenuray.walletexplorer.walletattribute.dto.WalletTransaction;
 import net.stevenuray.walletexplorer.walletattribute.dto.WalletTransaction.TransactionDirection;
@@ -48,7 +48,9 @@ public class WalletTransactionDocumentConverter implements Converter<WalletTrans
 		document.append("type", transactionDirectionString);		
 		
 		BsonArray outputsArray = getOutputsArray(transaction.getWalletTransactionOutputsUnmodifiable());
-		document.append("outputs",outputsArray);		
+		document.append("outputs",outputsArray);	
+		//TODO DEVELOPMENT
+		//System.out.println("Current Time is: "+transaction.getTransactionTime());
 		return document;
 	}
 
