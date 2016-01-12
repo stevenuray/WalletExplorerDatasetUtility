@@ -45,7 +45,7 @@ public class CollectionConverter {
 
 	public ConversionResults convertCollection() throws ExecutionException, InterruptedException{			
 		Iterator<WalletTransaction> producerIterator = producerConsumerPair.getProducerIterator();
-
+		//TODO introduce more concurrency here.
 		while(producerIterator.hasNext()){				
 			QueueLoader<WalletTransaction> queueLoader = 
 					new QueueLoader<WalletTransaction>(maxQueueSize,producerIterator);

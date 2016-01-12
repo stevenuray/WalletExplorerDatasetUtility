@@ -11,15 +11,21 @@ import java.util.concurrent.Future;
 
 import net.stevenuray.walletexplorer.conversion.collection.QueueLoader;
 import net.stevenuray.walletexplorer.conversion.objects.Converter;
+import net.stevenuray.walletexplorer.conversion.objects.FutureQueueConverterCallable;
+import net.stevenuray.walletexplorer.conversion.objects.QueueConverterCallable;
+import net.stevenuray.walletexplorer.dto.BulkOperationResult;
 import net.stevenuray.walletexplorer.persistence.DataConsumer;
 import net.stevenuray.walletexplorer.persistence.ProducerConsumerPair;
+import net.stevenuray.walletexplorer.persistence.PushToConsumerCallable;
 import net.stevenuray.walletexplorer.persistence.WalletNameDataProducerConsumerFactory;
+
 import org.apache.log4j.Appender;
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.ConsoleAppender;
 import org.apache.log4j.Layout;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PatternLayout;
+import org.joda.time.Duration;
 
 public class Downloader<T,U> {
 	private static final Logger LOG = getLog();			
@@ -73,69 +79,53 @@ public class Downloader<T,U> {
 		LOG.info("End Time: " + new Date());
 	}
 
-	private void downloadWalletTransactions(String walletName) throws InterruptedException, ExecutionException {	
+	private void downloadWalletTransactions(String walletName) throws Exception {	
+		BulkOperationResult result = new BulkOperationResult();
 		ProducerConsumerPair<T,U> producerConsumerPair = producerConsumerFactory.getProducerConsumerPair(walletName);
 		DataConsumer<U> consumer = producerConsumerPair.getConsumer();		
 		Iterator<T> producerIterator = producerConsumerPair.getProducerIterator();
 		ExecutorService executor = Executors.newFixedThreadPool(MAX_THREADS);
-		
+				
 		int transactionsDownloaded = 0; 
 		while(producerIterator.hasNext()){			
 			QueueLoader<T> queueLoader = new QueueLoader<T>(MAX_QUEUE_SIZE,producerIterator);
-			Future<BlockingQueue<T>> queueFuture = executor.submit(queueLoader);
-			tryConvertAndPushToConsumer(queueFuture,consumer);		
+			//Api restrictions dictate we can only call the API with one thread at a time. 
+			//Download -> Convert -> Consume
+			BlockingQueue<T> downloadedQueue = queueLoader.call();				
+			Future<BlockingQueue<U>> convertedQueueFuture = submitConversion(executor,downloadedQueue);
+			Future<BulkOperationResult> consumerFuture = submitToConsumer(executor,convertedQueueFuture,consumer);
+			
+			//Waiting for this future so an exception will be thrown if there is a problem. 
+			consumerFuture.get();		
 			transactionsDownloaded+=MAX_QUEUE_SIZE;
 			LOG.info("Transactions Downloaded for "+walletName+": "+transactionsDownloaded);
 		}
 		
 		executor.shutdown();
-		/*
-		LOG.info("Downloading Wallet Transactions After: "+walletEndTime+" From: "+nextWalletName);		
-		ExecutorService executor = Executors.newFixedThreadPool(MAX_THREADS);		
-				
-		logDownloadResult(nextWalletName,downloadResultFuture);
-		executor.shutdown();
-		LOG.info("Download Complete For: "+nextWalletName);		
-		*/	
-	}	
+		result.complete();
+		logResult(walletName,result);		
+	}
+		
+	private void logResult(String walletName,BulkOperationResult result){
+		Duration resultDuration = result.getTimeSpan().toDuration();	
+		String resultString = "Downloaded Wallet "+walletName+" in: ";		
+		long resultSeconds = resultDuration.getStandardSeconds();
+		LOG.info(resultString+resultSeconds+" Seconds.");		
+	}
 	
-	private BlockingQueue<U> getConvertedQueue(BlockingQueue<T> originalQueue) throws InterruptedException {
-		BlockingQueue<U> convertedQueue = new ArrayBlockingQueue<U>(MAX_QUEUE_SIZE);
-		for(T original : originalQueue){
-			U converted = converter.to(original);
-			convertedQueue.put(converted);
-		}		
-		return convertedQueue;
+	private Future<BlockingQueue<U>> submitConversion(
+			ExecutorService executor,BlockingQueue<T> originalQueue){
+		QueueConverterCallable<T,U> converterCallable = 
+				new QueueConverterCallable<T,U>(converter,originalQueue,MAX_QUEUE_SIZE);
+		Future<BlockingQueue<U>> convertedQueueFuture = executor.submit(converterCallable);
+		return convertedQueueFuture;
 	}
-
-	private void tryConvertAndPushToConsumer(Future<BlockingQueue<T>> queueFuture,DataConsumer<U> consumer)
-			throws InterruptedException, ExecutionException{
-		BlockingQueue<T> queue = queueFuture.get();
-		BlockingQueue<U> convertedQueue = getConvertedQueue(queue);
-		/*Bulk insertion is attempted first for performance. If this fails, individual 
-		 * insertion is attempted so any transactions within a block of transactions that can make it 
-		 * into the database will make it into the database. Failure to insert individual transactions 
-		 * when a bulk transaction insert fails will result in a dataset that is incomplete. 
-		 */
-		try{
-			tryPushToConsumerInBulk(convertedQueue,consumer);
-		} catch(Exception e){
-			//TODO DEVELOPMENT 
-			e.printStackTrace();
-			tryPushToConsumerIndividually(convertedQueue,consumer);
-		}
-	}
-
-	private void tryPushToConsumerInBulk(BlockingQueue<U> convertedQueue,DataConsumer<U> consumer) {
-		Iterator<U> iterator = convertedQueue.iterator();
-		consumer.consume(iterator);		
-	}
-
-	private void tryPushToConsumerIndividually(BlockingQueue<U> convertedQueue,DataConsumer<U> consumer) {
-		Iterator<U> iterator = convertedQueue.iterator();
-		while(iterator.hasNext()){
-			U next = iterator.next();
-			consumer.consume(next);
-		}
+	
+	private Future<BulkOperationResult> submitToConsumer(
+			ExecutorService executor,Future<BlockingQueue<U>> convertedQueueFuture,DataConsumer<U> consumer){
+		PushToConsumerCallable<U> consumerPusher = 
+				new PushToConsumerCallable<U>(convertedQueueFuture,consumer);
+		Future<BulkOperationResult> consumerPushFuture = executor.submit(consumerPusher);
+		return consumerPushFuture;
 	}
 }

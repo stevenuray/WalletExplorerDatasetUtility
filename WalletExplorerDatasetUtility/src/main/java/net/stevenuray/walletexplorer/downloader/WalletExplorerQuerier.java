@@ -122,7 +122,7 @@ public class WalletExplorerQuerier{
 	}
 	
 	private boolean isDownloadComplete(){
-		if(queryFromCount > txsCount){
+		if(queryFromCount >= txsCount){
 			return true;
 		} else{
 			return false;
@@ -211,5 +211,15 @@ public class WalletExplorerQuerier{
 	private void updateCountersAfterResponse(JSONObject latestQueryJsonObject){
 		queryFromCount += MAX_TRANSACTIONS_PER_QUERY;
 		txsCount = getWalletTransactionsCount(latestQueryJsonObject);		
+	}
+
+	public DateTime getEarliestTime() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public DateTime getLatestTime() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

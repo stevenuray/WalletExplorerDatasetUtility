@@ -11,9 +11,9 @@ import org.joda.time.Interval;
 
 public class BulkOperationResult {
 	private final DateTime startTime;
-	private Interval loadTimespan;
-	public Interval getLoadTimeSpan(){
-		return loadTimespan;		
+	private Interval timespan;
+	public Interval getTimeSpan(){
+		return timespan;		
 	}
 	private int operations = 0; 
 	public int getOperations(){
@@ -32,7 +32,7 @@ public class BulkOperationResult {
 	public void complete(){
 		if(!completed){
 			DateTime endTime = new DateTime();
-			loadTimespan = new Interval(startTime,endTime);
+			timespan = new Interval(startTime,endTime);
 			completed = true;
 		} else{
 			throw new IllegalStateException("TableLoadResult has had it's endLoad() called repeatedly!");

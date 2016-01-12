@@ -48,9 +48,7 @@ public class WalletTransactionDocumentConverter implements Converter<WalletTrans
 		document.append("type", transactionDirectionString);		
 		
 		BsonArray outputsArray = getOutputsArray(transaction.getWalletTransactionOutputsUnmodifiable());
-		document.append("outputs",outputsArray);	
-		//TODO DEVELOPMENT
-		//System.out.println("Current Time is: "+transaction.getTransactionTime());
+		document.append("outputs",outputsArray);			
 		return document;
 	}
 

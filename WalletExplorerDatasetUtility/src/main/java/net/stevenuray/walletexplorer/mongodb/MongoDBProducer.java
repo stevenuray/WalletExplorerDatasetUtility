@@ -11,13 +11,14 @@ import net.stevenuray.walletexplorer.persistence.DataProducer;
 import org.bson.Document;
 import org.joda.time.Interval;
 
+//TODO implement TimableDataProducer.
 public class MongoDBProducer<T> implements DataProducer<T>{
 	private final WalletCollection sourceCollection;
 	private final Interval transactionTimespan;
 	private final Converter<T,Document> converter;
 		
-	public MongoDBProducer(WalletCollection sourceCollection, Interval transactionTimespan,
-			Converter<T,Document> converter){
+	public MongoDBProducer(
+			WalletCollection sourceCollection, Interval transactionTimespan,Converter<T,Document> converter){
 		this.sourceCollection = sourceCollection;
 		this.transactionTimespan = transactionTimespan;
 		this.converter = converter;
