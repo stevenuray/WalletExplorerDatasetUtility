@@ -17,20 +17,27 @@ public class ProducerConsumerPair<T,U> {
 		this.consumer = consumer;
 	}
 
-	/**Wraps a call to getConsumer().consume(Iterator<U> iterator) for convenience	 
+	/**Wraps a call to consumer().consume(Iterator<U> iterator) for convenience	.
 	 * @param iterator
 	 */
 	public void consume(Iterator<U> iterator){
 		consumer.consume(iterator);
 	}
 
-	/**Wraps a call to getConsumer().consume() for convenience	 
+	/**Wraps a call to consumer().consume() for convenience. 
 	 * @param u
 	 */
 	public void consume(U u){
 		consumer.consume(u);		
 	}	
 	
+	/**Wraps a call to producer.getData() for convenience.	 
+	 * @return - The iterator of the data producer. 
+	 */
+	public Iterator<T> getData(){
+		return producer.getData();
+	}
+		
 	public DataConsumer<U> getConsumer() {
 		return consumer;
 	}
@@ -38,9 +45,7 @@ public class ProducerConsumerPair<T,U> {
 	public DataProducer<T> getProducer() {
 		return producer;
 	}
-	
-	
-	
+		
 	public Iterator<T> getProducerIterator(){		
 		Iterator<T> producerIterator = producer.getData();
 		return producerIterator;
