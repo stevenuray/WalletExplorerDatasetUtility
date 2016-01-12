@@ -8,8 +8,8 @@ import com.mongodb.client.MongoDatabase;
 
 import net.stevenuray.walletexplorer.conversion.objects.Converter;
 import net.stevenuray.walletexplorer.persistence.DataConsumer;
-import net.stevenuray.walletexplorer.persistence.TimableDataConsumer;
 import net.stevenuray.walletexplorer.persistence.WalletNameDataConsumerFactory;
+import net.stevenuray.walletexplorer.persistence.timable.TimableDataConsumer;
 
 public class MongoDBConsumerFactory<T> implements WalletNameDataConsumerFactory<T>{
 	private final Converter<T,Document> converter;

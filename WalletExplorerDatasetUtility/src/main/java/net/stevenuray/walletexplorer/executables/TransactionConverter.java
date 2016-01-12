@@ -25,7 +25,7 @@ import net.stevenuray.walletexplorer.mongodb.converters.WalletTransactionDocumen
 import net.stevenuray.walletexplorer.mongodb.queries.WalletExplorerCollectionLatestTimeQuerier;
 import net.stevenuray.walletexplorer.persistence.DataConsumer;
 import net.stevenuray.walletexplorer.persistence.DataProducer;
-import net.stevenuray.walletexplorer.persistence.ProducerConsumerPair;
+import net.stevenuray.walletexplorer.persistence.timable.ProducerConsumerPair;
 import net.stevenuray.walletexplorer.walletattribute.dto.ConvertedWalletTransaction;
 import net.stevenuray.walletexplorer.walletattribute.dto.WalletTransaction;
 

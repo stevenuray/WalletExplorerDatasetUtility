@@ -5,7 +5,7 @@ import java.util.Iterator;
 import org.joda.time.DateTime;
 
 import net.stevenuray.walletexplorer.persistence.DataProducer;
-import net.stevenuray.walletexplorer.persistence.TimableDataProducer;
+import net.stevenuray.walletexplorer.persistence.timable.TimableDataProducer;
 import net.stevenuray.walletexplorer.walletattribute.dto.WalletTransaction;
 
 /**Wraps a WalletExplorerDownloadIterator to implement TimableDataProducer. 

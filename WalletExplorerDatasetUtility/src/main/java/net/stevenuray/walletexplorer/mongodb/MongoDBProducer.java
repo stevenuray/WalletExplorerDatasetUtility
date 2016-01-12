@@ -4,9 +4,9 @@ import java.util.Iterator;
 
 import net.stevenuray.walletexplorer.conversion.objects.Converter;
 import net.stevenuray.walletexplorer.conversion.objects.IteratorAdapter;
-import net.stevenuray.walletexplorer.persistence.AscendingTimeIterator;
-import net.stevenuray.walletexplorer.persistence.AscendingTimeIteratorInstance;
 import net.stevenuray.walletexplorer.persistence.DataProducer;
+import net.stevenuray.walletexplorer.persistence.timable.AscendingTimeIterator;
+import net.stevenuray.walletexplorer.persistence.timable.AscendingTimeIteratorInstance;
 
 import org.bson.Document;
 import org.joda.time.Interval;

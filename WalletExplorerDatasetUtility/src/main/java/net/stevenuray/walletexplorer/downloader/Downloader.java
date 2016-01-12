@@ -12,9 +12,9 @@ import net.stevenuray.walletexplorer.conversion.objects.Converter;
 import net.stevenuray.walletexplorer.conversion.objects.QueueConverterCallable;
 import net.stevenuray.walletexplorer.dto.BulkOperationResult;
 import net.stevenuray.walletexplorer.persistence.DataConsumer;
-import net.stevenuray.walletexplorer.persistence.ProducerConsumerPair;
 import net.stevenuray.walletexplorer.persistence.PushToConsumerCallable;
 import net.stevenuray.walletexplorer.persistence.WalletNameDataProducerConsumerFactory;
+import net.stevenuray.walletexplorer.persistence.timable.ProducerConsumerPair;
 
 import org.apache.log4j.Appender;
 import org.apache.log4j.BasicConfigurator;

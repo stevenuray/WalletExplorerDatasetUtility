@@ -24,7 +24,7 @@ import net.stevenuray.walletexplorer.mongodb.converters.WalletTransactionSumDocu
 import net.stevenuray.walletexplorer.mongodb.queries.WalletExplorerCollectionEarliestTimeQuerier;
 import net.stevenuray.walletexplorer.persistence.DataConsumer;
 import net.stevenuray.walletexplorer.persistence.DataProducer;
-import net.stevenuray.walletexplorer.persistence.ProducerConsumerPair;
+import net.stevenuray.walletexplorer.persistence.timable.ProducerConsumerPair;
 import net.stevenuray.walletexplorer.walletattribute.dto.ConvertedWalletTransaction;
 
 import org.bson.Document;

@@ -7,7 +7,7 @@ import net.stevenuray.walletexplorer.aggregator.aggregationperiod.AggregationPer
 import net.stevenuray.walletexplorer.aggregator.aggregationperiod.AggregationPeriodListBuilder;
 import net.stevenuray.walletexplorer.mongodb.WalletCollection;
 import net.stevenuray.walletexplorer.persistence.DataConsumer;
-import net.stevenuray.walletexplorer.persistence.ProducerConsumerPair;
+import net.stevenuray.walletexplorer.persistence.timable.ProducerConsumerPair;
 import net.stevenuray.walletexplorer.walletattribute.dto.ConvertedWalletTransaction;
 
 import org.joda.time.DateTime;

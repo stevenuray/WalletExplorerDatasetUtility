@@ -8,7 +8,7 @@ import net.stevenuray.walletexplorer.conversion.objects.Converter;
 import net.stevenuray.walletexplorer.mongodb.queries.WalletExplorerCollectionEarliestTimeQuerier;
 import net.stevenuray.walletexplorer.mongodb.queries.WalletExplorerCollectionLatestTimeQuerier;
 import net.stevenuray.walletexplorer.persistence.DataConsumer;
-import net.stevenuray.walletexplorer.persistence.TimableDataConsumer;
+import net.stevenuray.walletexplorer.persistence.timable.TimableDataConsumer;
 
 import org.apache.commons.collections4.IteratorUtils;
 import org.bson.Document;

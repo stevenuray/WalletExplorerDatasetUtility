@@ -1,6 +1,9 @@
-package net.stevenuray.walletexplorer.persistence;
+package net.stevenuray.walletexplorer.persistence.timable;
 
 import java.util.Iterator;
+
+import net.stevenuray.walletexplorer.persistence.DataConsumer;
+import net.stevenuray.walletexplorer.persistence.DataProducer;
 
 /**Represents a source of data and a destination of data, for a complete segment on a data pipeline. 
  * @author Steven Uray 2015-12-19

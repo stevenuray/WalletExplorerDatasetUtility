@@ -1,5 +1,7 @@
 package net.stevenuray.walletexplorer.persistence;
 
+import net.stevenuray.walletexplorer.persistence.timable.ProducerConsumerPair;
+
 
 
 /**Represents a pair of factories that construct objects based on a wallet name from WalletExplorer.com.

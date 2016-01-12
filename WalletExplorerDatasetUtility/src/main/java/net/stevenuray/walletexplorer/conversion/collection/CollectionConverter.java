@@ -10,7 +10,7 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
 import net.stevenuray.walletexplorer.conversion.currency.WalletTransactionCurrencyConverter;
-import net.stevenuray.walletexplorer.persistence.ProducerConsumerPair;
+import net.stevenuray.walletexplorer.persistence.timable.ProducerConsumerPair;
 import net.stevenuray.walletexplorer.walletattribute.dto.ConvertedWalletTransaction;
 import net.stevenuray.walletexplorer.walletattribute.dto.WalletTransaction;
 

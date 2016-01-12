@@ -1,4 +1,4 @@
-package net.stevenuray.walletexplorer.persistence;
+package net.stevenuray.walletexplorer.persistence.timable;
 
 import org.joda.time.DateTime;
 

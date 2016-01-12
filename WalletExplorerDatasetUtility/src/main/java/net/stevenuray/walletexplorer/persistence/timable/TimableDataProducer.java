@@ -1,4 +1,6 @@
-package net.stevenuray.walletexplorer.persistence;
+package net.stevenuray.walletexplorer.persistence.timable;
+
+import net.stevenuray.walletexplorer.persistence.DataProducer;
 
 import org.joda.time.DateTime;
 
