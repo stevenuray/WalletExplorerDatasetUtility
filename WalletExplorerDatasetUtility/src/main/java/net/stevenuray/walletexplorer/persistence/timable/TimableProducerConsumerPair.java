@@ -21,17 +21,18 @@ public class TimableProducerConsumerPair<T,U> {
 	public TimableDataConsumer<U> getConsumer() {
 		return consumer;
 	}
-	
-	/*
-	public TimableProducerConsumerPair<T,U> getTimableProducerConsumerPair(){
-		DateTime latestConsumerTime = consumer.getEarliestTime();
 		
-		//DataProducer<T> producer = 
+	public TimableProducerConsumerPair<T,U> getTimableProducerConsumerPair(){
+		return new TimableProducerConsumerPair<T,U>(producer,consumer);		
 	}
-	*/
-
+	
+	/**Note this constructor will change the producer in response to what data the consumer says it needs.	 
+	 * @param producer
+	 * @param consumer
+	 */
 	public TimableProducerConsumerPair(TimableDataProducer<T> producer,TimableDataConsumer<U> consumer) {
-		this.producer = producer;
+		DateTime latestConsumerTime = consumer.getEarliestTime();		
+		this.producer = producer.fromTime(latestConsumerTime);
 		this.consumer = consumer;
 	}
 }

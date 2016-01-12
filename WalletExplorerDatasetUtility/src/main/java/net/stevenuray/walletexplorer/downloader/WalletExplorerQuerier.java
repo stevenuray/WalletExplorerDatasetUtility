@@ -2,6 +2,7 @@ package net.stevenuray.walletexplorer.downloader;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import net.sf.json.JSONSerializer;
@@ -22,13 +23,15 @@ import com.sun.jersey.core.util.MultivaluedMapImpl;
  * in May of 2015. 
  * @author Steven Uray 
  */
+//TODO break this class down into smaller classes.
 public class WalletExplorerQuerier{	
-	private static final int MAX_CONNECTION_ATTEMPTS = 3;
-	private static final int MAX_TRANSACTIONS_PER_QUERY = 100;	
+	private static final int FROM_COUNT_MANDATORY_DIVISIBLE = 100;
+	private static final int MAX_CONNECTION_ATTEMPTS = 3;	
+	private static final int MAX_TRANSACTIONS_PER_QUERY = 100;
 	private boolean downloading = true; 
 	private DateTime endTime;
-	private int queryFromCount = 0;
-	private int txsCount;
+	private long queryFromCount = 0;
+	private long txsCount;
 	private final String walletName;
 	
 	/**Queries for transactions regardless of their time. 	 
@@ -46,6 +49,27 @@ public class WalletExplorerQuerier{
 	public WalletExplorerQuerier(String walletName,DateTime endTime){
 		this.walletName = walletName;
 		this.endTime = endTime;		
+	}
+	
+	public DateTime getEarliestTime() {
+		setTxsCountIfItHasNotBeenSet();		
+		long latestFromCount = getLastValidTransactionFromCount();
+		MultivaluedMapImpl queryParams = getWalletExplorerQueryParams(walletName,latestFromCount);	
+		JSONObject latestQueryJsonObject = tryToGetQueryResponseOrThrowRuntimeException(queryParams);		
+		JSONArray subWalletTransactions = getSubWalletTransactionsFromResponse(latestQueryJsonObject);
+		int lastValueIndex = subWalletTransactions.size()-1;
+		JSONObject firstSubWalletTransaction = (JSONObject) subWalletTransactions.get(lastValueIndex);
+		DateTime earliestTime = getTimeOfSubWalletTransaction(firstSubWalletTransaction);
+		return earliestTime;				
+	}
+	
+	public DateTime getLatestTime() {		
+		MultivaluedMapImpl queryParams = getWalletExplorerQueryParams(walletName,0l);	
+		JSONObject latestQueryJsonObject = tryToGetQueryResponseOrThrowRuntimeException(queryParams);		
+		JSONArray subWalletTransactions = getSubWalletTransactionsFromResponse(latestQueryJsonObject);
+		JSONObject firstSubWalletTransaction = (JSONObject) subWalletTransactions.get(0);
+		DateTime latestTime = getTimeOfSubWalletTransaction(firstSubWalletTransaction);
+		return latestTime;			
 	}
 	
 	public List<WalletTransaction> getNextWalletTransactions() throws Exception{
@@ -86,11 +110,26 @@ public class WalletExplorerQuerier{
 				webResource.queryParams(queryParams).type("application/json").get(ClientResponse.class);
 		return response;
 	}
-	
+
 	private JSONObject getJSONObjectFromWalletExplorerResponse(ClientResponse response){
 		String jsonStr = response.getEntity(String.class);
 		JSONObject json = (JSONObject) JSONSerializer.toJSON(jsonStr);
 		return json;
+	}
+	
+	private long getLastTxsCountRemainder(){
+		return txsCount % FROM_COUNT_MANDATORY_DIVISIBLE;
+	}
+	
+	/**WalletExplorer.com API only accepts fromCount parameters that are divisible by 100. 
+	 * Note: txsCount must be set before this function is called for it to return correctly. 
+	 * @return
+	 */
+	private long getLastValidTransactionFromCount(){
+		throwIllegalStateExceptionIfTxsCountHasNotBeenSet();
+		long remainder = getLastTxsCountRemainder();
+		long lastValidTransactionFromCount = txsCount - remainder;
+		return lastValidTransactionFromCount;
 	}
 	
 	private JSONArray getSubWalletTransactionsFromResponse(JSONObject latestQueryJsonObject){
@@ -98,7 +137,13 @@ public class WalletExplorerQuerier{
 		return subWalletTransactions;
 	}
 	
-	private MultivaluedMapImpl getWalletExplorerQueryParams(String walletName,int fromCount){		 
+	private DateTime getTimeOfSubWalletTransaction(JSONObject subWalletTransaction){
+		long unixTimestamp = subWalletTransaction.getLong("time");
+		DateTime subwalletTransactionTime = new DateTime(unixTimestamp*1000);
+		return subwalletTransactionTime;
+	}
+	
+	private MultivaluedMapImpl getWalletExplorerQueryParams(String walletName,long fromCount){		 
 		String caller = WalletExplorerAPIConfigSingleton.CALLER;
 		MultivaluedMapImpl queryParams = new MultivaluedMapImpl();
 		queryParams = new MultivaluedMapImpl();
@@ -137,13 +182,9 @@ public class WalletExplorerQuerier{
 		 * A quick solution to this is to delete the collection if there is an error and hope
 		 * it downloads properly on the next run. 
 		 */			
-		for(int k = 0; k < subWalletTransactions.size(); k++){
-			/*Breaking early if we already have transactions earlier than the current transaction.
-			 * Note: As of 2015-10-12 WalletExplorer API returns transactions in descending time only!
-			 */
+		for(int k = 0; k < subWalletTransactions.size(); k++){			
 			JSONObject subWalletTransaction = (JSONObject) subWalletTransactions.get(k);			
-			long unixTimestamp = subWalletTransaction.getLong("time");
-			DateTime currentTime = new DateTime(unixTimestamp*1000);			
+			DateTime currentTime = getTimeOfSubWalletTransaction(subWalletTransaction);			
 			if(currentTime.isBefore(endTime)){					
 				return true;
 			}
@@ -151,7 +192,19 @@ public class WalletExplorerQuerier{
 		
 		return false;
 	}
+	
+	private void setTxsCount() {
+		MultivaluedMapImpl queryParams = getWalletExplorerQueryParams(walletName,0);	
+		JSONObject latestQueryJsonObject = tryToGetQueryResponseOrThrowRuntimeException(queryParams);		
+		txsCount = getWalletTransactionsCount(latestQueryJsonObject);
+	}
 		
+	private void setTxsCountIfItHasNotBeenSet(){
+		if(txsCount == 0){
+			setTxsCount();
+		}
+	}
+	
 	private boolean shouldContinueDownloading(JSONObject latestQueryJsonObject){		
 		if(isDownloadComplete()){
 			return false;
@@ -163,8 +216,15 @@ public class WalletExplorerQuerier{
 			
 		return true;
 	}
+		
+	private void throwIllegalStateExceptionIfTxsCountHasNotBeenSet(){
+		if(txsCount == 0){
+			String errorMessage = "txsCount must be set before this function is called for it to return correctly!";
+			throw new IllegalStateException(errorMessage);
+		}
+	}
 	
-	private void throwWalletNotFoundExceptionIfNecessary(String walletName,JSONObject responseJson) 
+	private void throwWalletNotFoundExceptionIfNecessary(JSONObject responseJson) 
 			throws WalletNotFoundException{
 		if (!Boolean.valueOf(responseJson.getString("found"))) {
 			String errorMessage = "Wallet " + walletName + " not found";
@@ -173,7 +233,7 @@ public class WalletExplorerQuerier{
 		}
 		return; 
 	}
-		
+	
 	/**Intermittent networking errors can be encountered while querying the API. 
 	 * These are intentionally suppressed unless MAX_CONNECTION_ATTEMPTS exceptions are thrown in a row.  
 	 * @param queryParams
@@ -193,33 +253,25 @@ public class WalletExplorerQuerier{
 		
 		throw lastException;
 	}
-	
+
 	private JSONObject tryToGetQueryResponseAttempt(MultivaluedMapImpl queryParams)throws Exception{
 		ClientResponse response = getClientResponse(queryParams);
 		JSONObject responseJson = getJSONObjectFromWalletExplorerResponse(response);
-		throwWalletNotFoundExceptionIfNecessary(walletName,responseJson);
+		throwWalletNotFoundExceptionIfNecessary(responseJson);
 		return responseJson;
 	}
 	
-	private int tryToGetWalletTransactionsCount() throws Exception{
-		MultivaluedMapImpl queryParams = getWalletExplorerQueryParams(walletName,0);		
-		JSONObject responseJson = tryToGetQueryResponse(queryParams);						
-		int txsCount = getWalletTransactionsCount(responseJson);
-		return txsCount;
+	private JSONObject tryToGetQueryResponseOrThrowRuntimeException(MultivaluedMapImpl queryParams){
+		try{
+			JSONObject latestQueryJsonObject = tryToGetQueryResponse(queryParams);
+			return latestQueryJsonObject;
+		} catch(Exception e){
+			throw new RuntimeException(e);
+		}
 	}
 
 	private void updateCountersAfterResponse(JSONObject latestQueryJsonObject){
 		queryFromCount += MAX_TRANSACTIONS_PER_QUERY;
 		txsCount = getWalletTransactionsCount(latestQueryJsonObject);		
-	}
-
-	public DateTime getEarliestTime() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public DateTime getLatestTime() {
-		// TODO Auto-generated method stub
-		return null;
 	}
 }

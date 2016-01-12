@@ -54,15 +54,10 @@ public class WalletExplorerDownloadIterator implements Iterator<WalletTransactio
 		}		
 	}
 	
-	private WalletTransaction getNextWalletTransactionFromListAndAdjustIndex(){		
-		//TODO DEVELOPMENT
-		try{
-			WalletTransaction nextTransaction = currentList.get(currentIndex);
-			currentIndex++;
-			return nextTransaction;
-		} catch(Exception e){
-			return null;
-		}
+	private WalletTransaction getNextWalletTransactionFromListAndAdjustIndex(){				
+		WalletTransaction nextTransaction = currentList.get(currentIndex);
+		currentIndex++;
+		return nextTransaction;		
 	}
 	
 	private void tryToGetNewListOfDownloadedTransactionsOrThrowException(){
