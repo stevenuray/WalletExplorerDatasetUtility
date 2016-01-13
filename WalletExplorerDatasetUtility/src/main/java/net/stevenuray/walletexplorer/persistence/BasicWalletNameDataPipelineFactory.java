@@ -29,7 +29,7 @@ public class BasicWalletNameDataPipelineFactory<T,U> implements WalletNameDataPi
 	public DataPipeline<T, U> getProducerConsumerPair(String walletName){
 		DataProducer<T> producer = producerFactory.getDataProducer(walletName);
 		DataConsumer<U> consumer = consumerFactory.getDataConsumer(walletName);
-		DataPipeline<T, U> producerConsumerPair = new BasicProducerConsumerPair<T,U>(producer,consumer);
+		DataPipeline<T, U> producerConsumerPair = new BasicDataPipeline<T,U>(producer,consumer);
 		return producerConsumerPair;
 	}
 }

@@ -9,6 +9,7 @@ import net.stevenuray.walletexplorer.mongodb.queries.WalletExplorerCollectionEar
 import net.stevenuray.walletexplorer.mongodb.queries.WalletExplorerCollectionLatestTimeQuerier;
 import net.stevenuray.walletexplorer.persistence.DataConsumer;
 import net.stevenuray.walletexplorer.persistence.timable.TimableDataConsumer;
+import net.stevenuray.walletexplorer.persistence.timable.TimeNotFoundException;
 
 import org.apache.commons.collections4.IteratorUtils;
 import org.bson.Document;
@@ -58,34 +59,27 @@ public class MongoDBConsumer<T> implements TimableDataConsumer<T>{
 		}
 	}
 	
-	public DateTime getEarliestTime() {
+	public DateTime getEarliestTime() throws TimeNotFoundException {
 		WalletExplorerCollectionEarliestTimeQuerier earliestTimeQuerier = 
 				new WalletExplorerCollectionEarliestTimeQuerier(destinationWalletCollection);
-		//TODO refactor this exception to make it thrown upwards. 
+		
 		DateTime earliestTransactionTime = null;
 		try{
 			earliestTransactionTime = earliestTimeQuerier.call();
 		} catch(Exception e){
-			System.out.println("Could not find the latest transaction time for: "+
-					destinationWalletCollection.getCollectionName()+"!");
-			e.printStackTrace();
-			return new DateTime(0);
+			throw new TimeNotFoundException();
 		}
 		return earliestTransactionTime;
 	}	
 	
-	public DateTime getLatestTime() {
+	public DateTime getLatestTime() throws TimeNotFoundException {
 		WalletExplorerCollectionLatestTimeQuerier latestTimeQuerier =
 				new WalletExplorerCollectionLatestTimeQuerier(destinationWalletCollection);
-		DateTime latestTransactionTime = null;
-		//TODO refactor this exception to make it thrown upwards. 
+		DateTime latestTransactionTime = null;		 
 		try {
 			latestTransactionTime = latestTimeQuerier.call();
 		} catch (Exception e) {			
-			System.out.println("Could not find the latest transaction time for: "+
-					destinationWalletCollection.getCollectionName()+"!");
-			e.printStackTrace();
-			return new DateTime(0);
+			throw new TimeNotFoundException();
 		}		
 		return latestTransactionTime;
 	}

@@ -7,8 +7,8 @@ import net.stevenuray.walletexplorer.persistence.DataPipeline;
 import org.joda.time.DateTime;
 
 /**Special ProducerConsumerPair that uses the TimableExtension to DataProducer when 
- * returning objects. The Consumer tells the Producer what data it 
- * already has based on time, so the Producer can avoid sending redundant data to the Consumer. 
+ * returning objects. The Consumer tells the Producer what data it already has based on time, 
+ * so the Producer can avoid sending redundant data to the Consumer. 
  * @author Steven Uray 
  *
  * @param <T>
@@ -35,7 +35,7 @@ public class TimableDataPipeline<T,U> implements DataPipeline<T,U>{
 	 * @param consumer
 	 */
 	public TimableDataPipeline(TimableDataProducer<T> producer,TimableDataConsumer<U> consumer) {
-		DateTime latestConsumerTime = consumer.getLatestTime();		
+		DateTime latestConsumerTime = getLatestConsumerTime(consumer);	
 		this.producer = producer.fromTime(latestConsumerTime);
 		this.consumer = consumer;
 	}
@@ -50,5 +50,14 @@ public class TimableDataPipeline<T,U> implements DataPipeline<T,U>{
 
 	public Iterator<T> getData() {
 		return producer.getData();
+	}
+	
+	private DateTime getLatestConsumerTime(TimableDataConsumer<U> consumer){
+		try{
+			return consumer.getLatestTime();	
+		} catch(TimeNotFoundException e){
+			//If we can't find the latest time, grab everything. 
+			return new DateTime(0);
+		}
 	}
 }

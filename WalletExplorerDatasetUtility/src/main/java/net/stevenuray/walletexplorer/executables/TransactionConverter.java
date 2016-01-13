@@ -25,7 +25,7 @@ import net.stevenuray.walletexplorer.mongodb.converters.WalletTransactionDocumen
 import net.stevenuray.walletexplorer.mongodb.queries.WalletExplorerCollectionLatestTimeQuerier;
 import net.stevenuray.walletexplorer.persistence.DataConsumer;
 import net.stevenuray.walletexplorer.persistence.DataProducer;
-import net.stevenuray.walletexplorer.persistence.BasicProducerConsumerPair;
+import net.stevenuray.walletexplorer.persistence.BasicDataPipeline;
 import net.stevenuray.walletexplorer.persistence.DataPipeline;
 import net.stevenuray.walletexplorer.walletattribute.dto.ConvertedWalletTransaction;
 import net.stevenuray.walletexplorer.walletattribute.dto.WalletTransaction;
@@ -143,7 +143,7 @@ public class TransactionConverter {
 				getMongoDBConvertedTransactionConsumer(unconvertedCollection);
 		@SuppressWarnings({ "rawtypes", "unchecked" })
 		DataPipeline<WalletTransaction, ConvertedWalletTransaction> producerConsumerPair = 
-				new BasicProducerConsumerPair(walletTransactionProducer,walletTransactionConsumer);
+				new BasicDataPipeline(walletTransactionProducer,walletTransactionConsumer);
 		return producerConsumerPair;		
 	}
 	

@@ -24,7 +24,7 @@ import net.stevenuray.walletexplorer.mongodb.converters.WalletTransactionSumDocu
 import net.stevenuray.walletexplorer.mongodb.queries.WalletExplorerCollectionEarliestTimeQuerier;
 import net.stevenuray.walletexplorer.persistence.DataConsumer;
 import net.stevenuray.walletexplorer.persistence.DataProducer;
-import net.stevenuray.walletexplorer.persistence.BasicProducerConsumerPair;
+import net.stevenuray.walletexplorer.persistence.BasicDataPipeline;
 import net.stevenuray.walletexplorer.persistence.DataPipeline;
 import net.stevenuray.walletexplorer.walletattribute.dto.ConvertedWalletTransaction;
 
@@ -178,7 +178,7 @@ public class TransactionAggregator {
 				getMongoDBAggregatedTransactionsConsumer(unAggregatedCollection,aggregationPeriod);
 		@SuppressWarnings({ "rawtypes", "unchecked" })
 		DataPipeline<ConvertedWalletTransaction, WalletTransactionSum> producerConsumerPair = 
-				new BasicProducerConsumerPair(producer,consumer);
+				new BasicDataPipeline(producer,consumer);
 		return producerConsumerPair;
 	}
 		

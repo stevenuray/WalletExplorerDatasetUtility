@@ -1,6 +1,7 @@
 package net.stevenuray.walletexplorer.mongodb.queries;
 
 import java.util.Iterator;
+import java.util.Set;
 import java.util.concurrent.Callable;
 
 import net.stevenuray.walletexplorer.mongodb.WalletCollection;
@@ -15,20 +16,31 @@ import com.mongodb.client.MongoCollection;
 /*TODO implement an interface that represents this returns the earliest time for a wallet, 
  * to improve modularity of persistence for the entire system. 
  */
-//TODO refactor this to a common superclass with WalletExplorerCollectionLatestTimeQuerier.
-/**Returns earliest transaction time if collection has entries, a datetime starting at 
- * unix timestamp = 0 if not. 
+/**Returns earliest transaction time if collection has entries, a DateTime starting at 
+ * unix timestamp = 0 if not.
  * @author Steven Uray 2016-1-1
  */
-public class WalletExplorerCollectionEarliestTimeQuerier implements Callable<DateTime>{
-	private final String dateKey = WalletTransactionDocumentConverter.DATE_KEY;
-	private final WalletCollection walletCollection;
-	
+public class WalletExplorerCollectionEarliestTimeQuerier extends WalletExplorerCollectionQuerier 
+		implements Callable<DateTime>{
 	public WalletExplorerCollectionEarliestTimeQuerier(WalletCollection walletCollection){
-		this.walletCollection = walletCollection;
+		super(walletCollection);
 	}
-
+	
+	/*Returns earliest transaction time if collection has entries, a DateTime starting at 
+	 * unix timestamp = 0 if not. If a collection that has no entries has the descending time sort 
+	 * applied to it, it will cause MongoDB to run out of memory and throw an error. This behavior was 
+	 * observed on 2016-01-12 with MongoDB 3.2. 
+	 */
 	public DateTime call() throws Exception {
+		String collectionName = walletCollection.getCollectionName();
+		if(isCollectionInDatabase(collectionName)){
+			return getEarliestTransactionTime();
+		} else{
+			return new DateTime(0);
+		}
+	}
+	
+	private DateTime getEarliestTransactionTime(){
 		Iterator<Document> ascendingTimeIterator = getAscendingTimeIterator();
 		DateTime earliestTime = getEarliestTime(ascendingTimeIterator);
 		return earliestTime;

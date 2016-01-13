@@ -1,7 +1,5 @@
 package net.stevenuray.walletexplorer.persistence.timable;
 
-import org.joda.time.DateTime;
-
 public class BasicTimableWalletNameDataPipelineFactory<T,U> implements
 		TimableWalletNameDataPipelineFactory<T, U> {
 	private final TimableWalletNameDataProducerFactory<T> producerFactory;

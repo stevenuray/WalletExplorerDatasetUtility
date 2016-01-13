@@ -12,34 +12,36 @@ import org.joda.time.DateTime;
 import com.mongodb.BasicDBObject;
 import com.mongodb.client.MongoCollection;
 
-/**Returns latest transaction time if collection has entries, a datetime starting at 
- * unix timestamp = 0 if not. 
- * @author Steven Uray 2015-10-12
- */
 /*TODO implement an interface that represents this returns the latest time for a wallet, 
  * to improve modularity of persistence for the entire system. 
  */
-//TODO refactor this to a common superclass with WalletExplorerCollectionEarliestTimeQuerier.
-
-public class WalletExplorerCollectionLatestTimeQuerier implements Callable<DateTime> {
-	private final String dateKey = WalletTransactionDocumentConverter.DATE_KEY;
-	private final WalletCollection mongoCollectionConnection;
+/**Returns latest transaction time if collection has entries, a DateTime starting at 
+ * unix timestamp = 0 if not.
+ * @author Steven Uray 
+ */
+public class WalletExplorerCollectionLatestTimeQuerier extends WalletExplorerCollectionQuerier 
+	implements Callable<DateTime> {
 	
-	public WalletExplorerCollectionLatestTimeQuerier(WalletCollection mongoCollectionConnection){
-		this.mongoCollectionConnection = mongoCollectionConnection;
+	public WalletExplorerCollectionLatestTimeQuerier(WalletCollection walletCollection){
+		super(walletCollection);
 	}
 	
-	/**Returns latest transaction time if collection has entries, a datetime starting at 
-	 * unix timestamp = 0 if not. 
+	/*Returns latest transaction time if collection has entries, a DateTime starting at 
+	 * unix timestamp = 0 if not. If a collection that has no entries has the descending time sort 
+	 * applied to it, it will cause MongoDB to run out of memory and throw an error. This behavior was 
+	 * observed on 2016-01-12 with MongoDB 3.2. 
 	 */
 	public DateTime call() throws Exception {		
-		Iterator<Document> descendingTimeIterator = getDescendingTimeIterator();		
-		DateTime latestWalletTransactionTime = getLatestTransactionTime(descendingTimeIterator);
-		return latestWalletTransactionTime;
+		String collectionName = walletCollection.getCollectionName();
+		if(isCollectionInDatabase(collectionName)){
+			return getLatestTransactionTime();
+		} else{
+			return new DateTime(0);
+		}
 	}
 	
 	private Iterator<Document> getDescendingTimeIterator(){
-		MongoCollection<Document> collection = mongoCollectionConnection.getCollection();		
+		MongoCollection<Document> collection = walletCollection.getCollection();		
 		BasicDBObject descendingTimeSort = getDescendingTimeSort();
 		Iterator<Document> descendingTimeIterator = collection.find().sort(descendingTimeSort).iterator();
 		return descendingTimeIterator;
@@ -47,6 +49,12 @@ public class WalletExplorerCollectionLatestTimeQuerier implements Callable<DateT
 	
 	private BasicDBObject getDescendingTimeSort(){
 		return new BasicDBObject().append(dateKey, -1);
+	}
+	
+	private DateTime getLatestTransactionTime(){
+		Iterator<Document> descendingTimeIterator = getDescendingTimeIterator();		
+		DateTime latestWalletTransactionTime = getLatestTransactionTime(descendingTimeIterator);
+		return latestWalletTransactionTime;
 	}
 	
 	private DateTime getLatestTransactionTime(Document latestWalletTransactionDocument){	
