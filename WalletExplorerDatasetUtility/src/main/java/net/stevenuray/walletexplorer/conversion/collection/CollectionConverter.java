@@ -10,7 +10,7 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
 import net.stevenuray.walletexplorer.conversion.currency.WalletTransactionCurrencyConverter;
-import net.stevenuray.walletexplorer.persistence.timable.ProducerConsumerPair;
+import net.stevenuray.walletexplorer.persistence.DataPipeline;
 import net.stevenuray.walletexplorer.walletattribute.dto.ConvertedWalletTransaction;
 import net.stevenuray.walletexplorer.walletattribute.dto.WalletTransaction;
 
@@ -19,7 +19,7 @@ import org.joda.time.Interval;
 
 public class CollectionConverter {	
 	private final WalletTransactionCurrencyConverter converter;	
-	private final ProducerConsumerPair<WalletTransaction,ConvertedWalletTransaction> producerConsumerPair;
+	private final DataPipeline<WalletTransaction, ConvertedWalletTransaction> producerConsumerPair;
 	private final ConversionResults conversionResults = new ConversionResults();
 	private final ExecutorService executor;	
 	private final Logger log;
@@ -27,7 +27,7 @@ public class CollectionConverter {
 	private final int maxQueueSize;
 
 	public CollectionConverter(
-			ProducerConsumerPair<WalletTransaction,ConvertedWalletTransaction> producerConsumerPair,
+			DataPipeline<WalletTransaction, ConvertedWalletTransaction> producerConsumerPair,
 			WalletTransactionCurrencyConverter converter,int maxQueueSize,Interval conversionTimespan,
 			Logger log){			
 		this.producerConsumerPair = producerConsumerPair;
@@ -44,7 +44,7 @@ public class CollectionConverter {
 	}	
 
 	public ConversionResults convertCollection() throws ExecutionException, InterruptedException{			
-		Iterator<WalletTransaction> producerIterator = producerConsumerPair.getProducerIterator();
+		Iterator<WalletTransaction> producerIterator = producerConsumerPair.getData();
 		//TODO introduce more concurrency here.
 		while(producerIterator.hasNext()){				
 			QueueLoader<WalletTransaction> queueLoader = 

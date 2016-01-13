@@ -24,7 +24,8 @@ import net.stevenuray.walletexplorer.mongodb.converters.WalletTransactionSumDocu
 import net.stevenuray.walletexplorer.mongodb.queries.WalletExplorerCollectionEarliestTimeQuerier;
 import net.stevenuray.walletexplorer.persistence.DataConsumer;
 import net.stevenuray.walletexplorer.persistence.DataProducer;
-import net.stevenuray.walletexplorer.persistence.timable.ProducerConsumerPair;
+import net.stevenuray.walletexplorer.persistence.BasicProducerConsumerPair;
+import net.stevenuray.walletexplorer.persistence.DataPipeline;
 import net.stevenuray.walletexplorer.walletattribute.dto.ConvertedWalletTransaction;
 
 import org.bson.Document;
@@ -76,7 +77,7 @@ public class TransactionAggregator {
 	private static void aggregateCollection(
 			String walletName,WalletCollection unAggregatedCollection,Interval timespan,
 			AggregationPeriod aggregationPeriod){
-		ProducerConsumerPair<ConvertedWalletTransaction,WalletTransactionSum> producerConsumerPair = 
+		DataPipeline<ConvertedWalletTransaction, WalletTransactionSum> producerConsumerPair = 
 				getProducerConsumerPair(unAggregatedCollection,timespan,aggregationPeriod);
 		/*TODO Adjust timespan here so when the aggregate collection is empty on first creation 
 		 * the aggregator creates aggregation intervals from the first possible full interval instead of from 1970. 		 
@@ -169,15 +170,15 @@ public class TransactionAggregator {
 		return walletTransactionProducer;		
 	}
 	
-	private static ProducerConsumerPair<ConvertedWalletTransaction, WalletTransactionSum> getProducerConsumerPair(
+	private static DataPipeline<ConvertedWalletTransaction, WalletTransactionSum> getProducerConsumerPair(
 			WalletCollection unAggregatedCollection,Interval timespan,AggregationPeriod aggregationPeriod) {
 		DataProducer<ConvertedWalletTransaction> producer = 
 				getMongoDBConvertedWalletTransactions(unAggregatedCollection,timespan);
 		DataConsumer<WalletTransactionSum> consumer = 
 				getMongoDBAggregatedTransactionsConsumer(unAggregatedCollection,aggregationPeriod);
 		@SuppressWarnings({ "rawtypes", "unchecked" })
-		ProducerConsumerPair<ConvertedWalletTransaction, WalletTransactionSum> producerConsumerPair = 
-				new ProducerConsumerPair(producer,consumer);
+		DataPipeline<ConvertedWalletTransaction, WalletTransactionSum> producerConsumerPair = 
+				new BasicProducerConsumerPair(producer,consumer);
 		return producerConsumerPair;
 	}
 		

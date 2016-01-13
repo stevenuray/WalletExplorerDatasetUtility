@@ -25,7 +25,8 @@ import net.stevenuray.walletexplorer.mongodb.converters.WalletTransactionDocumen
 import net.stevenuray.walletexplorer.mongodb.queries.WalletExplorerCollectionLatestTimeQuerier;
 import net.stevenuray.walletexplorer.persistence.DataConsumer;
 import net.stevenuray.walletexplorer.persistence.DataProducer;
-import net.stevenuray.walletexplorer.persistence.timable.ProducerConsumerPair;
+import net.stevenuray.walletexplorer.persistence.BasicProducerConsumerPair;
+import net.stevenuray.walletexplorer.persistence.DataPipeline;
 import net.stevenuray.walletexplorer.walletattribute.dto.ConvertedWalletTransaction;
 import net.stevenuray.walletexplorer.walletattribute.dto.WalletTransaction;
 
@@ -119,7 +120,7 @@ public class TransactionConverter {
 		WalletTransactionCurrencyConverter currencyConverter = getTransactionConverter();
 		Interval conversionTimespan = getConversionTimespan(unconvertedCollection);		
 		LOG.info("Converting transactions from: "+conversionTimespan.getStart()+" to: "+conversionTimespan.getEnd());
-		ProducerConsumerPair<WalletTransaction,ConvertedWalletTransaction> producerConsumerPair = 
+		DataPipeline<WalletTransaction, ConvertedWalletTransaction> producerConsumerPair = 
 				getProducerConsumerPair(unconvertedCollection,conversionTimespan);
 		CollectionConverter collectionConverter = 
 				new CollectionConverter(producerConsumerPair,currencyConverter,
@@ -134,15 +135,15 @@ public class TransactionConverter {
 		return transactionConverter;
 	}
 	
-	private static ProducerConsumerPair<WalletTransaction,ConvertedWalletTransaction> getProducerConsumerPair(
+	private static DataPipeline<WalletTransaction, ConvertedWalletTransaction> getProducerConsumerPair(
 			WalletCollection unconvertedCollection,Interval conversionTimespan){
 		DataProducer<WalletTransaction> walletTransactionProducer = 
 				getMongoDBWalletTransactions(unconvertedCollection,conversionTimespan);
 		DataConsumer<WalletTransaction> walletTransactionConsumer = 
 				getMongoDBConvertedTransactionConsumer(unconvertedCollection);
 		@SuppressWarnings({ "rawtypes", "unchecked" })
-		ProducerConsumerPair<WalletTransaction,ConvertedWalletTransaction> producerConsumerPair = 
-				new ProducerConsumerPair(walletTransactionProducer,walletTransactionConsumer);
+		DataPipeline<WalletTransaction, ConvertedWalletTransaction> producerConsumerPair = 
+				new BasicProducerConsumerPair(walletTransactionProducer,walletTransactionConsumer);
 		return producerConsumerPair;		
 	}
 	

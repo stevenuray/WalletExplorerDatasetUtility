@@ -11,10 +11,12 @@ import net.stevenuray.walletexplorer.conversion.collection.QueueLoader;
 import net.stevenuray.walletexplorer.conversion.objects.Converter;
 import net.stevenuray.walletexplorer.conversion.objects.QueueConverterCallable;
 import net.stevenuray.walletexplorer.dto.BulkOperationResult;
+import net.stevenuray.walletexplorer.general.WalletExplorerConfig;
 import net.stevenuray.walletexplorer.persistence.DataConsumer;
+import net.stevenuray.walletexplorer.persistence.DataPipeline;
 import net.stevenuray.walletexplorer.persistence.PushToConsumerCallable;
-import net.stevenuray.walletexplorer.persistence.WalletNameDataProducerConsumerFactory;
-import net.stevenuray.walletexplorer.persistence.timable.ProducerConsumerPair;
+import net.stevenuray.walletexplorer.persistence.BasicWalletNameDataPipelineFactory;
+import net.stevenuray.walletexplorer.persistence.WalletNameDataPipelineFactory;
 
 import org.apache.log4j.Appender;
 import org.apache.log4j.BasicConfigurator;
@@ -26,10 +28,7 @@ import org.joda.time.Duration;
 
 public class Downloader<T,U> {
 	private static final Logger LOG = getLog();			
-	//TODO pass this in via constructor. 
-	private static final int MAX_QUEUE_SIZE = 1000;	
-	private static final int MAX_THREADS = 5;
-	private static final int MAXIMUM_INSERTS = 100;
+		
 	private static Logger getLog() {
 		BasicConfigurator.configure();		
 		Logger log = Logger.getLogger(Downloader.class.getName());
@@ -46,11 +45,11 @@ public class Downloader<T,U> {
 	private final Converter<T,U> converter;	
 	private int masterTotalInputTransactions = 0;
 	private int masterTotalInsertedTransactions = 0;
-	private final WalletNameDataProducerConsumerFactory<T,U> producerConsumerFactory;		
+	private final WalletNameDataPipelineFactory<T,U> producerConsumerFactory;		
 	private final Iterator<String> walletNames;
 	
 	public Downloader(
-			WalletNameDataProducerConsumerFactory<T,U> producerConsumerFactory,
+			WalletNameDataPipelineFactory<T,U> producerConsumerFactory,
 			Iterator<String> walletNames,Converter<T,U> converter){
 		this.producerConsumerFactory = producerConsumerFactory;
 		this.walletNames = walletNames;
@@ -78,14 +77,14 @@ public class Downloader<T,U> {
 
 	private void downloadWalletTransactions(String walletName) throws Exception {	
 		BulkOperationResult result = new BulkOperationResult();
-		ProducerConsumerPair<T,U> producerConsumerPair = producerConsumerFactory.getProducerConsumerPair(walletName);
+		DataPipeline<T, U> producerConsumerPair = producerConsumerFactory.getProducerConsumerPair(walletName);
 		DataConsumer<U> consumer = producerConsumerPair.getConsumer();		
-		Iterator<T> producerIterator = producerConsumerPair.getProducerIterator();
-		ExecutorService executor = Executors.newFixedThreadPool(MAX_THREADS);
+		Iterator<T> producerIterator = producerConsumerPair.getData();
+		ExecutorService executor = Executors.newFixedThreadPool(WalletExplorerConfig.MAX_THREADS);
 				
 		int transactionsDownloaded = 0; 
 		while(producerIterator.hasNext()){			
-			QueueLoader<T> queueLoader = new QueueLoader<T>(MAX_QUEUE_SIZE,producerIterator);
+			QueueLoader<T> queueLoader = new QueueLoader<T>(WalletExplorerConfig.MAX_QUEUE_LENGTH,producerIterator);
 			//Api restrictions dictate we can only call the API with one thread at a time. 
 			//Download -> Convert -> Consume
 			BlockingQueue<T> downloadedQueue = queueLoader.call();				
@@ -94,7 +93,7 @@ public class Downloader<T,U> {
 			
 			//Waiting for this future so an exception will be thrown if there is a problem. 
 			consumerFuture.get();		
-			transactionsDownloaded+=MAX_QUEUE_SIZE;
+			transactionsDownloaded+=WalletExplorerConfig.MAX_QUEUE_LENGTH;
 			LOG.info("Transactions Downloaded for "+walletName+": "+transactionsDownloaded);
 		}
 		
@@ -113,7 +112,7 @@ public class Downloader<T,U> {
 	private Future<BlockingQueue<U>> submitConversion(
 			ExecutorService executor,BlockingQueue<T> originalQueue){
 		QueueConverterCallable<T,U> converterCallable = 
-				new QueueConverterCallable<T,U>(converter,originalQueue,MAX_QUEUE_SIZE);
+				new QueueConverterCallable<T,U>(converter,originalQueue,WalletExplorerConfig.MAX_QUEUE_LENGTH);
 		Future<BlockingQueue<U>> convertedQueueFuture = executor.submit(converterCallable);
 		return convertedQueueFuture;
 	}

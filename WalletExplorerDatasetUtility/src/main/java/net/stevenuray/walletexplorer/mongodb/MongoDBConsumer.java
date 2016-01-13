@@ -86,10 +86,8 @@ public class MongoDBConsumer<T> implements TimableDataConsumer<T>{
 					destinationWalletCollection.getCollectionName()+"!");
 			e.printStackTrace();
 			return new DateTime(0);
-		}
-		//TODO DEVELOPMENT
-		return new DateTime(0);
-		//return latestTransactionTime;
+		}		
+		return latestTransactionTime;
 	}
 
 	private Document convert(T item){

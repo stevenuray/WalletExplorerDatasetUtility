@@ -14,16 +14,31 @@ import net.stevenuray.walletexplorer.walletattribute.dto.WalletTransaction;
  * @author Steven Uray  
  */
 public class WalletExplorerDownloadIterator implements Iterator<WalletTransaction>{
-	private int currentIndex = 0;
+	private int currentIndex = 0;	
 	private List<WalletTransaction> currentList;
 	private final WalletExplorerQuerier querier;
+	private final String walletName;
 	
 	public WalletExplorerDownloadIterator(String walletName,int maxQueueSize){
+		this.walletName = walletName;
 		querier = new WalletExplorerQuerier(walletName);			
 	}
-	
+
 	public WalletExplorerDownloadIterator(String walletName,int maxQueueSize,DateTime endTime){
+		this.walletName = walletName;
 		querier = new WalletExplorerQuerier(walletName,endTime);
+	}
+	
+	public DateTime getEarliestTime() {
+		return querier.getEarliestTime();
+	}
+	
+	public DateTime getLatestTime() {
+		return querier.getLatestTime();
+	}
+
+	public String getWalletName() {
+		return walletName;
 	}
 	
 	public boolean hasNext() {
@@ -33,7 +48,7 @@ public class WalletExplorerDownloadIterator implements Iterator<WalletTransactio
 			return false;
 		}
 	}
-
+	
 	/**
 	 * @throws FailureToRetrieveDataException - If there was a problem getting data from WalletExplorer. 
 	 * This is most commonly due to networking errors. 
@@ -53,26 +68,18 @@ public class WalletExplorerDownloadIterator implements Iterator<WalletTransactio
 			return getNextWalletTransactionFromListAndAdjustIndex();
 		}		
 	}
-	
+
 	private WalletTransaction getNextWalletTransactionFromListAndAdjustIndex(){				
 		WalletTransaction nextTransaction = currentList.get(currentIndex);
 		currentIndex++;
 		return nextTransaction;		
 	}
-	
+
 	private void tryToGetNewListOfDownloadedTransactionsOrThrowException(){
 		try{
 			currentList = querier.getNextWalletTransactions();
 		} catch(Exception e){
 			throw new FailureToRetrieveDataException();
 		}
-	}
-
-	public DateTime getEarliestTime() {
-		return querier.getEarliestTime();
-	}
-
-	public DateTime getLatestTime() {
-		return querier.getLatestTime();
 	}
 }

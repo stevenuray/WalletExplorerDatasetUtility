@@ -4,7 +4,6 @@ import java.util.Iterator;
 
 import org.joda.time.DateTime;
 
-import net.stevenuray.walletexplorer.persistence.DataProducer;
 import net.stevenuray.walletexplorer.persistence.timable.TimableDataProducer;
 import net.stevenuray.walletexplorer.walletattribute.dto.WalletTransaction;
 
@@ -13,12 +12,15 @@ import net.stevenuray.walletexplorer.walletattribute.dto.WalletTransaction;
  */
 public class WalletExplorerDownloader implements TimableDataProducer<WalletTransaction>{
 	private final WalletExplorerDownloadIterator downloadIterator;
+	private final int maxQueueSize;
 	
 	public WalletExplorerDownloader(String walletName,int maxQueueSize){
+		this.maxQueueSize = maxQueueSize;
 		this.downloadIterator = new WalletExplorerDownloadIterator(walletName,maxQueueSize);
 	}
 	
 	public WalletExplorerDownloader(String walletName,int maxQueueSize,DateTime endTime){
+		this.maxQueueSize = maxQueueSize;
 		this.downloadIterator = new WalletExplorerDownloadIterator(walletName,maxQueueSize,endTime);
 	}
 	
@@ -35,7 +37,7 @@ public class WalletExplorerDownloader implements TimableDataProducer<WalletTrans
 	}
 
 	public TimableDataProducer<WalletTransaction> fromTime(DateTime earliestTime) {
-		// TODO Auto-generated method stub
-		return null;
+		String walletName = downloadIterator.getWalletName();
+		return new WalletExplorerDownloader(walletName,maxQueueSize,earliestTime);
 	}
 }

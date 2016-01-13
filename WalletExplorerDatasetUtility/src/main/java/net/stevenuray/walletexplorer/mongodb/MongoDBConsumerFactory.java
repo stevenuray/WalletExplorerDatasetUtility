@@ -10,8 +10,9 @@ import net.stevenuray.walletexplorer.conversion.objects.Converter;
 import net.stevenuray.walletexplorer.persistence.DataConsumer;
 import net.stevenuray.walletexplorer.persistence.WalletNameDataConsumerFactory;
 import net.stevenuray.walletexplorer.persistence.timable.TimableDataConsumer;
+import net.stevenuray.walletexplorer.persistence.timable.TimableWalletNameDataConsumerFactory;
 
-public class MongoDBConsumerFactory<T> implements WalletNameDataConsumerFactory<T>{
+public class MongoDBConsumerFactory<T> implements TimableWalletNameDataConsumerFactory<T>{
 	private final Converter<T,Document> converter;
 	
 	public MongoDBConsumerFactory(Converter<T,Document> converter){

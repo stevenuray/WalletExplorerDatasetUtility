@@ -7,7 +7,7 @@ import net.stevenuray.walletexplorer.aggregator.aggregationperiod.AggregationPer
 import net.stevenuray.walletexplorer.aggregator.aggregationperiod.AggregationPeriodListBuilder;
 import net.stevenuray.walletexplorer.mongodb.WalletCollection;
 import net.stevenuray.walletexplorer.persistence.DataConsumer;
-import net.stevenuray.walletexplorer.persistence.timable.ProducerConsumerPair;
+import net.stevenuray.walletexplorer.persistence.DataPipeline;
 import net.stevenuray.walletexplorer.walletattribute.dto.ConvertedWalletTransaction;
 
 import org.joda.time.DateTime;
@@ -18,12 +18,12 @@ public class CollectionAggregator {
 	private int aggregations = 0;
 	private final List<Interval> ascendingPeriodList;	
 	private WalletTransactionSumBuilder currentAggregateBuilder;
-	private final ProducerConsumerPair<ConvertedWalletTransaction,WalletTransactionSum> producerConsumerPair;
+	private final DataPipeline<ConvertedWalletTransaction, WalletTransactionSum> producerConsumerPair;
 	private int transactions = 0;
 	private final String walletName;
 	
 	public CollectionAggregator(
-			ProducerConsumerPair<ConvertedWalletTransaction,WalletTransactionSum> producerConsumerPair,
+			DataPipeline<ConvertedWalletTransaction, WalletTransactionSum> producerConsumerPair,
 			String walletName,WalletCollection unAggregatedCollection,
 			AggregationPeriod aggregationPeriod,Interval timespan,int maxConversionQueueSize) {
 		this.producerConsumerPair = producerConsumerPair;
@@ -37,7 +37,7 @@ public class CollectionAggregator {
 		AggregationResults aggregationResults = new AggregationResults();
 		//Note: this assumes the Iterator<ConvertedWalletTransaction> is in time-ascending order!
 		//TODO make this more explicit
-		Iterator<ConvertedWalletTransaction> convertedTransactionIterator = producerConsumerPair.getProducerIterator();		
+		Iterator<ConvertedWalletTransaction> convertedTransactionIterator = producerConsumerPair.getData();		
 		while(convertedTransactionIterator.hasNext()){
 			ConvertedWalletTransaction nextTransaction = convertedTransactionIterator.next();
 			aggregate(nextTransaction);

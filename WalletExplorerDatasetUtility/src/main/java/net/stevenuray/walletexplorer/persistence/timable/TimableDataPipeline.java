@@ -1,5 +1,9 @@
 package net.stevenuray.walletexplorer.persistence.timable;
 
+import java.util.Iterator;
+
+import net.stevenuray.walletexplorer.persistence.DataPipeline;
+
 import org.joda.time.DateTime;
 
 /**Special ProducerConsumerPair that uses the TimableExtension to DataProducer when 
@@ -10,7 +14,7 @@ import org.joda.time.DateTime;
  * @param <T>
  * @param <U>
  */
-public class TimableProducerConsumerPair<T,U> {
+public class TimableDataPipeline<T,U> implements DataPipeline<T,U>{
 	private final TimableDataProducer<T> producer;
 	private final TimableDataConsumer<U> consumer;
 	
@@ -22,17 +26,29 @@ public class TimableProducerConsumerPair<T,U> {
 		return consumer;
 	}
 		
-	public TimableProducerConsumerPair<T,U> getTimableProducerConsumerPair(){
-		return new TimableProducerConsumerPair<T,U>(producer,consumer);		
+	public TimableDataPipeline<T,U> getTimableProducerConsumerPair(){
+		return new TimableDataPipeline<T,U>(producer,consumer);		
 	}
 	
 	/**Note this constructor will change the producer in response to what data the consumer says it needs.	 
 	 * @param producer
 	 * @param consumer
 	 */
-	public TimableProducerConsumerPair(TimableDataProducer<T> producer,TimableDataConsumer<U> consumer) {
-		DateTime latestConsumerTime = consumer.getEarliestTime();		
+	public TimableDataPipeline(TimableDataProducer<T> producer,TimableDataConsumer<U> consumer) {
+		DateTime latestConsumerTime = consumer.getLatestTime();		
 		this.producer = producer.fromTime(latestConsumerTime);
 		this.consumer = consumer;
+	}
+
+	public void consume(Iterator<U> iterator) {
+		consumer.consume(iterator);		
+	}
+
+	public void consume(U u) {
+		consumer.consume(u);		
+	}
+
+	public Iterator<T> getData() {
+		return producer.getData();
 	}
 }

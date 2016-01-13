@@ -14,9 +14,13 @@ import net.stevenuray.walletexplorer.downloader.WalletExplorerAPIConfigSingleton
 import net.stevenuray.walletexplorer.downloader.WalletExplorerQuerierFactory;
 import net.stevenuray.walletexplorer.mongodb.MongoDBConsumerFactory;
 import net.stevenuray.walletexplorer.mongodb.converters.WalletTransactionDocumentConverter;
+import net.stevenuray.walletexplorer.persistence.DataPipelineFactories;
 import net.stevenuray.walletexplorer.persistence.WalletNameDataConsumerFactory;
-import net.stevenuray.walletexplorer.persistence.WalletNameDataProducerConsumerFactory;
+import net.stevenuray.walletexplorer.persistence.BasicWalletNameDataPipelineFactory;
 import net.stevenuray.walletexplorer.persistence.WalletNameDataProducerFactory;
+import net.stevenuray.walletexplorer.persistence.timable.BasicTimableWalletNameDataPipelineFactory;
+import net.stevenuray.walletexplorer.persistence.timable.TimableWalletNameDataConsumerFactory;
+import net.stevenuray.walletexplorer.persistence.timable.TimableWalletNameDataProducerFactory;
 import net.stevenuray.walletexplorer.walletattribute.dto.WalletTransaction;
 
 import org.apache.log4j.Appender;
@@ -31,7 +35,7 @@ import org.joda.time.DateTime;
 public class TransactionDownloader {
 	private static final Logger LOG = getLog();	
 	//This has a significant effect on memory use. Larger queues make the program faster, but consumer more memory.
-	private static final int MAX_QUEUE_LENGTH = 1024;
+	
 	
 	public static void main(String[] args) {
 		disableMongoLogInfo();		
@@ -59,15 +63,9 @@ public class TransactionDownloader {
 		walletExplorerDownloader.downloadAndSaveAllWalletTransactions();
 	}
 	
-	private static WalletNameDataConsumerFactory<WalletTransaction> getConsumerFactory() {
-		Converter<WalletTransaction,Document> converter = new WalletTransactionDocumentConverter();
-		MongoDBConsumerFactory<WalletTransaction> factory = new MongoDBConsumerFactory<WalletTransaction>(converter);
-		return factory;
-	}
-
 	private static Downloader<WalletTransaction,WalletTransaction> getDownloader(Iterator<String> walletNames){
-		WalletNameDataProducerConsumerFactory<WalletTransaction,WalletTransaction> producerConsumerFactory = 
-				getProducerConsumerFactory();
+		BasicTimableWalletNameDataPipelineFactory<WalletTransaction,WalletTransaction> producerConsumerFactory = 
+				DataPipelineFactories.getWalletExplorerToMongoDB();
 		DirectConverter<WalletTransaction,WalletTransaction> directConverter = 
 				new DirectConverter<WalletTransaction,WalletTransaction>();
 		Downloader<WalletTransaction,WalletTransaction> walletExplorerDownloader = 
@@ -89,18 +87,6 @@ public class TransactionDownloader {
 		return log;
 	}
 	
-	private static WalletNameDataProducerConsumerFactory<WalletTransaction, WalletTransaction> 
-		getProducerConsumerFactory() {
-		WalletNameDataConsumerFactory<WalletTransaction> consumerFactory = getConsumerFactory();
-		WalletNameDataProducerFactory<WalletTransaction> producerFactory = getProducerFactory();
-		return new WalletNameDataProducerConsumerFactory<WalletTransaction,WalletTransaction>(
-				producerFactory,consumerFactory);
-	}
-	
-	private static WalletNameDataProducerFactory<WalletTransaction> getProducerFactory() {
-		WalletNameDataProducerFactory<WalletTransaction> factory = new WalletExplorerQuerierFactory(MAX_QUEUE_LENGTH);
-		return factory;
-	}
 	
 	//TODO refactor this to a WalletName factory or something similar. 
 	private static Iterator<String> getWalletNames() throws Exception {	
