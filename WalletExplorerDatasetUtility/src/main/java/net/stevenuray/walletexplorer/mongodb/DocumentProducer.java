@@ -41,7 +41,7 @@ public class DocumentProducer implements DataProducer<Document>{
 		MongoCollection<Document> collection = walletCollection.getCollection();		
 		BasicDBObject ascendingTimeSort = getAscendingTimeSort();
 		BasicDBObject transactionsInQueryTimespan = getTransactionsInQueryTimespan();
-		FindIterable<Document> findIterable = collection.find(transactionsInQueryTimespan).sort(ascendingTimeSort);
+		FindIterable<Document> findIterable = collection.find(transactionsInQueryTimespan).sort(ascendingTimeSort);			
 		Iterator<Document> cursor = findIterable.iterator();		
 		AscendingTimeIterator<Document> ascendingTimeCursor = new AscendingTimeIteratorInstance<Document>(cursor);
 		return ascendingTimeCursor;

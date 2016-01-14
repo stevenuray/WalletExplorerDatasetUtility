@@ -59,14 +59,15 @@ public class Downloader<T,U> {
 	public void downloadAndSaveAllWalletTransactions() {		
 		int walletsDownloaded = 0; 
 		while (walletNames.hasNext()) {
-			try {				
-				String nextWalletName = walletNames.next();
+			String nextWalletName = walletNames.next();
+			try {								
 				LOG.info("Downloading Wallet: "+nextWalletName);
 				downloadWalletTransactions(nextWalletName);
 				walletsDownloaded++;
 			} catch (Exception e) {
+				LOG.error("Failed to download wallet: "+nextWalletName);
 				e.printStackTrace();
-				break;
+				continue;
 			}
 		}
 		
@@ -77,9 +78,9 @@ public class Downloader<T,U> {
 
 	private void downloadWalletTransactions(String walletName) throws Exception {	
 		BulkOperationResult result = new BulkOperationResult();
-		DataPipeline<T, U> producerConsumerPair = producerConsumerFactory.getProducerConsumerPair(walletName);
-		DataConsumer<U> consumer = producerConsumerPair.getConsumer();		
-		Iterator<T> producerIterator = producerConsumerPair.getData();
+		DataPipeline<T, U> dataPipeline = producerConsumerFactory.getProducerConsumerPair(walletName);
+		DataConsumer<U> consumer = dataPipeline.getConsumer();		
+		Iterator<T> producerIterator = dataPipeline.getData();
 		ExecutorService executor = Executors.newFixedThreadPool(WalletExplorerConfig.MAX_THREADS);
 				
 		int transactionsDownloaded = 0; 

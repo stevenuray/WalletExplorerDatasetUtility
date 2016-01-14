@@ -4,6 +4,9 @@ import net.stevenuray.walletexplorer.persistence.DataProducer;
 
 import org.joda.time.DateTime;
 
+/*TODO add a onClose() or similar function so database connections or 
+ * mongo cursors can be closed when users are done with the data they provide. 
+ */
 public interface TimableDataProducer<T> extends DataProducer<T> {
 	public DateTime getEarliestTime() throws TimeNotFoundException;
 	public DateTime getLatestTime() throws TimeNotFoundException;

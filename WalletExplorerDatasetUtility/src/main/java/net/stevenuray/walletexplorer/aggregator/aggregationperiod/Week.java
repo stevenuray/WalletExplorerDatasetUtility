@@ -27,6 +27,7 @@ public class Week implements AggregationPeriod {
 		return nextCompleteEndTime;
 	}
 
+	@SuppressWarnings("unused")
 	private DateTime getNextCompleteStartTime(DateTime time) {
 		int startOfMonthYear = time.getYear();
 		int monthOfYear = time.getMonthOfYear();
@@ -39,5 +40,4 @@ public class Week implements AggregationPeriod {
 		return nextCompleteStartTime;
 		*/
 	}
-
 }

@@ -1,8 +1,6 @@
 package net.stevenuray.walletexplorer.executables;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -16,6 +14,7 @@ import net.stevenuray.walletexplorer.categories.ManualCategories;
 import net.stevenuray.walletexplorer.categories.WalletCategory;
 import net.stevenuray.walletexplorer.categories.WalletCategoryTransactionSum;
 import net.stevenuray.walletexplorer.categories.WalletCategoryTransactionSums;
+import net.stevenuray.walletexplorer.general.WalletExplorerConfig;
 import net.stevenuray.walletexplorer.mongodb.MongoDBCategoryProvider;
 import net.stevenuray.walletexplorer.views.TransactionAggregateReviewGraph;
 import net.stevenuray.walletexplorer.walletattribute.dto.ConvertedWalletTransaction;
@@ -28,26 +27,30 @@ import javafx.scene.Scene;
 import javafx.scene.chart.LineChart;
 import javafx.stage.Stage;
 
-public class CategoryReviewer extends Application{	
-	private static final int MAX_CONVERSION_QUEUE_SIZE = 10000; 
-	private static final int MAX_THREADS = 10;
+public class CategoryReviewer extends Application{		
 	private static WalletCategoryTransactionSums transactionSums;
 	
 	public static void main(String[] args) {		
-		setMongoLoggerLevel();			
-		WalletCategory category = ManualCategories.getGamblingServices();
-		AggregationTimespan timespan = getAggregationTimespan();		
+		setMongoLoggerLevel();					
+		setCategoryTransactionSumsOrQuit();
+		//printTransactionSumsToConsole(transactionSums);		
+		launch(args);
+	}
+	
+	private static void setCategoryTransactionSumsOrQuit(){
+		WalletCategory category = ManualCategories.getPools();
+		AggregationTimespan timespan = getAggregationTimespan();
 		try {
 			setWalletCategoryTransactionSums(category,timespan);
 		} catch (InterruptedException e){
 			//TODO DEVELOPMENT
 			System.out.println("Category Reviewer was interrupted before it could finish reviewing!");
+			System.exit(0);
 		} catch(ExecutionException e) {			
 			e.printStackTrace();
 			System.out.println("Category Reviewer encountered an exception and cannot review!");
+			System.exit(0);
 		}
-		//printTransactionSumsToConsole(transactionSums);		
-		launch(args);
 	}
 	
 	private static void setMongoLoggerLevel(){
@@ -67,8 +70,9 @@ public class CategoryReviewer extends Application{
 
 	private static CategoryAggregator getCategoryAggregator(WalletCategory walletCategory) {		
 		CategoryProvider<ConvertedWalletTransaction> categoryProvider = getMongoCategoryProvider();
+		int maxQueueSize = WalletExplorerConfig.MAX_QUEUE_LENGTH;
 		CategoryAggregator categoryAggregator = 
-				new CategoryAggregator(walletCategory,categoryProvider,MAX_CONVERSION_QUEUE_SIZE);
+				new CategoryAggregator(walletCategory,categoryProvider,maxQueueSize);
 		return categoryAggregator;
 	}
 	

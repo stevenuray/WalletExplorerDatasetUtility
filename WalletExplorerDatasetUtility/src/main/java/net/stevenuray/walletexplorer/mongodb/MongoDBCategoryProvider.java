@@ -17,14 +17,18 @@ import org.joda.time.Interval;
 import com.mongodb.MongoClient;
 import com.mongodb.client.MongoDatabase;
 
+/*TODO refactor this to a MongoDB data producer factory or 
+ * replace uses of this class with a MongoDB data producer factory.
+ * This is necessary to abstract the data layer. 
+ */
 public class MongoDBCategoryProvider implements CategoryProvider<ConvertedWalletTransaction> {		
 	public Iterator<DataProducer<ConvertedWalletTransaction>> getDataProducers(
 			WalletCategory walletCategory,Interval timespan) {		
 		List<DataProducer<ConvertedWalletTransaction>> dataProducersList = 
 				new ArrayList<DataProducer<ConvertedWalletTransaction>>();
 		Iterator<String> walletNameIterator = walletCategory.getWalletNameIterator();
-		while(walletNameIterator.hasNext()){
-			String nextWalletName = walletNameIterator.next();
+		while(walletNameIterator.hasNext()){			
+			String nextWalletName = walletNameIterator.next();		
 			DataProducer<ConvertedWalletTransaction> dataProducer = getDataProducer(nextWalletName,timespan);
 			dataProducersList.add(dataProducer);
 		}
