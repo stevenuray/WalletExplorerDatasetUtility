@@ -2,9 +2,8 @@ package net.stevenuray.walletexplorer.downloader;
 
 import java.util.Iterator;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-
 import org.joda.time.DateTime;
+import org.joda.time.Interval;
 
 import net.stevenuray.walletexplorer.walletattribute.dto.WalletTransaction;
 
@@ -19,14 +18,15 @@ public class WalletExplorerDownloadIterator implements Iterator<WalletTransactio
 	private final WalletExplorerQuerier querier;
 	private final String walletName;
 	
-	public WalletExplorerDownloadIterator(String walletName,int maxQueueSize){
+	/**	 
+	 * @param walletName - Wallet name of the desired blockchain entity, i.e Bitstamp, Bitfinex, etc.  
+	 * @param maxQueueSize - The maximum size of the download queue. Larger means faster but more memory.
+	 * @param timespanLimit - Transactions must be within this timespan to be returned. 
+	 * The actual dataset may have a different timespan. 
+	 */
+	public WalletExplorerDownloadIterator(String walletName,int maxQueueSize,Interval timespanLimit){
 		this.walletName = walletName;
-		querier = new WalletExplorerQuerier(walletName);			
-	}
-
-	public WalletExplorerDownloadIterator(String walletName,int maxQueueSize,DateTime endTime){
-		this.walletName = walletName;
-		querier = new WalletExplorerQuerier(walletName,endTime);
+		querier = new WalletExplorerQuerier(walletName,timespanLimit);
 	}
 	
 	public DateTime getEarliestTime() {

@@ -10,6 +10,7 @@ import net.stevenuray.walletexplorer.conversion.objects.Converter;
 import net.stevenuray.walletexplorer.walletattribute.dto.WalletTransaction;
 
 import org.joda.time.DateTime;
+import org.joda.time.Interval;
 
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
@@ -29,26 +30,18 @@ public class WalletExplorerQuerier{
 	private static final int MAX_CONNECTION_ATTEMPTS = 3;	
 	private static final int MAX_TRANSACTIONS_PER_QUERY = 100;
 	private boolean downloading = true; 
-	private DateTime endTime;
+	private Interval timespanLimit;
 	private long queryFromCount = 0;
 	private long txsCount;
 	private final String walletName;
-	
-	/**Queries for transactions regardless of their time. 	 
-	 * @param walletName
-	 */
-	public WalletExplorerQuerier(String walletName){
-		this.walletName = walletName;
-		this.endTime = new DateTime(0);				
-	}
-	
+		
 	/**Does not query for, or return, transactions before a given time. Useful for non-redundant downloading.	 
-	 * @param walletName
-	 * @param endTime
+	 * @param walletName - Wallet name of the desired blockchain entity, i.e Bitstamp, Bitfinex, etc.  
+	 * @param timespanLimit - Transactions must be within this timespan to be returned.  
 	 */
-	public WalletExplorerQuerier(String walletName,DateTime endTime){
+	public WalletExplorerQuerier(String walletName,Interval timespanLimit){
 		this.walletName = walletName;
-		this.endTime = endTime;		
+		this.timespanLimit = timespanLimit;		
 	}
 	
 	public DateTime getEarliestTime() {
@@ -72,13 +65,22 @@ public class WalletExplorerQuerier{
 		return latestTime;			
 	}
 	
+	/*Note this object calls WalletExplorer in time ascending order of transactions. 
+	 * If the timespanLimit of this object is quite early it will need to take a long time 
+	 * to return the first object.	
+	 */
 	public List<WalletTransaction> getNextWalletTransactions() throws Exception{
 		MultivaluedMapImpl queryParams = getWalletExplorerQueryParams(walletName,queryFromCount);			
 		JSONObject latestQueryJsonObject = tryToGetQueryResponse(queryParams);	
 		updateCountersAfterResponse(latestQueryJsonObject);
-		List<WalletTransaction> walletTransactions = convertWalletTransactionsFromResponse(latestQueryJsonObject);
-		downloading = shouldContinueDownloading(latestQueryJsonObject);
-		return walletTransactions;
+		if(isLatestResponseEqualToOrAfterStartTime(latestQueryJsonObject)){
+			List<WalletTransaction> walletTransactions = convertWalletTransactionsFromResponse(latestQueryJsonObject);
+			downloading = shouldContinueDownloading(latestQueryJsonObject);
+			return walletTransactions;
+		} else{
+			//Keep downloading until transactions are equal to or after the start limit.			
+			return getNextWalletTransactions();
+		}
 	}
 	
 	public boolean isDownloading() {
@@ -185,13 +187,35 @@ public class WalletExplorerQuerier{
 		for(int k = 0; k < subWalletTransactions.size(); k++){			
 			JSONObject subWalletTransaction = (JSONObject) subWalletTransactions.get(k);			
 			DateTime currentTime = getTimeOfSubWalletTransaction(subWalletTransaction);			
-			if(currentTime.isBefore(endTime)){					
+			if(currentTime.isBefore(timespanLimit.getEnd())){					
 				return true;
 			}
 		}
 		
 		return false;
 	}
+		
+	private boolean isLatestResponseEqualToOrAfterStartTime(JSONObject latestQueryJsonObject){
+		JSONArray subWalletTransactions = getSubWalletTransactionsFromResponse(latestQueryJsonObject);
+		
+		/*Note: This loop works in every case except one, if transactions for a wallet name
+		 * are not fully downloaded on their initial run, they will never be downloaded!
+		 * A quick solution to this is to delete the collection if there is an error and hope
+		 * it downloads properly on the next run. 
+		 */			
+		for(int k = 0; k < subWalletTransactions.size(); k++){			
+			JSONObject subWalletTransaction = (JSONObject) subWalletTransactions.get(k);			
+			DateTime currentTime = getTimeOfSubWalletTransaction(subWalletTransaction);		
+			if(currentTime.isEqual(timespanLimit.getStart())){
+				return true;
+			}
+			if(currentTime.isAfter(timespanLimit.getStart())){					
+				return true;
+			}
+		}
+		
+		return false;
+	}	
 	
 	private void setTxsCount() {
 		MultivaluedMapImpl queryParams = getWalletExplorerQueryParams(walletName,0);	
@@ -227,6 +251,7 @@ public class WalletExplorerQuerier{
 	private void throwWalletNotFoundExceptionIfNecessary(JSONObject responseJson) 
 			throws WalletNotFoundException{
 		if (!Boolean.valueOf(responseJson.getString("found"))) {
+			@SuppressWarnings("unused")
 			String errorMessage = "Wallet " + walletName + " not found";
 			//TODO use errorMessage in a log somehow
 			throw new WalletNotFoundException();

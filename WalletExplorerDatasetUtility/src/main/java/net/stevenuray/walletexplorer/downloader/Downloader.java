@@ -15,7 +15,6 @@ import net.stevenuray.walletexplorer.general.WalletExplorerConfig;
 import net.stevenuray.walletexplorer.persistence.DataConsumer;
 import net.stevenuray.walletexplorer.persistence.DataPipeline;
 import net.stevenuray.walletexplorer.persistence.PushToConsumerCallable;
-import net.stevenuray.walletexplorer.persistence.BasicWalletNameDataPipelineFactory;
 import net.stevenuray.walletexplorer.persistence.WalletNameDataPipelineFactory;
 
 import org.apache.log4j.Appender;

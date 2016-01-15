@@ -5,9 +5,6 @@ import java.util.Iterator;
 import java.util.List;
 
 import net.stevenuray.walletexplorer.conversion.objects.Converter;
-import net.stevenuray.walletexplorer.mongodb.queries.WalletExplorerCollectionEarliestTimeQuerier;
-import net.stevenuray.walletexplorer.mongodb.queries.WalletExplorerCollectionLatestTimeQuerier;
-import net.stevenuray.walletexplorer.persistence.DataConsumer;
 import net.stevenuray.walletexplorer.persistence.timable.TimableDataConsumer;
 import net.stevenuray.walletexplorer.persistence.timable.TimeNotFoundException;
 
@@ -19,19 +16,18 @@ import com.mongodb.MongoBulkWriteException;
 import com.mongodb.MongoWriteException;
 import com.mongodb.client.MongoCollection;
 
-public class MongoDBConsumer<T> implements TimableDataConsumer<T>{
+public class MongoDBConsumer<T> extends MongoDBPipelineComponent<T> implements TimableDataConsumer<T>{
 	private final Converter<T,Document> converter;
-	private final WalletCollection destinationWalletCollection;
 	
-	public MongoDBConsumer(WalletCollection destinationWalletCollection,Converter<T,Document> converter){
-		this.destinationWalletCollection = destinationWalletCollection;
+	public MongoDBConsumer(WalletCollection walletCollection,Converter<T,Document> converter){
+		super(walletCollection);
 		this.converter = converter;
 	}
 	
 	public void consume(Iterator<T> producer) {			
 		List<T> list = IteratorUtils.toList(producer);
 		List<Document> convertedList = getConvertedList(list);
-		MongoCollection<Document> mongoCollection = destinationWalletCollection.getCollection();
+		MongoCollection<Document> mongoCollection = super.getWalletCollection().getCollection();
 		try{
 			mongoCollection.insertMany(convertedList);
 		} catch(MongoBulkWriteException e){			
@@ -47,7 +43,7 @@ public class MongoDBConsumer<T> implements TimableDataConsumer<T>{
 	
 	public void consume(T item) {
 		Document convertedDocument = convert(item);
-		MongoCollection<Document> mongoCollection = destinationWalletCollection.getCollection();		 
+		MongoCollection<Document> mongoCollection = super.getWalletCollection().getCollection();		 
 		try{
 			mongoCollection.insertOne(convertedDocument);
 		} catch(MongoWriteException e){			
@@ -60,30 +56,13 @@ public class MongoDBConsumer<T> implements TimableDataConsumer<T>{
 	}
 	
 	public DateTime getEarliestTime() throws TimeNotFoundException {
-		WalletExplorerCollectionEarliestTimeQuerier earliestTimeQuerier = 
-				new WalletExplorerCollectionEarliestTimeQuerier(destinationWalletCollection);
-		
-		DateTime earliestTransactionTime = null;
-		try{
-			earliestTransactionTime = earliestTimeQuerier.call();
-		} catch(Exception e){
-			throw new TimeNotFoundException();
-		}
-		return earliestTransactionTime;
-	}	
+		return super.tryToGetEarliestTime();
+	}
 	
 	public DateTime getLatestTime() throws TimeNotFoundException {
-		WalletExplorerCollectionLatestTimeQuerier latestTimeQuerier =
-				new WalletExplorerCollectionLatestTimeQuerier(destinationWalletCollection);
-		DateTime latestTransactionTime = null;		 
-		try {
-			latestTransactionTime = latestTimeQuerier.call();
-		} catch (Exception e) {			
-			throw new TimeNotFoundException();
-		}		
-		return latestTransactionTime;
-	}
-
+		return super.tryToGetLatestTime();
+	}	
+			
 	private Document convert(T item){
 		Document nextDocument = converter.to(item);
 		return nextDocument;
