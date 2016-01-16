@@ -4,6 +4,6 @@
 
 <AnchorPane xmlns:fx="http://javafx.com/fxml/1">
 	.chart {
-		-fx-padding: 10px;
+		-fx-padding: 100px;
 	}
 </AnchorPane>

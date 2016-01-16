@@ -460,3 +460,6 @@ BTCC.com-old
 BTCC.com-old2
 AlphaBayMarket
 AlphaBayMarket-old
+GermanPlazaMarket
+DoctorDMarket
+GreenRoadMarket

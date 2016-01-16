@@ -189,6 +189,12 @@ public class ManualCategories {
 		names.add("MiddleEarthMarketplace");
 		names.add("MrNiceGuyMarket");
 		names.add("BabylonMarket");		
+		names.add("AlphaBayMarket");
+		names.add("AlphaBayMarket-old");
+		names.add("GermanPlazaMarket");
+		names.add("DoctorDMarket");
+		names.add("GreenRoadMarket");
+		names.add("BlueSkyMarketplace");
 		return names;
 	}
 

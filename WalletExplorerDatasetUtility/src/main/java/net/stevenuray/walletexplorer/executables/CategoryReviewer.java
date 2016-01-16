@@ -1,7 +1,6 @@
 package net.stevenuray.walletexplorer.executables;
 
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -14,7 +13,6 @@ import net.stevenuray.walletexplorer.categories.ManualCategories;
 import net.stevenuray.walletexplorer.categories.WalletCategory;
 import net.stevenuray.walletexplorer.categories.WalletCategoryTransactionSum;
 import net.stevenuray.walletexplorer.categories.WalletCategoryTransactionSums;
-import net.stevenuray.walletexplorer.general.WalletExplorerConfig;
 import net.stevenuray.walletexplorer.mongodb.MongoDBCategoryProvider;
 import net.stevenuray.walletexplorer.persistence.DataPipelines;
 import net.stevenuray.walletexplorer.persistence.timable.TimableWalletNameDataProducerFactory;
@@ -40,7 +38,7 @@ public class CategoryReviewer extends Application{
 	}
 	
 	private static void setCategoryTransactionSumsOrQuit(){
-		WalletCategory category = ManualCategories.getGamblingServices();
+		WalletCategory category = ManualCategories.getPools();
 		AggregationTimespan timespan = getAggregationTimespan();
 		try {
 			setWalletCategoryTransactionSums(category,timespan);
@@ -71,11 +69,6 @@ public class CategoryReviewer extends Application{
 				DataPipelines.getMongoDBConvertedProducer();
 		CategoryAggregator categoryAggregator = new CategoryAggregator(walletCategory,producerFactory);
 		return categoryAggregator;
-	}
-	
-	private static CategoryProvider<ConvertedWalletTransaction> getMongoCategoryProvider() {		
-		MongoDBCategoryProvider mongoDBCategoryProvider = new MongoDBCategoryProvider();
-		return mongoDBCategoryProvider;
 	}
 
 	private static Interval getMaxTimespan() {

@@ -25,6 +25,8 @@ public class FactoryWalletCategoryTransactionSumsBuilderFiller implements
 	public WalletCategoryTransactionSums getSums() {
 		while(walletNames.hasNext()){
 			String nextWalletName = walletNames.next();
+			//TODO replace with a Log4j Logger. 	
+			System.out.println("Aggregating wallet: "+nextWalletName);
 			addTransactionsToBuilder(nextWalletName);
 		}
 		WalletCategoryTransactionSums sums = builder.build();
