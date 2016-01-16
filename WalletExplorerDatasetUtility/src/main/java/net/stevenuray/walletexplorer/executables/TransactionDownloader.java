@@ -34,8 +34,6 @@ import org.joda.time.DateTime;
 
 public class TransactionDownloader {
 	private static final Logger LOG = getLog();	
-	//This has a significant effect on memory use. Larger queues make the program faster, but consumer more memory.
-	
 	
 	public static void main(String[] args) {
 		disableMongoLogInfo();		

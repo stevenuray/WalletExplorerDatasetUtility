@@ -33,14 +33,12 @@ import org.joda.time.DateTime;
 import org.joda.time.Interval;
 
 import com.mongodb.MongoClient;
-import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 
 public class TransactionAggregator {	
 	private static final int MAX_CONVERSION_QUEUE_SIZE = 10000; 
 	@SuppressWarnings("unused")
 	private static final String TEST_COLLECTION = "FortuneJack.com_To_USD_Per_Month";
-	private static final int MAX_THREADS = 10;	
 	private static AggregationPeriod testAggregationPeriod;
 
 	public static void main(String[] args) {						

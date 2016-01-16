@@ -16,6 +16,8 @@ import net.stevenuray.walletexplorer.categories.WalletCategoryTransactionSum;
 import net.stevenuray.walletexplorer.categories.WalletCategoryTransactionSums;
 import net.stevenuray.walletexplorer.general.WalletExplorerConfig;
 import net.stevenuray.walletexplorer.mongodb.MongoDBCategoryProvider;
+import net.stevenuray.walletexplorer.persistence.DataPipelines;
+import net.stevenuray.walletexplorer.persistence.timable.TimableWalletNameDataProducerFactory;
 import net.stevenuray.walletexplorer.views.TransactionAggregateReviewGraph;
 import net.stevenuray.walletexplorer.walletattribute.dto.ConvertedWalletTransaction;
 
@@ -38,15 +40,11 @@ public class CategoryReviewer extends Application{
 	}
 	
 	private static void setCategoryTransactionSumsOrQuit(){
-		WalletCategory category = ManualCategories.getPools();
+		WalletCategory category = ManualCategories.getGamblingServices();
 		AggregationTimespan timespan = getAggregationTimespan();
 		try {
 			setWalletCategoryTransactionSums(category,timespan);
-		} catch (InterruptedException e){
-			//TODO DEVELOPMENT
-			System.out.println("Category Reviewer was interrupted before it could finish reviewing!");
-			System.exit(0);
-		} catch(ExecutionException e) {			
+		} catch(Exception e) {			
 			e.printStackTrace();
 			System.out.println("Category Reviewer encountered an exception and cannot review!");
 			System.exit(0);
@@ -69,10 +67,9 @@ public class CategoryReviewer extends Application{
 	}
 
 	private static CategoryAggregator getCategoryAggregator(WalletCategory walletCategory) {		
-		CategoryProvider<ConvertedWalletTransaction> categoryProvider = getMongoCategoryProvider();
-		int maxQueueSize = WalletExplorerConfig.MAX_QUEUE_LENGTH;
-		CategoryAggregator categoryAggregator = 
-				new CategoryAggregator(walletCategory,categoryProvider,maxQueueSize);
+		TimableWalletNameDataProducerFactory<ConvertedWalletTransaction> producerFactory = 
+				DataPipelines.getMongoDBConvertedProducer();
+		CategoryAggregator categoryAggregator = new CategoryAggregator(walletCategory,producerFactory);
 		return categoryAggregator;
 	}
 	
@@ -89,7 +86,7 @@ public class CategoryReviewer extends Application{
 
 	private static void setWalletCategoryTransactionSums (
 			WalletCategory walletCategory,AggregationTimespan aggregationTimespan) 
-					throws InterruptedException, ExecutionException{		
+					throws Exception{		
 		CategoryAggregator categoryAggregator = getCategoryAggregator(walletCategory);			
 		transactionSums = categoryAggregator.getTransactionSums(aggregationTimespan);			
 	}

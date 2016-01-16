@@ -1,52 +1,42 @@
 package net.stevenuray.walletexplorer.categories;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Iterator;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 
 import net.stevenuray.walletexplorer.aggregator.aggregationperiod.AggregationTimespan;
-import net.stevenuray.walletexplorer.persistence.DataProducer;
+import net.stevenuray.walletexplorer.persistence.timable.TimableWalletNameDataProducerFactory;
 import net.stevenuray.walletexplorer.walletattribute.dto.ConvertedWalletTransaction;
-
-import org.apache.commons.collections.IteratorUtils;
 import org.joda.time.Interval;
 
 public class CategoryAggregator{
+	private final TimableWalletNameDataProducerFactory<ConvertedWalletTransaction> producerFactory;
 	private final WalletCategory walletCategory;
-	private final CategoryProvider<ConvertedWalletTransaction> categoryProvider;
 				
 	public CategoryAggregator(
-			WalletCategory walletCategory,CategoryProvider<ConvertedWalletTransaction> categoryProvider, 
-			int maxQueueSize){		
+			WalletCategory walletCategory,
+			TimableWalletNameDataProducerFactory<ConvertedWalletTransaction> producerFactory){		
 		this.walletCategory = walletCategory;
-		this.categoryProvider = categoryProvider;			
+		this.producerFactory = producerFactory;			
 	}
 	
-	public WalletCategoryTransactionSums getTransactionSums(AggregationTimespan aggregationTimespan) 
-			throws InterruptedException, ExecutionException{
-		WalletCategoryTransactionSumsBuilderFiller builderFiller = getTransactionSumsCreator(aggregationTimespan);
-		ExecutorService executor = Executors.newSingleThreadExecutor();
-		Future<WalletCategoryTransactionSums> sumsFuture = executor.submit(builderFiller);
-		WalletCategoryTransactionSums transactionSums = sumsFuture.get();
+	public WalletCategoryTransactionSums getTransactionSums(AggregationTimespan aggregationTimespan) throws Exception{
+		TransactionSumsBuilderFiller builderFiller = getTransactionSumsCreator(aggregationTimespan);	
+		WalletCategoryTransactionSums transactionSums = builderFiller.getSums();
 		return transactionSums;
 	}
-					
-	private WalletCategoryTransactionSumsBuilderFiller getTransactionSumsCreator(
-			AggregationTimespan aggregationTimespan) {
-		Interval timespan = aggregationTimespan.getTimespan();
-		Iterator<ConvertedWalletTransaction> transactionProvider = getConvertedWalletTransactionProvider(timespan);
-		WalletCategoryTransactionSumsBuilder sumsBuilder = 
-				new WalletCategoryTransactionSumsBuilder(walletCategory,aggregationTimespan);
-		WalletCategoryTransactionSumsBuilderFiller sumsCreator = 
-				new WalletCategoryTransactionSumsBuilderFiller(transactionProvider,sumsBuilder);
-		return sumsCreator;
-	}
 
+	private TransactionSumsBuilderFiller getTransactionSumsCreator(
+			AggregationTimespan aggregationTimespan) {
+		Iterator<String> walletsNameIterator = walletCategory.getWalletNameIterator();
+		Interval timespan = aggregationTimespan.getTimespan();
+		WalletCategoryTransactionSumsBuilder builder = 
+				new WalletCategoryTransactionSumsBuilder(walletCategory,aggregationTimespan);
+		TransactionSumsBuilderFiller builderFiller = 
+				new FactoryWalletCategoryTransactionSumsBuilderFiller(producerFactory,walletsNameIterator,timespan,builder);
+		return builderFiller;
+	}
+					
 	//TODO possibly refactor this into MongoDBCategoryProvider
+	/*TODO remove after verifying this is not needed. 
 	@SuppressWarnings("unchecked")
 	private Iterator<ConvertedWalletTransaction> getConvertedWalletTransactionProvider(Interval timespan) {
 		Iterator<DataProducer<ConvertedWalletTransaction>> dataProducerIterator = 
@@ -59,4 +49,5 @@ public class CategoryAggregator{
 		}		
 		return IteratorUtils.chainedIterator(iterators);
 	}
+	*/
 }
