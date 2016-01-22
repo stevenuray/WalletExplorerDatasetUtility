@@ -202,7 +202,7 @@ public class TransactionConverter {
 			latestTransactionTime = latestTimeQuerier.call();			
 		} catch (Exception e) {			
 			LOG.error("Could not find the latest transaction time for: "+walletConnection.getCollectionName()+"."+
-					" A complete download will be done to ensure dataset integrity");
+					" A complete selection will be done to ensure dataset integrity");
 			e.printStackTrace();
 			return new DateTime(0);
 		}
