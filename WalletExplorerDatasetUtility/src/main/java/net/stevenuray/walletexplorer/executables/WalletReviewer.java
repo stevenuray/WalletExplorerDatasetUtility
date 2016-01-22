@@ -27,7 +27,7 @@ import com.mongodb.MongoClient;
 import com.mongodb.client.MongoDatabase;
 
 public class WalletReviewer extends Application{	
-	private final static String TARGET_WALLET_NAME = "ASICMiner";
+	private final static String TARGET_WALLET_NAME = "BTCC.com";
 	private final static String TEST_COLLECTION = TARGET_WALLET_NAME+"_To_USD_Per_Month"; 
 	private static WalletTransactionSums transactionSums;
 	

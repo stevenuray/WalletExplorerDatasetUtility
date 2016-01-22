@@ -18,8 +18,7 @@ public class QueueLoader<T> implements Callable<BlockingQueue<T>>{
 		BlockingQueue<T> queue = new ArrayBlockingQueue<T>(maxQueueSize);
 		while(source.hasNext() && queue.size() < maxQueueSize){
 			queue.add(source.next());
-		}
-		source = null;
+		}		
 		return queue;
 	}
 }

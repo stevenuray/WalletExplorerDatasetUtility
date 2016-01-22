@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
+import net.stevenuray.walletexplorer.conversion.objects.Converter;
 import net.stevenuray.walletexplorer.walletattribute.dto.ConvertedWalletTransaction;
 import net.stevenuray.walletexplorer.walletattribute.dto.ConvertedWalletTransactionOutput;
 import net.stevenuray.walletexplorer.walletattribute.dto.TransactionOutput;
@@ -13,14 +14,15 @@ import net.stevenuray.walletexplorer.walletattribute.dto.WalletTransaction;
 import org.apache.commons.collections4.IteratorUtils;
 import org.joda.time.DateTime;
 
-public class HistoricalWalletTransactionCurrencyConverter implements WalletTransactionCurrencyConverter {
+public class HistoricalWalletTransactionConverter implements WalletTransactionCurrencyConverter, 
+	Converter<WalletTransaction,ConvertedWalletTransaction> {
 	private final TransactionOutputConverter outputConverter;
 	
-	public HistoricalWalletTransactionCurrencyConverter(HistoricalBTCToUSDConverter currencyConverter){		
+	public HistoricalWalletTransactionConverter(HistoricalBTCToUSDConverter currencyConverter){		
 		this.outputConverter = new TransactionOutputConverterService(currencyConverter);
 	}
 	
-	public HistoricalWalletTransactionCurrencyConverter(TransactionOutputConverter outputConverter){
+	public HistoricalWalletTransactionConverter(TransactionOutputConverter outputConverter){
 		this.outputConverter = outputConverter;		
 	}
 		
@@ -31,10 +33,19 @@ public class HistoricalWalletTransactionCurrencyConverter implements WalletTrans
 		return convertedWalletTransaction;
 	}
 		
+	public WalletTransaction from(ConvertedWalletTransaction convertedWalletTransaction) {
+		// TODO implement if ever needed. Note this is a violation of the liskov substition principle.  
+		return null;
+	}
+
+	public ConvertedWalletTransaction to(WalletTransaction walletTransaction) {
+		return convert(walletTransaction);
+	}
+
 	private Collection<ConvertedWalletTransactionOutput> getConvertedOutputs(WalletTransaction walletTransaction) {
 		DateTime transactionTime = walletTransaction.getTransactionTime();
-		Collection<ConvertedWalletTransactionOutput> convertedOutputs = new ArrayList<ConvertedWalletTransactionOutput>();
-		
+		Collection<ConvertedWalletTransactionOutput> convertedOutputs = 
+				new ArrayList<ConvertedWalletTransactionOutput>();		
 		Iterator<TransactionOutput> transactionOutputIterator = 
 				walletTransaction.getWalletTransactionOutputsUnmodifiable().iterator();
 		List<TransactionOutput> transactionOutputList = IteratorUtils.toList(transactionOutputIterator);

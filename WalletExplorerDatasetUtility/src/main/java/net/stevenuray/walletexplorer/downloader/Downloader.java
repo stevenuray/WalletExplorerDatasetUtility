@@ -63,6 +63,7 @@ public class Downloader<T,U> {
 				LOG.info("Downloading Wallet: "+nextWalletName);
 				downloadWalletTransactions(nextWalletName);
 				walletsDownloaded++;
+				LOG.info("Wallets Downloaded: "+walletsDownloaded);
 			} catch (Exception e) {
 				LOG.error("Failed to download wallet: "+nextWalletName);
 				e.printStackTrace();
@@ -92,8 +93,9 @@ public class Downloader<T,U> {
 			Future<BulkOperationResult> consumerFuture = submitToConsumer(executor,convertedQueueFuture,consumer);
 			
 			//Waiting for this future so an exception will be thrown if there is a problem. 
+			//TODO verify this wait does not make the concurrency useless, fix it if it does. 
 			consumerFuture.get();		
-			transactionsDownloaded+=WalletExplorerConfig.MAX_QUEUE_LENGTH;
+			transactionsDownloaded+=downloadedQueue.size();
 			LOG.info("Transactions Downloaded for "+walletName+": "+transactionsDownloaded);
 		}
 		

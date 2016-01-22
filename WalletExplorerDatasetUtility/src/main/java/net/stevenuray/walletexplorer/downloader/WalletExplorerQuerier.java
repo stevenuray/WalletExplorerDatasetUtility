@@ -20,7 +20,7 @@ import com.sun.jersey.core.util.MultivaluedMapImpl;
 /**One WalletExplorerQuerier instance should be used per download of a wallet. Re-use is not intended. 
  * 
  * Note multiple instances of WalletExplorerQuerier should not be used concurrently. 
- * Ales Janda (Creator of WalletExplorer) has requested users of his API limit their use to one thread at a time 
+ * Ales Janda (Creator of WalletExplorer) requested users of his API limit their use to one thread at a time 
  * in May of 2015. 
  * @author Steven Uray 
  */
@@ -177,17 +177,11 @@ public class WalletExplorerQuerier{
 	}
 	
 	private boolean isLatestResponseAfterEndTime(JSONObject latestQueryJsonObject){
-		JSONArray subWalletTransactions = getSubWalletTransactionsFromResponse(latestQueryJsonObject);
-		
-		/*Note: This loop works in every case except one, if transactions for a wallet name
-		 * are not fully downloaded on their initial run, they will never be downloaded!
-		 * A quick solution to this is to delete the collection if there is an error and hope
-		 * it downloads properly on the next run. 
-		 */			
+		JSONArray subWalletTransactions = getSubWalletTransactionsFromResponse(latestQueryJsonObject);				
 		for(int k = 0; k < subWalletTransactions.size(); k++){			
 			JSONObject subWalletTransaction = (JSONObject) subWalletTransactions.get(k);			
-			DateTime currentTime = getTimeOfSubWalletTransaction(subWalletTransaction);			
-			if(currentTime.isBefore(timespanLimit.getEnd())){					
+			DateTime subWalletTransactionTime = getTimeOfSubWalletTransaction(subWalletTransaction);		
+			if(subWalletTransactionTime.isAfter(timespanLimit.getEnd())){
 				return true;
 			}
 		}
@@ -196,13 +190,7 @@ public class WalletExplorerQuerier{
 	}
 		
 	private boolean isLatestResponseEqualToOrAfterStartTime(JSONObject latestQueryJsonObject){
-		JSONArray subWalletTransactions = getSubWalletTransactionsFromResponse(latestQueryJsonObject);
-		
-		/*Note: This loop works in every case except one, if transactions for a wallet name
-		 * are not fully downloaded on their initial run, they will never be downloaded!
-		 * A quick solution to this is to delete the collection if there is an error and hope
-		 * it downloads properly on the next run. 
-		 */			
+		JSONArray subWalletTransactions = getSubWalletTransactionsFromResponse(latestQueryJsonObject);					
 		for(int k = 0; k < subWalletTransactions.size(); k++){			
 			JSONObject subWalletTransaction = (JSONObject) subWalletTransactions.get(k);			
 			DateTime currentTime = getTimeOfSubWalletTransaction(subWalletTransaction);		
@@ -216,6 +204,22 @@ public class WalletExplorerQuerier{
 		
 		return false;
 	}	
+	
+	private boolean isLatestResponseEqualToOrBeforeStartTime(JSONObject latestQueryJsonObject){
+		JSONArray subWalletTransactions = getSubWalletTransactionsFromResponse(latestQueryJsonObject);
+		for(int k = 0; k < subWalletTransactions.size(); k++){			
+			JSONObject subWalletTransaction = (JSONObject) subWalletTransactions.get(k);			
+			DateTime subWalletTransactionTime = getTimeOfSubWalletTransaction(subWalletTransaction);
+			if(subWalletTransactionTime.isEqual(timespanLimit.getStart())){
+				return true;
+			}
+			if(subWalletTransactionTime.isBefore(timespanLimit.getStart())){
+				return true;
+			}
+		}
+		
+		return false;
+	}
 	
 	private void setTxsCount() {
 		MultivaluedMapImpl queryParams = getWalletExplorerQueryParams(walletName,0);	
@@ -234,7 +238,7 @@ public class WalletExplorerQuerier{
 			return false;
 		}
 		
-		if(isLatestResponseAfterEndTime(latestQueryJsonObject)){
+		if(isLatestResponseEqualToOrBeforeStartTime(latestQueryJsonObject)){
 			return false; 
 		}
 			

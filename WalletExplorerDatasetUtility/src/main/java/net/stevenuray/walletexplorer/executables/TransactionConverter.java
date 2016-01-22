@@ -13,8 +13,7 @@ import net.stevenuray.walletexplorer.conversion.collection.ConvertedCollectionPr
 import net.stevenuray.walletexplorer.conversion.collection.ConvertedCollectionService;
 import net.stevenuray.walletexplorer.conversion.currency.CoindeskBpiConverter;
 import net.stevenuray.walletexplorer.conversion.currency.HistoricalBTCToUSDConverter;
-import net.stevenuray.walletexplorer.conversion.currency.HistoricalWalletTransactionCurrencyConverter;
-import net.stevenuray.walletexplorer.conversion.currency.WalletTransactionCurrencyConverter;
+import net.stevenuray.walletexplorer.conversion.currency.HistoricalWalletTransactionConverter;
 import net.stevenuray.walletexplorer.conversion.objects.Converter;
 import net.stevenuray.walletexplorer.mongodb.MongoDBConnectionService;
 import net.stevenuray.walletexplorer.mongodb.MongoDBConsumer;
@@ -23,10 +22,10 @@ import net.stevenuray.walletexplorer.mongodb.WalletCollection;
 import net.stevenuray.walletexplorer.mongodb.converters.ConvertedWalletTransactionDocumentConverter;
 import net.stevenuray.walletexplorer.mongodb.converters.WalletTransactionDocumentConverter;
 import net.stevenuray.walletexplorer.mongodb.queries.WalletExplorerCollectionLatestTimeQuerier;
-import net.stevenuray.walletexplorer.persistence.DataConsumer;
-import net.stevenuray.walletexplorer.persistence.DataProducer;
-import net.stevenuray.walletexplorer.persistence.BasicDataPipeline;
 import net.stevenuray.walletexplorer.persistence.DataPipeline;
+import net.stevenuray.walletexplorer.persistence.timable.TimableDataConsumer;
+import net.stevenuray.walletexplorer.persistence.timable.TimableDataPipeline;
+import net.stevenuray.walletexplorer.persistence.timable.TimableDataProducer;
 import net.stevenuray.walletexplorer.walletattribute.dto.ConvertedWalletTransaction;
 import net.stevenuray.walletexplorer.walletattribute.dto.WalletTransaction;
 
@@ -117,37 +116,37 @@ public class TransactionConverter {
 	}
 	
 	private static CollectionConverter getCollectionConverter(WalletCollection unconvertedCollection){
-		WalletTransactionCurrencyConverter currencyConverter = getTransactionConverter();
+		Converter<WalletTransaction,ConvertedWalletTransaction> transactionConverter = getTransactionConverter();
 		Interval conversionTimespan = getConversionTimespan(unconvertedCollection);		
 		LOG.info("Converting transactions from: "+conversionTimespan.getStart()+" to: "+conversionTimespan.getEnd());
-		DataPipeline<WalletTransaction, ConvertedWalletTransaction> producerConsumerPair = 
-				getProducerConsumerPair(unconvertedCollection,conversionTimespan);
+		DataPipeline<WalletTransaction, ConvertedWalletTransaction> dataPipeline = 
+				getDataPipeline(unconvertedCollection,conversionTimespan);
 		CollectionConverter collectionConverter = 
-				new CollectionConverter(producerConsumerPair,currencyConverter,
+				new CollectionConverter(dataPipeline,transactionConverter,
 						MAX_CONVERSION_QUEUE_SIZE,conversionTimespan,COLLECTION_CONVERTER_LOG);		
 		return collectionConverter;
 	}
 	
-	private static WalletTransactionCurrencyConverter getTransactionConverter(){
+	private static Converter<WalletTransaction,ConvertedWalletTransaction> getTransactionConverter(){
 		HistoricalBTCToUSDConverter currencyConverter = new CoindeskBpiConverter();	
-		WalletTransactionCurrencyConverter transactionConverter = 
-				new HistoricalWalletTransactionCurrencyConverter(currencyConverter);
+		Converter<WalletTransaction,ConvertedWalletTransaction> transactionConverter = 
+				new HistoricalWalletTransactionConverter(currencyConverter);
 		return transactionConverter;
 	}
 	
-	private static DataPipeline<WalletTransaction, ConvertedWalletTransaction> getProducerConsumerPair(
+	private static TimableDataPipeline<WalletTransaction, ConvertedWalletTransaction> getDataPipeline(
 			WalletCollection unconvertedCollection,Interval conversionTimespan){
-		DataProducer<WalletTransaction> walletTransactionProducer = 
+		TimableDataProducer<WalletTransaction> walletTransactionProducer = 
 				getMongoDBWalletTransactions(unconvertedCollection,conversionTimespan);
-		DataConsumer<WalletTransaction> walletTransactionConsumer = 
+		TimableDataConsumer<WalletTransaction> walletTransactionConsumer = 
 				getMongoDBConvertedTransactionConsumer(unconvertedCollection);
 		@SuppressWarnings({ "rawtypes", "unchecked" })
-		DataPipeline<WalletTransaction, ConvertedWalletTransaction> producerConsumerPair = 
-				new BasicDataPipeline(walletTransactionProducer,walletTransactionConsumer);
-		return producerConsumerPair;		
+		TimableDataPipeline<WalletTransaction, ConvertedWalletTransaction> dataPipeline = 
+				new TimableDataPipeline(walletTransactionProducer,walletTransactionConsumer);
+		return dataPipeline;		
 	}
 	
-	private static DataConsumer<WalletTransaction> getMongoDBConvertedTransactionConsumer(
+	private static TimableDataConsumer<WalletTransaction> getMongoDBConvertedTransactionConsumer(
 			WalletCollection unconvertedCollection) {
 		WalletCollection convertedWalletCollection = getConvertedCollection(unconvertedCollection);
 		MongoCollection<Document> convertedCollection = convertedWalletCollection.getCollection();		
@@ -155,16 +154,16 @@ public class TransactionConverter {
 		buildAscendingDateIndex(convertedCollection);
 		Converter<ConvertedWalletTransaction, Document> converter = new ConvertedWalletTransactionDocumentConverter();
 		@SuppressWarnings({ "rawtypes", "unchecked" })
-		DataConsumer<WalletTransaction> consumer = new MongoDBConsumer(convertedWalletCollection,converter);
+		TimableDataConsumer<WalletTransaction> consumer = new MongoDBConsumer(convertedWalletCollection,converter);
 		return consumer;
 	}
 
-	private static DataProducer<WalletTransaction> getMongoDBWalletTransactions(
+	private static TimableDataProducer<WalletTransaction> getMongoDBWalletTransactions(
 			WalletCollection unconvertedCollection,Interval timespan){
 		Converter<WalletTransaction,Document> converter = new WalletTransactionDocumentConverter();		
 		@SuppressWarnings({ "rawtypes", "unchecked" })
 		MongoDBProducer<WalletTransaction> walletTransactionConverter = 
-				new MongoDBProducer(unconvertedCollection,timespan,converter);
+			new MongoDBProducer(unconvertedCollection,timespan,converter);
 		return walletTransactionConverter;		
 	}
 		

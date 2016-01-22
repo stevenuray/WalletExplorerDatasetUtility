@@ -24,10 +24,19 @@ public class PushToConsumerCallable<T> implements Callable<BulkOperationResult>{
 	}
 
 	public BulkOperationResult call() throws Exception {	
+		//Setup.
 		BulkOperationResult result = new BulkOperationResult();
 		BlockingQueue<T> blockingQueue = sourceFuture.get();		
+		
+		//Pushing data to consumer. 
+		int queueSize = blockingQueue.size();
 		Iterator<T> source = blockingQueue.iterator();
 		consumer.consume(source);
+		
+		//Finishing up. 
+		for(int i = 0; i < queueSize; i++){
+			result.iterateOperations();
+		}		
 		result.complete();		
 		return result;
 	}

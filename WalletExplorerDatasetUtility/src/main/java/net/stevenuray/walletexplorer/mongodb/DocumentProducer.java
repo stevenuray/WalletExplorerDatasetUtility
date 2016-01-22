@@ -15,8 +15,8 @@ import com.mongodb.BasicDBObjectBuilder;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 
-/*TODO factor DATE_KEY into a time related subclass. The top level class for DocumentProducer should not 
- * impose a date requirement on it's data. 
+/*TODO factor DATE_KEY and queryTimespan into a time related subclass. 
+ * The top level class for DocumentProducer should not impose a date requirement on it's data. 
  */
 public class DocumentProducer implements DataProducer<Document>{
 	private final WalletCollection walletCollection;
@@ -41,7 +41,7 @@ public class DocumentProducer implements DataProducer<Document>{
 		MongoCollection<Document> collection = walletCollection.getCollection();		
 		BasicDBObject ascendingTimeSort = getAscendingTimeSort();
 		BasicDBObject transactionsInQueryTimespan = getTransactionsInQueryTimespan();
-		FindIterable<Document> findIterable = collection.find(transactionsInQueryTimespan).sort(ascendingTimeSort);			
+		FindIterable<Document> findIterable = collection.find(transactionsInQueryTimespan).sort(ascendingTimeSort);		
 		Iterator<Document> cursor = findIterable.iterator();		
 		AscendingTimeIterator<Document> ascendingTimeCursor = new AscendingTimeIteratorInstance<Document>(cursor);
 		return ascendingTimeCursor;

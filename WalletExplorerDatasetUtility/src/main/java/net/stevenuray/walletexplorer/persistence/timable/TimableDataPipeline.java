@@ -25,11 +25,7 @@ public class TimableDataPipeline<T,U> implements DataPipeline<T,U>{
 	public TimableDataConsumer<U> getConsumer() {
 		return consumer;
 	}
-		
-	public TimableDataPipeline<T,U> getTimableProducerConsumerPair(){
-		return new TimableDataPipeline<T,U>(producer,consumer);		
-	}
-	
+			
 	/**Note this constructor will change the producer in response to what data the consumer says it needs.	 
 	 * @param producer
 	 * @param consumer

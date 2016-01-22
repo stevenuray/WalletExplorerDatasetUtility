@@ -11,16 +11,8 @@ import net.stevenuray.walletexplorer.conversion.objects.Converter;
 import net.stevenuray.walletexplorer.conversion.objects.DirectConverter;
 import net.stevenuray.walletexplorer.downloader.Downloader;
 import net.stevenuray.walletexplorer.downloader.WalletExplorerAPIConfigSingleton;
-import net.stevenuray.walletexplorer.downloader.WalletExplorerQuerierFactory;
-import net.stevenuray.walletexplorer.mongodb.MongoDBConsumerFactory;
-import net.stevenuray.walletexplorer.mongodb.converters.WalletTransactionDocumentConverter;
 import net.stevenuray.walletexplorer.persistence.DataPipelineFactories;
-import net.stevenuray.walletexplorer.persistence.WalletNameDataConsumerFactory;
-import net.stevenuray.walletexplorer.persistence.BasicWalletNameDataPipelineFactory;
-import net.stevenuray.walletexplorer.persistence.WalletNameDataProducerFactory;
 import net.stevenuray.walletexplorer.persistence.timable.BasicTimableWalletNameDataPipelineFactory;
-import net.stevenuray.walletexplorer.persistence.timable.TimableWalletNameDataConsumerFactory;
-import net.stevenuray.walletexplorer.persistence.timable.TimableWalletNameDataProducerFactory;
 import net.stevenuray.walletexplorer.walletattribute.dto.WalletTransaction;
 
 import org.apache.log4j.Appender;
@@ -29,7 +21,6 @@ import org.apache.log4j.ConsoleAppender;
 import org.apache.log4j.Layout;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PatternLayout;
-import org.bson.Document;
 import org.joda.time.DateTime;
 
 public class TransactionDownloader {
@@ -62,13 +53,12 @@ public class TransactionDownloader {
 	}
 	
 	private static Downloader<WalletTransaction,WalletTransaction> getDownloader(Iterator<String> walletNames){
-		BasicTimableWalletNameDataPipelineFactory<WalletTransaction,WalletTransaction> producerConsumerFactory = 
+		BasicTimableWalletNameDataPipelineFactory<WalletTransaction,WalletTransaction> pipelineFactory = 
 				DataPipelineFactories.getWalletExplorerToMongoDB();
-		DirectConverter<WalletTransaction,WalletTransaction> directConverter = 
+		Converter<WalletTransaction,WalletTransaction> directConverter = 
 				new DirectConverter<WalletTransaction,WalletTransaction>();
 		Downloader<WalletTransaction,WalletTransaction> walletExplorerDownloader = 
-				new Downloader<WalletTransaction,WalletTransaction>(
-						producerConsumerFactory,walletNames,directConverter);
+				new Downloader<WalletTransaction,WalletTransaction>(pipelineFactory,walletNames,directConverter);
 		return walletExplorerDownloader;
 	}
 

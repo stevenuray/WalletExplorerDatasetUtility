@@ -20,7 +20,7 @@ public class FutureQueueConverterCallable<T,U> implements Callable<BlockingQueue
 	}
 
 	public BlockingQueue<U> call() throws Exception {
-		BlockingQueue<T> originalQueue = originalQueueFuture.get();
+		BlockingQueue<T> originalQueue = originalQueueFuture.get();		
 		QueueConverter<T,U> queueConverter = new QueueConverter<T,U>(converter);
 		BlockingQueue<U> convertedQueue = queueConverter.getConvertedQueue(originalQueue, maxQueueSize);		
 		return convertedQueue;
