@@ -38,7 +38,7 @@ public class WalletExplorerDownloader implements TimableDataProducer<WalletTrans
 	public DateTime getLatestTime() {
 		return downloadIterator.getLatestTime();
 	}
-
+ 
 	public TimableDataProducer<WalletTransaction> fromTime(DateTime earliestTime) {
 		String walletName = downloadIterator.getWalletName();
 		Interval adjustedTimespanLimit = new Interval(earliestTime,timespanLimit.getEnd());

@@ -8,12 +8,10 @@ import net.stevenuray.walletexplorer.aggregator.aggregationperiod.AggregationPer
 import net.stevenuray.walletexplorer.aggregator.aggregationperiod.AggregationPeriodFactory;
 import net.stevenuray.walletexplorer.aggregator.aggregationperiod.AggregationTimespan;
 import net.stevenuray.walletexplorer.categories.CategoryAggregator;
-import net.stevenuray.walletexplorer.categories.CategoryProvider;
 import net.stevenuray.walletexplorer.categories.ManualCategories;
 import net.stevenuray.walletexplorer.categories.WalletCategory;
 import net.stevenuray.walletexplorer.categories.WalletCategoryTransactionSum;
 import net.stevenuray.walletexplorer.categories.WalletCategoryTransactionSums;
-import net.stevenuray.walletexplorer.mongodb.MongoDBCategoryProvider;
 import net.stevenuray.walletexplorer.persistence.DataPipelines;
 import net.stevenuray.walletexplorer.persistence.timable.TimableWalletNameDataProducerFactory;
 import net.stevenuray.walletexplorer.views.TransactionAggregateReviewGraph;

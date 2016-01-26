@@ -1,5 +1,6 @@
 package net.stevenuray.walletexplorer.executables;
 
+import java.io.InputStream;
 import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -77,6 +78,10 @@ public class WalletReviewer extends Application{
 		TransactionAggregateReviewGraph categoryReviewGraph = new TransactionAggregateReviewGraph(transactionSums);
 		LineChart<String,Number> reviewChart = categoryReviewGraph.getLineChart();
 		Scene scene = new Scene(reviewChart,1920,1080);
+		//String applicationRoot = System.getProperty("user.dir");
+		String styleSheetPath = WalletReviewer.class.getResource("TransactionAggregateReviewGraph.fxml")
+				.toExternalForm();
+		scene.getStylesheets().add(styleSheetPath);
 		primaryStage.setTitle(TARGET_WALLET_NAME);
 		primaryStage.setScene(scene);
 		primaryStage.show();

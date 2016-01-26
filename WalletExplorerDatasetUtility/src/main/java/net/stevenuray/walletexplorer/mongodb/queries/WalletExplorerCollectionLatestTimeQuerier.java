@@ -4,8 +4,6 @@ import java.util.Iterator;
 import java.util.concurrent.Callable;
 
 import net.stevenuray.walletexplorer.mongodb.WalletCollection;
-import net.stevenuray.walletexplorer.mongodb.converters.WalletTransactionDocumentConverter;
-
 import org.bson.Document;
 import org.joda.time.DateTime;
 
