@@ -15,10 +15,12 @@ import javafx.scene.chart.XYChart;
 import javafx.scene.chart.XYChart.Series;
 
 public class TransactionAggregateReviewGraph {		
+	private static final String X_AXIS_LABEL = "Date";
+	private static final String Y_AXIS_LABEL = "Transaction Volume in USD";
+	
 	private final TransactionIntervalSums transactionSums;
 	public TransactionAggregateReviewGraph(TransactionIntervalSums transactionSums){		
-		this.transactionSums = transactionSums;
-		loadStyle();
+		this.transactionSums = transactionSums;		
 	}
 	
 	public LineChart<String,Number> getLineChart(){		
@@ -49,11 +51,13 @@ public class TransactionAggregateReviewGraph {
 	private LineChart<String,Number> getLineChartFoundation(){
 		final CategoryAxis xAxis = new CategoryAxis();
 		final NumberAxis yAxis = new NumberAxis();
-		xAxis.setLabel("Month");
-		yAxis.setLabel("Transaction Volume in USD");
+		xAxis.setLabel(X_AXIS_LABEL);
+		yAxis.setLabel(Y_AXIS_LABEL);
 		
 		final LineChart<String,Number> foundation = new LineChart<String,Number>(xAxis,yAxis);
 		foundation.setTitle(transactionSums.getName());
+		//TODO refactor this so this setting is edited in the FXML file linked to this graph. 
+		foundation.setLegendVisible(false);
 		return foundation;
 	}
 	
@@ -65,9 +69,5 @@ public class TransactionAggregateReviewGraph {
 			addTransactionToSeries(transactionSum,dataSeries);			
 		}
 		return dataSeries;
-	}
-	
-	private void loadStyle(){
-		TransactionAggregateReviewGraph.class.getResource("TransactionAggregateReviewGraph.fxml").toExternalForm();
-	}
+	}	
 }

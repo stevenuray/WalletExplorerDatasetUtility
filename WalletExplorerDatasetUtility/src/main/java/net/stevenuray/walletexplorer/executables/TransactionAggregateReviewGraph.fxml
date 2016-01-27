@@ -3,20 +3,22 @@
 <?import javafx.scene.layout.AnchorPane?>
 
 <AnchorPane xmlns:fx="http://javafx.com/fxml/1">
-	.chart {
-		-fx-padding: 10,100,10,10;					
-	}		
-	.chart-legend {
-		-fx-legend-visible: false;
+	.chart{
+		default-color0.chart-series-line { -fx-stroke #e9967a; };
+	}
+	
+	.chart-legend {		
+		-fx-legend-side: top;
+		-fx-font-size: 1px;
 	}
 	.chart-title{
-		-fx-font-size: 48px;
+		-fx-font: bold 42px "Arial";
 	}
 	.axis{		
-		-fx-tick-label-font-size: 24px;
-		-fx-minor-tick-visible: false;
+		-fx-tick-label-font-size: 14px;
+		-fx-minor-tick-visible: false;		
 	}
 	.axis-label{
-		-fx-font-size: 48px;
+		-fx-font: bold 28px "Arial"; 		
 	}	
 </AnchorPane>
