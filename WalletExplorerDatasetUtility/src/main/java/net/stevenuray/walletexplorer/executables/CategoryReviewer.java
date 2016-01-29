@@ -8,10 +8,11 @@ import net.stevenuray.walletexplorer.aggregator.aggregationperiod.AggregationPer
 import net.stevenuray.walletexplorer.aggregator.aggregationperiod.AggregationPeriodFactory;
 import net.stevenuray.walletexplorer.aggregator.aggregationperiod.AggregationTimespan;
 import net.stevenuray.walletexplorer.categories.CategoryAggregator;
-import net.stevenuray.walletexplorer.categories.ManualCategories;
 import net.stevenuray.walletexplorer.categories.WalletCategory;
 import net.stevenuray.walletexplorer.categories.WalletCategoryTransactionSum;
 import net.stevenuray.walletexplorer.categories.WalletCategoryTransactionSums;
+import net.stevenuray.walletexplorer.categories.factories.CategoryFactory;
+import net.stevenuray.walletexplorer.categories.factories.ExchangeCategoryFactory;
 import net.stevenuray.walletexplorer.persistence.DataPipelines;
 import net.stevenuray.walletexplorer.persistence.timable.TimableWalletNameDataProducerFactory;
 import net.stevenuray.walletexplorer.views.TransactionAggregateReviewGraphSceneFactory;
@@ -25,9 +26,10 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 public class CategoryReviewer extends Application{		
-	private static final int WIDTH = 1920;
+	private static final WalletCategory CATEGORY = ExchangeCategoryFactory.getHuobi();
 	private static final int HEIGHT = 1080;
 	private static WalletCategoryTransactionSums transactionSums;
+	private static final int WIDTH = 1920;
 	
 	public static void main(String[] args) {		
 		setMongoLoggerLevel();					
@@ -36,33 +38,16 @@ public class CategoryReviewer extends Application{
 		launch(args);
 	}
 	
-	private static void setCategoryTransactionSumsOrQuit(){
-		WalletCategory category = ManualCategories.getPools();
-		AggregationTimespan timespan = getAggregationTimespan();
-		try {
-			setWalletCategoryTransactionSums(category,timespan);
-		} catch(Exception e) {			
-			e.printStackTrace();
-			System.out.println("Category Reviewer encountered an exception and cannot review!");
-			System.exit(0);
-		}
-	}
-	
-	private static void setMongoLoggerLevel(){
-		Logger mongoLogger = Logger.getLogger("org.mongodb.driver");
-		mongoLogger.setLevel(Level.WARNING);
-	}
-	
 	private static AggregationPeriod getAggregationPeriod(){
 		return AggregationPeriodFactory.getAggregationPeriod(AggregationPeriodFactory.AggregationSize.MONTH);
 	}
-
+	
 	private static AggregationTimespan getAggregationTimespan() {
 		AggregationPeriod aggregationPeriod = getAggregationPeriod();
 		Interval timespan = getMaxTimespan();
 		return new AggregationTimespan(timespan,aggregationPeriod);
 	}
-
+	
 	private static CategoryAggregator getCategoryAggregator(WalletCategory walletCategory) {		
 		TimableWalletNameDataProducerFactory<ConvertedWalletTransaction> producerFactory = 
 				DataPipelines.getMongoDBConvertedProducer();
@@ -74,13 +59,6 @@ public class CategoryReviewer extends Application{
 		DateTime start = new DateTime(2011,1,1,0,0,0);
 		DateTime end = new DateTime();		
 		return new Interval(start,end);
-	}	
-
-	private static void setWalletCategoryTransactionSums (
-			WalletCategory walletCategory,AggregationTimespan aggregationTimespan) 
-					throws Exception{		
-		CategoryAggregator categoryAggregator = getCategoryAggregator(walletCategory);			
-		transactionSums = categoryAggregator.getTransactionSums(aggregationTimespan);			
 	}
 
 	private static Interval getYearTimespan(int year){
@@ -103,6 +81,29 @@ public class CategoryReviewer extends Application{
 		
 		//End message.
 		System.out.println("");
+	}	
+
+	private static void setCategoryTransactionSumsOrQuit(){		
+		AggregationTimespan timespan = getAggregationTimespan();
+		try {
+			setWalletCategoryTransactionSums(CATEGORY,timespan);
+		} catch(Exception e) {			
+			e.printStackTrace();
+			System.out.println("Category Reviewer encountered an exception and cannot review!");
+			System.exit(0);
+		}
+	}
+
+	private static void setMongoLoggerLevel(){
+		Logger mongoLogger = Logger.getLogger("org.mongodb.driver");
+		mongoLogger.setLevel(Level.WARNING);
+	}
+
+	private static void setWalletCategoryTransactionSums (
+			WalletCategory walletCategory,AggregationTimespan aggregationTimespan) 
+					throws Exception{		
+		CategoryAggregator categoryAggregator = getCategoryAggregator(walletCategory);			
+		transactionSums = categoryAggregator.getTransactionSums(aggregationTimespan);			
 	}
 
 	@Override

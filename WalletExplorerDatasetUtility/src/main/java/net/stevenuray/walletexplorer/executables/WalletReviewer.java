@@ -28,8 +28,8 @@ import com.mongodb.client.MongoDatabase;
 public class WalletReviewer extends Application{	
 	private static final int WIDTH = 1920;
 	private static final int HEIGHT = 1080;
-	private final static String TARGET_WALLET_NAME = "LocalBitcoins.com";
-	private final static String TEST_COLLECTION = TARGET_WALLET_NAME+"_To_USD_Per_Month"; 
+	private final static String TARGET_WALLET_NAME = "BitX.co";
+	private final static String TARGET_COLLECTION = TARGET_WALLET_NAME+"_To_USD_Per_Month"; 
 	private static WalletTransactionSums transactionSums;
 	
 	public static void main(String[] args) {
@@ -40,7 +40,7 @@ public class WalletReviewer extends Application{
 	}
 	
 	private static void setWalletTransactionSums(){
-		WalletCollection testCollection = getCollection(TEST_COLLECTION);				
+		WalletCollection testCollection = getCollection(TARGET_COLLECTION);				
 		transactionSums = getWalletTransactionSums(testCollection);
 	}
 	
