@@ -14,7 +14,7 @@ import net.stevenuray.walletexplorer.categories.WalletCategoryTransactionSum;
 import net.stevenuray.walletexplorer.categories.WalletCategoryTransactionSums;
 import net.stevenuray.walletexplorer.persistence.DataPipelines;
 import net.stevenuray.walletexplorer.persistence.timable.TimableWalletNameDataProducerFactory;
-import net.stevenuray.walletexplorer.views.TransactionAggregateReviewGraph;
+import net.stevenuray.walletexplorer.views.TransactionAggregateReviewGraphSceneFactory;
 import net.stevenuray.walletexplorer.walletattribute.dto.ConvertedWalletTransaction;
 
 import org.joda.time.DateTime;
@@ -22,10 +22,11 @@ import org.joda.time.Interval;
 
 import javafx.application.Application;
 import javafx.scene.Scene;
-import javafx.scene.chart.LineChart;
 import javafx.stage.Stage;
 
 public class CategoryReviewer extends Application{		
+	private static final int WIDTH = 1920;
+	private static final int HEIGHT = 1080;
 	private static WalletCategoryTransactionSums transactionSums;
 	
 	public static void main(String[] args) {		
@@ -105,12 +106,12 @@ public class CategoryReviewer extends Application{
 	}
 
 	@Override
-	public void start(Stage primaryStage) throws Exception {		
-		TransactionAggregateReviewGraph graph = new TransactionAggregateReviewGraph(transactionSums);
-		LineChart<String,Number> reviewChart = graph.getLineChart();
-		Scene scene = new Scene(reviewChart,1920,1080);
-		primaryStage.setTitle("Category Reviewer");
-		primaryStage.setScene(scene);
+	public void start(Stage primaryStage) throws Exception {	
+		TransactionAggregateReviewGraphSceneFactory factory = 
+				new TransactionAggregateReviewGraphSceneFactory(WIDTH,HEIGHT);
+		Scene aggregateGraphScene = factory.getScene(transactionSums);			
+		primaryStage.setTitle(transactionSums.getName());
+		primaryStage.setScene(aggregateGraphScene);
 		primaryStage.show();
 	}	
 }

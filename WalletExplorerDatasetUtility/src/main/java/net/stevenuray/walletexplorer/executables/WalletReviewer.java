@@ -1,6 +1,5 @@
 package net.stevenuray.walletexplorer.executables;
 
-import java.io.InputStream;
 import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -13,7 +12,7 @@ import net.stevenuray.walletexplorer.mongodb.MongoDBProducer;
 import net.stevenuray.walletexplorer.mongodb.WalletCollection;
 import net.stevenuray.walletexplorer.mongodb.converters.WalletTransactionSumDocumentConverter;
 import net.stevenuray.walletexplorer.persistence.DataProducer;
-import net.stevenuray.walletexplorer.views.TransactionAggregateReviewGraph;
+import net.stevenuray.walletexplorer.views.TransactionAggregateReviewGraphSceneFactory;
 
 import org.bson.Document;
 import org.joda.time.DateTime;
@@ -21,13 +20,14 @@ import org.joda.time.Interval;
 
 import javafx.application.Application;
 import javafx.scene.Scene;
-import javafx.scene.chart.LineChart;
 import javafx.stage.Stage;
 
 import com.mongodb.MongoClient;
 import com.mongodb.client.MongoDatabase;
 
 public class WalletReviewer extends Application{	
+	private static final int WIDTH = 1920;
+	private static final int HEIGHT = 1080;
 	private final static String TARGET_WALLET_NAME = "LocalBitcoins.com";
 	private final static String TEST_COLLECTION = TARGET_WALLET_NAME+"_To_USD_Per_Month"; 
 	private static WalletTransactionSums transactionSums;
@@ -75,15 +75,11 @@ public class WalletReviewer extends Application{
 	
 	@Override
 	public void start(Stage primaryStage) throws Exception {		
-		TransactionAggregateReviewGraph categoryReviewGraph = new TransactionAggregateReviewGraph(transactionSums);
-		LineChart<String,Number> reviewChart = categoryReviewGraph.getLineChart();
-		Scene scene = new Scene(reviewChart,1920,1080);
-		//String applicationRoot = System.getProperty("user.dir");
-		String styleSheetPath = WalletReviewer.class.getResource("TransactionAggregateReviewGraph.fxml")
-				.toExternalForm();
-		scene.getStylesheets().add(styleSheetPath);
+		TransactionAggregateReviewGraphSceneFactory factory = 
+				new TransactionAggregateReviewGraphSceneFactory(WIDTH,HEIGHT);
+		Scene aggregateGraphScene = factory.getScene(transactionSums);		
 		primaryStage.setTitle(TARGET_WALLET_NAME);
-		primaryStage.setScene(scene);
+		primaryStage.setScene(aggregateGraphScene);
 		primaryStage.show();
 	}
 }
