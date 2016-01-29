@@ -3,8 +3,6 @@ package net.stevenuray.walletexplorer.conversion.currency.test;
 import net.stevenuray.walletexplorer.conversion.currency.CoindeskBpiConverter;
 
 import org.junit.Test;
-import org.junit.experimental.categories.Category;
-
 import junit.framework.TestCase;
 
 public class CoindeskBpiConverterTest extends TestCase {

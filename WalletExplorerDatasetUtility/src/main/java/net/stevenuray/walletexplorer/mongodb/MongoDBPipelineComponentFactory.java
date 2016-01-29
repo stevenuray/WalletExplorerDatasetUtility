@@ -6,7 +6,6 @@ import com.mongodb.MongoClient;
 import com.mongodb.client.MongoDatabase;
 
 import net.stevenuray.walletexplorer.conversion.objects.Converter;
-import net.stevenuray.walletexplorer.persistence.timable.TimableWalletNameDataConsumerFactory;
 
 public class MongoDBPipelineComponentFactory<T> {
 	private final Converter<T,Document> converter;

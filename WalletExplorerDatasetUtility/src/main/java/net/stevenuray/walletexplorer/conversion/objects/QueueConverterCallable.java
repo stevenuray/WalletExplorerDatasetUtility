@@ -2,7 +2,6 @@ package net.stevenuray.walletexplorer.conversion.objects;
 
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Callable;
-import java.util.concurrent.Future;
 
 /**Wraps QueueConverter in a Callable, making it useful for concurrent operations.  
  * @author Steven Uray  

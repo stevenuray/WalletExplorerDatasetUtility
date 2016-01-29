@@ -26,7 +26,7 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 public class CategoryReviewer extends Application{		
-	private static final WalletCategory CATEGORY = ExchangeCategoryFactory.getHuobi();
+	private static final WalletCategory CATEGORY = CategoryFactory.getGamblingServices();
 	private static final int HEIGHT = 1080;
 	private static WalletCategoryTransactionSums transactionSums;
 	private static final int WIDTH = 1920;

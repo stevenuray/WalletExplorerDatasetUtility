@@ -1,6 +1,5 @@
 package net.stevenuray.walletexplorer.downloader.test;
 
-import static org.junit.Assert.*;
 import net.sf.json.JSONObject;
 import net.stevenuray.walletexplorer.downloader.WalletTransactionJSONConverter;
 import net.stevenuray.walletexplorer.testobjects.TestWalletExplorerResponses;

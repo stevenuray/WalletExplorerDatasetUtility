@@ -3,7 +3,6 @@ package net.stevenuray.walletexplorer.persistence;
 import net.stevenuray.walletexplorer.persistence.timable.BasicTimableWalletNameDataPipelineFactory;
 import net.stevenuray.walletexplorer.persistence.timable.TimableWalletNameDataConsumerFactory;
 import net.stevenuray.walletexplorer.persistence.timable.TimableWalletNameDataProducerFactory;
-import net.stevenuray.walletexplorer.walletattribute.dto.ConvertedWalletTransaction;
 import net.stevenuray.walletexplorer.walletattribute.dto.WalletTransaction;
 
 /**Factory that creates WalletNameDataPipelineFactory objects. Aka factory of factories.
