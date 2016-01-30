@@ -12,7 +12,7 @@ public class BasicTimableWalletNameDataPipelineFactory<T,U> implements
 		this.consumerFactory = consumerFactory;
 	}
 	
-	public TimableDataPipeline<T, U> getProducerConsumerPair(String walletName) {			
+	public TimableDataPipeline<T, U> getDataPipeline(String walletName) {			
 		TimableDataProducer<T> originalProducer = producerFactory.getDataProducer(walletName);	
 		TimableDataConsumer<U> consumer = consumerFactory.getDataConsumer(walletName);	
 		TimableDataPipeline<T,U> pair = new TimableDataPipeline<T,U>(originalProducer,consumer);

@@ -27,10 +27,21 @@ public class WalletExplorerDownloader implements TimableDataProducer<WalletTrans
 		this.downloadIterator = new WalletExplorerDownloadIterator(walletName,maxQueueSize,timespanLimit);
 	}
 	
+	@Override
+	public void finish() {
+		//WalletExplorerDownloader does not need to implement this optional method.		
+	}
+
+	public TimableDataProducer<WalletTransaction> fromTime(DateTime earliestTime) {
+		String walletName = downloadIterator.getWalletName();
+		Interval adjustedTimespanLimit = new Interval(earliestTime,timespanLimit.getEnd());
+		return new WalletExplorerDownloader(walletName,maxQueueSize,adjustedTimespanLimit);
+	}
+
 	public Iterator<WalletTransaction> getData() {
 		return downloadIterator;
 	}
-
+ 
 	public DateTime getEarliestTime() {
 		return downloadIterator.getEarliestTime();
 	}
@@ -38,10 +49,9 @@ public class WalletExplorerDownloader implements TimableDataProducer<WalletTrans
 	public DateTime getLatestTime() {
 		return downloadIterator.getLatestTime();
 	}
- 
-	public TimableDataProducer<WalletTransaction> fromTime(DateTime earliestTime) {
-		String walletName = downloadIterator.getWalletName();
-		Interval adjustedTimespanLimit = new Interval(earliestTime,timespanLimit.getEnd());
-		return new WalletExplorerDownloader(walletName,maxQueueSize,adjustedTimespanLimit);
+
+	@Override
+	public void start() {
+		//WalletExplorerDownloader does not need to implement this optional method. 		
 	}
 }

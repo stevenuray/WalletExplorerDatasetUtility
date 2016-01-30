@@ -28,24 +28,36 @@ public class BasicDataPipeline<T,U> implements DataPipeline<T, U> {
 		consumer.consume(u);		
 	}	
 	
+	@Override
+	public void finish() {
+		consumer.finish();
+		producer.finish();		
+	}
+		
 	/* (non-Javadoc)
 	 * @see net.stevenuray.walletexplorer.persistence.ProducerConsumerPair#getConsumer()
 	 */
 	public DataConsumer<U> getConsumer() {
 		return consumer;
 	}
-		
+	
 	/* (non-Javadoc)
 	 * @see net.stevenuray.walletexplorer.persistence.ProducerConsumerPair#getData()
 	 */
 	public Iterator<T> getData(){
 		return producer.getData();
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see net.stevenuray.walletexplorer.persistence.ProducerConsumerPair#getProducer()
 	 */
 	public DataProducer<T> getProducer() {
 		return producer;
+	}
+
+	@Override
+	public void start() {
+		consumer.start();
+		producer.start();		
 	}		
 }

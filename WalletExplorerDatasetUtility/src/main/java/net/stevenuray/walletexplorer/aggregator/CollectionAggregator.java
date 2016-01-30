@@ -18,15 +18,15 @@ public class CollectionAggregator {
 	private int aggregations = 0;
 	private final List<Interval> ascendingPeriodList;	
 	private WalletTransactionSumBuilder currentAggregateBuilder;
-	private final DataPipeline<ConvertedWalletTransaction, WalletTransactionSum> producerConsumerPair;
+	private final DataPipeline<ConvertedWalletTransaction, WalletTransactionSum> dataPipeline;
 	private int transactions = 0;
 	private final String walletName;
 	
 	public CollectionAggregator(
-			DataPipeline<ConvertedWalletTransaction, WalletTransactionSum> producerConsumerPair,
+			DataPipeline<ConvertedWalletTransaction, WalletTransactionSum> dataPipeline,
 			String walletName,WalletCollection unAggregatedCollection,
 			AggregationPeriod aggregationPeriod,Interval timespan,int maxConversionQueueSize) {
-		this.producerConsumerPair = producerConsumerPair;
+		this.dataPipeline = dataPipeline;
 		this.walletName = walletName;		
 		this.aggregationPeriod = aggregationPeriod;			
 		this.ascendingPeriodList = getAscendingPeriodList(timespan);
@@ -35,13 +35,16 @@ public class CollectionAggregator {
 	public AggregationResults aggregateCollection(){
 		//TODO use these
 		AggregationResults aggregationResults = new AggregationResults();
+		dataPipeline.start();
 		//Note: this assumes the Iterator<ConvertedWalletTransaction> is in time-ascending order!
 		//TODO make this more explicit
-		Iterator<ConvertedWalletTransaction> convertedTransactionIterator = producerConsumerPair.getData();		
+		Iterator<ConvertedWalletTransaction> convertedTransactionIterator = dataPipeline.getData();		
 		while(convertedTransactionIterator.hasNext()){
 			ConvertedWalletTransaction nextTransaction = convertedTransactionIterator.next();
 			aggregate(nextTransaction);
 		}
+		
+		dataPipeline.finish();
 		//TODO DEVELOPMENT
 		System.out.println("Transactions Aggregated: "+transactions);
 		System.out.println("Aggregates Created: "+aggregations);
@@ -64,7 +67,7 @@ public class CollectionAggregator {
 	
 	private void buildNextWalletTransactionSumAndGiveToConsumer(){
 		WalletTransactionSum walletTransactionAggregate = currentAggregateBuilder.build();
-		DataConsumer<WalletTransactionSum> consumer = producerConsumerPair.getConsumer();
+		DataConsumer<WalletTransactionSum> consumer = dataPipeline.getConsumer();
 		consumer.consume(walletTransactionAggregate);
 	}
 	

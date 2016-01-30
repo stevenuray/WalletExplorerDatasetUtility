@@ -44,13 +44,13 @@ public class Downloader<T,U> {
 	private final Converter<T,U> converter;	
 	private int masterTotalInputTransactions = 0;
 	private int masterTotalInsertedTransactions = 0;
-	private final WalletNameDataPipelineFactory<T,U> producerConsumerFactory;		
+	private final WalletNameDataPipelineFactory<T,U> dataPipelineFactory;		
 	private final Iterator<String> walletNames;
 	
 	public Downloader(
 			WalletNameDataPipelineFactory<T,U> producerConsumerFactory,
 			Iterator<String> walletNames,Converter<T,U> converter){
-		this.producerConsumerFactory = producerConsumerFactory;
+		this.dataPipelineFactory = producerConsumerFactory;
 		this.walletNames = walletNames;
 		this.converter = converter;
 	}
@@ -78,7 +78,8 @@ public class Downloader<T,U> {
 
 	private void downloadWalletTransactions(String walletName) throws Exception {	
 		BulkOperationResult result = new BulkOperationResult();
-		DataPipeline<T, U> dataPipeline = producerConsumerFactory.getProducerConsumerPair(walletName);
+		DataPipeline<T, U> dataPipeline = dataPipelineFactory.getDataPipeline(walletName);
+		dataPipeline.start();
 		DataConsumer<U> consumer = dataPipeline.getConsumer();		
 		Iterator<T> producerIterator = dataPipeline.getData();
 		ExecutorService executor = Executors.newFixedThreadPool(WalletExplorerConfig.MAX_THREADS);
@@ -100,10 +101,11 @@ public class Downloader<T,U> {
 		}
 		
 		executor.shutdown();
+		dataPipeline.finish();
 		result.complete();
 		logResult(walletName,result);		
 	}
-		
+			
 	private void logResult(String walletName,BulkOperationResult result){
 		Duration resultDuration = result.getTimeSpan().toDuration();	
 		String resultString = "Downloaded Wallet "+walletName+" in: ";		

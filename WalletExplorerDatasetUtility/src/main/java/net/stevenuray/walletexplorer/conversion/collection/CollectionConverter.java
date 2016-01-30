@@ -47,7 +47,8 @@ public class CollectionConverter {
 		log.debug("Collection Converter Created!");
 	}	
 
-	public ConversionResults convertCollection() throws ExecutionException, InterruptedException{			
+	public ConversionResults convertCollection() throws ExecutionException, InterruptedException{		
+		dataPipeline.start();
 		Iterator<WalletTransaction> producerIterator = dataPipeline.getData();
 		List<Future<BulkOperationResult>> consumerPushResultFutures = new ArrayList<Future<BulkOperationResult>>();
 		int transactionsLoaded = 0; 
@@ -74,16 +75,17 @@ public class CollectionConverter {
 			*/							
 		}	
 		
-		endCollectionConversion(consumerPushResultFutures);
+		finishCollectionConversion(consumerPushResultFutures);		
 		return conversionResults;
 	}
 
-	private void endCollectionConversion(List<Future<BulkOperationResult>> consumerPushResultFutures) 
+	private void finishCollectionConversion(List<Future<BulkOperationResult>> consumerPushResultFutures) 
 			throws InterruptedException, ExecutionException{
 		updateConversionResults(consumerPushResultFutures);		
 		tryShutdownExecutorOrLogError();
+		dataPipeline.finish();
 		conversionResults.endConversion();
-		logConversionStatistics();
+		logConversionStatistics();		
 	}
 		
 	private long getConversionResultsInSeconds() {

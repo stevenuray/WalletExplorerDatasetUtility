@@ -19,19 +19,26 @@ import com.mongodb.MongoTimeoutException;
 public class MongoDBProducer<T> extends MongoDBPipelineComponent<T> implements TimableDataProducer<T>{	
 	private final Converter<T,Document> converter;
 	private final Interval transactionTimespan;
-		
+	private final DataProducer<Document> documentProducer;
+	
 	public MongoDBProducer(
 			WalletCollection walletCollection, Interval transactionTimespan,Converter<T,Document> converter){
 		super(walletCollection);
 		this.transactionTimespan = transactionTimespan;
 		this.converter = converter;
+		documentProducer = new DocumentProducer(super.getWalletCollection(), transactionTimespan);
 	}
 	
+	@Override
+	public void finish() {
+		documentProducer.finish();	
+	}
+		
 	public TimableDataProducer<T> fromTime(DateTime earliestTime) {
 		Interval adjustedTransactionTimespan = new Interval(earliestTime,this.transactionTimespan.getEnd());
 		return new MongoDBProducer<T>(super.getWalletCollection(),adjustedTransactionTimespan,this.converter);
 	}
-		
+	
 	public Iterator<T> getData() {				
 		IteratorAdapter<Document,T> adapter = getAdapter();
 		@SuppressWarnings({ "rawtypes", "unchecked" })
@@ -42,9 +49,14 @@ public class MongoDBProducer<T> extends MongoDBPipelineComponent<T> implements T
 	public DateTime getEarliestTime() throws TimeNotFoundException {
 		return super.tryToGetEarliestTime();
 	}
-	
+
 	public DateTime getLatestTime() throws TimeNotFoundException {
 		return super.tryToGetLatestTime();
+	}
+
+	@Override
+	public void start() {
+		documentProducer.start();	
 	}
 
 	private IteratorAdapter<Document,T> getAdapter(){		
@@ -55,7 +67,6 @@ public class MongoDBProducer<T> extends MongoDBPipelineComponent<T> implements T
 	}
 
 	private Iterator<Document> getDocuments(){		
-		DataProducer<Document> documentProducer = new DocumentProducer(super.getWalletCollection(), transactionTimespan);
 		Iterator<Document> documentIterator = documentProducer.getData();
 		return documentIterator;
 	}

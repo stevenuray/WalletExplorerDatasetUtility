@@ -28,7 +28,7 @@ import com.mongodb.client.MongoDatabase;
 public class WalletReviewer extends Application{	
 	private static final int WIDTH = 1920;
 	private static final int HEIGHT = 1080;
-	private final static String TARGET_WALLET_NAME = "LocalBitcoins.com";
+	private final static String TARGET_WALLET_NAME = "Xapo.com";
 	private final static String TARGET_COLLECTION = TARGET_WALLET_NAME+"_To_USD_Per_Month"; 
 	private static WalletTransactionSums transactionSums;
 	

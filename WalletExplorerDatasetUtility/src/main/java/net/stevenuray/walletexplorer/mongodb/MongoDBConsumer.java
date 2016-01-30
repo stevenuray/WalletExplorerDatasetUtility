@@ -55,14 +55,24 @@ public class MongoDBConsumer<T> extends MongoDBPipelineComponent<T> implements T
 		}
 	}
 	
-	public DateTime getEarliestTime() throws TimeNotFoundException {
-		return super.tryToGetEarliestTime();
+	@Override
+	public void finish() {
+		//MongoDB does not need to implement this method when consuming data. 		
 	}
 	
-	public DateTime getLatestTime() throws TimeNotFoundException {
-		return super.tryToGetLatestTime();
+	public DateTime getEarliestTime() throws TimeNotFoundException {
+		return super.tryToGetEarliestTime();
 	}	
 			
+	public DateTime getLatestTime() throws TimeNotFoundException {
+		return super.tryToGetLatestTime();
+	}
+
+	@Override
+	public void start() {
+		//MongoDB does not need to implement this method. 		
+	}
+
 	private Document convert(T item){
 		Document nextDocument = converter.to(item);
 		return nextDocument;

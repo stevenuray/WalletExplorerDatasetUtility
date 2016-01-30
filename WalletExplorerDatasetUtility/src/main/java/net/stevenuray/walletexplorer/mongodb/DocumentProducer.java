@@ -19,24 +19,36 @@ import com.mongodb.client.MongoCollection;
  * The top level class for DocumentProducer should not impose a date requirement on it's data. 
  */
 public class DocumentProducer implements DataProducer<Document>{
-	private final WalletCollection walletCollection;
-	private final Interval queryTimespan;
 	private static final String DATE_KEY = WalletTransactionDocumentConverter.DATE_KEY;
+	private final Interval queryTimespan;
+	private final WalletCollection walletCollection;
 	
 	public DocumentProducer(WalletCollection walletCollection,Interval queryTimespan){
 		this.walletCollection = walletCollection;
 		this.queryTimespan = queryTimespan;		
 	}
 
+	@Override
+	public void finish() {
+		/*This function does not need to be implemented at the moment, 
+		 * but could prove useful if the MongoCursor ever needs to be explictly shut down.  		
+		 */
+	}
+	
 	public Iterator<Document> getData() {		
 		return getAscendingTransactionDateIterator();
+	}
+	
+	@Override
+	public void start() {
+		setupAscendingTimeIndex();
 	}
 	
 	private BasicDBObject getAscendingTimeSort(){			
 		BasicDBObject ascendingTimeSort = new BasicDBObject().append(DATE_KEY, 1);
 		return ascendingTimeSort;
 	}
-	
+
 	private AscendingTimeIterator<Document> getAscendingTransactionDateIterator(){
 		MongoCollection<Document> collection = walletCollection.getCollection();		
 		BasicDBObject ascendingTimeSort = getAscendingTimeSort();
@@ -46,7 +58,7 @@ public class DocumentProducer implements DataProducer<Document>{
 		AscendingTimeIterator<Document> ascendingTimeCursor = new AscendingTimeIteratorInstance<Document>(cursor);
 		return ascendingTimeCursor;
 	}
-	
+
 	private BasicDBObject getTransactionsInQueryTimespan(){
 		BasicDBObjectBuilder builder = new BasicDBObjectBuilder();
 		builder.add("$gte", queryTimespan.getStartMillis());
@@ -54,5 +66,12 @@ public class DocumentProducer implements DataProducer<Document>{
 		BasicDBObject timespanBounds = (BasicDBObject) builder.get();		
 		BasicDBObject timespanQuery = new BasicDBObject(DATE_KEY,timespanBounds);
 		return timespanQuery;		
+	}
+
+	private void setupAscendingTimeIndex() {
+		MongoCollection<Document> collection = walletCollection.getCollection();
+		Document indexDocument = new Document();
+		indexDocument.append(DATE_KEY, 1);
+		collection.createIndex(indexDocument);		
 	}	
 }
