@@ -2,12 +2,10 @@ package net.stevenuray.walletexplorer.aggregator;
 
 import net.stevenuray.walletexplorer.aggregator.aggregationperiod.IntervalSum;
 import net.stevenuray.walletexplorer.dto.TransactionIntervalSum;
-import net.stevenuray.walletexplorer.walletattribute.dto.WalletAttribute;
-
 import org.bson.Document;
 import org.joda.time.Interval;
 
-public class WalletTransactionSum implements WalletAttribute,TransactionIntervalSum{	
+public class WalletTransactionSum implements TransactionIntervalSum{	
 	private final Interval timespan;
 	private final IntervalSum aggregateTransactionVolume;
 	private final String walletName;

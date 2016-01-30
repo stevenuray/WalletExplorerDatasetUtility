@@ -5,7 +5,7 @@ import org.joda.time.Interval;
 import net.stevenuray.walletexplorer.general.WalletExplorerConfig;
 import net.stevenuray.walletexplorer.persistence.timable.TimableDataProducer;
 import net.stevenuray.walletexplorer.persistence.timable.TimableWalletNameDataProducerFactory;
-import net.stevenuray.walletexplorer.walletattribute.dto.WalletTransaction;
+import net.stevenuray.walletexplorer.wallettransactions.dto.WalletTransaction;
 
 public class WalletExplorerQuerierFactory implements TimableWalletNameDataProducerFactory<WalletTransaction>{
 	private final int maxQueueSize;

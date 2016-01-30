@@ -4,7 +4,7 @@ import net.stevenuray.walletexplorer.aggregator.aggregationperiod.IntervalSum;
 import net.stevenuray.walletexplorer.aggregator.aggregationperiod.IntervalSumBuilder;
 import net.stevenuray.walletexplorer.aggregator.aggregationperiod.SimpleIntervalSumBuilder;
 import net.stevenuray.walletexplorer.aggregator.aggregationperiod.TimedSum;
-import net.stevenuray.walletexplorer.walletattribute.dto.ConvertedWalletTransaction;
+import net.stevenuray.walletexplorer.wallettransactions.dto.ConvertedWalletTransaction;
 
 import org.joda.time.DateTime;
 import org.joda.time.Interval;

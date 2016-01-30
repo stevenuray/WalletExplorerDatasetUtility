@@ -2,7 +2,7 @@ package net.stevenuray.walletexplorer.mongodb.converters.test;
 
 import net.stevenuray.walletexplorer.mongodb.converters.ConvertedWalletTransactionOutputDocumentConverter;
 import net.stevenuray.walletexplorer.testobjects.TestConvertedWalletTransactionOutputs;
-import net.stevenuray.walletexplorer.walletattribute.dto.ConvertedWalletTransactionOutput;
+import net.stevenuray.walletexplorer.wallettransactions.dto.ConvertedWalletTransactionOutput;
 
 import org.bson.Document;
 import org.junit.Test;

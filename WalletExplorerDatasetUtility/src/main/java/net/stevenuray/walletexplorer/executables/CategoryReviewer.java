@@ -16,7 +16,7 @@ import net.stevenuray.walletexplorer.categories.factories.ExchangeCategoryFactor
 import net.stevenuray.walletexplorer.persistence.DataPipelines;
 import net.stevenuray.walletexplorer.persistence.timable.TimableWalletNameDataProducerFactory;
 import net.stevenuray.walletexplorer.views.TransactionAggregateReviewGraphSceneFactory;
-import net.stevenuray.walletexplorer.walletattribute.dto.ConvertedWalletTransaction;
+import net.stevenuray.walletexplorer.wallettransactions.dto.ConvertedWalletTransaction;
 
 import org.joda.time.DateTime;
 import org.joda.time.Interval;

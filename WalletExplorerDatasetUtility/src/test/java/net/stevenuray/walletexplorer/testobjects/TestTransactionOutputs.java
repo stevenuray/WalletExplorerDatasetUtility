@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import net.stevenuray.walletexplorer.walletattribute.dto.TransactionOutput;
+import net.stevenuray.walletexplorer.wallettransactions.dto.TransactionOutput;
 
 public class TestTransactionOutputs {
 

@@ -3,10 +3,11 @@ package net.stevenuray.walletexplorer.downloader.test;
 import net.sf.json.JSONObject;
 import net.stevenuray.walletexplorer.downloader.WalletTransactionJSONConverter;
 import net.stevenuray.walletexplorer.testobjects.TestWalletExplorerResponses;
-import net.stevenuray.walletexplorer.walletattribute.dto.WalletTransaction;
 
 
 
+
+import net.stevenuray.walletexplorer.wallettransactions.dto.WalletTransaction;
 
 import org.junit.Test;
 

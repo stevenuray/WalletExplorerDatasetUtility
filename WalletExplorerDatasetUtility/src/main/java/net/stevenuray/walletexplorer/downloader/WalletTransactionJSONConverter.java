@@ -12,9 +12,9 @@ import org.joda.time.DateTime;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import net.stevenuray.walletexplorer.conversion.objects.Converter;
-import net.stevenuray.walletexplorer.walletattribute.dto.TransactionOutput;
-import net.stevenuray.walletexplorer.walletattribute.dto.WalletTransaction;
-import net.stevenuray.walletexplorer.walletattribute.dto.WalletTransaction.TransactionDirection;
+import net.stevenuray.walletexplorer.wallettransactions.dto.TransactionOutput;
+import net.stevenuray.walletexplorer.wallettransactions.dto.WalletTransaction;
+import net.stevenuray.walletexplorer.wallettransactions.dto.WalletTransaction.TransactionDirection;
 
 public class WalletTransactionJSONConverter implements Converter<WalletTransaction,JSONObject>{
 	private Converter<TransactionOutput,JSONObject> transactionOutputConverter = new TransactionOutputJSONConverter();

@@ -26,8 +26,8 @@ import net.stevenuray.walletexplorer.persistence.DataPipeline;
 import net.stevenuray.walletexplorer.persistence.timable.TimableDataConsumer;
 import net.stevenuray.walletexplorer.persistence.timable.TimableDataPipeline;
 import net.stevenuray.walletexplorer.persistence.timable.TimableDataProducer;
-import net.stevenuray.walletexplorer.walletattribute.dto.ConvertedWalletTransaction;
-import net.stevenuray.walletexplorer.walletattribute.dto.WalletTransaction;
+import net.stevenuray.walletexplorer.wallettransactions.dto.ConvertedWalletTransaction;
+import net.stevenuray.walletexplorer.wallettransactions.dto.WalletTransaction;
 
 import org.apache.log4j.Appender;
 import org.apache.log4j.BasicConfigurator;

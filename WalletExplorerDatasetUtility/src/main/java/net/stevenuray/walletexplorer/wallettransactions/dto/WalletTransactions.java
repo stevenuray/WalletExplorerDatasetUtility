@@ -1,8 +1,8 @@
-package net.stevenuray.walletexplorer.walletattribute.dto;
+package net.stevenuray.walletexplorer.wallettransactions.dto;
 
 import net.sf.json.JSONArray;
 
-public class WalletTransactions implements WalletAttribute {
+public class WalletTransactions{
 	private final String wallet;
 	private final String walletId;
 	private final int txsCount;

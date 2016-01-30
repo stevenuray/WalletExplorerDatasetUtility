@@ -9,8 +9,8 @@ import net.stevenuray.walletexplorer.mongodb.converters.ConvertedWalletTransacti
 import net.stevenuray.walletexplorer.mongodb.converters.WalletTransactionDocumentConverter;
 import net.stevenuray.walletexplorer.persistence.timable.TimableWalletNameDataConsumerFactory;
 import net.stevenuray.walletexplorer.persistence.timable.TimableWalletNameDataProducerFactory;
-import net.stevenuray.walletexplorer.walletattribute.dto.ConvertedWalletTransaction;
-import net.stevenuray.walletexplorer.walletattribute.dto.WalletTransaction;
+import net.stevenuray.walletexplorer.wallettransactions.dto.ConvertedWalletTransaction;
+import net.stevenuray.walletexplorer.wallettransactions.dto.WalletTransaction;
 
 import org.bson.Document;
 

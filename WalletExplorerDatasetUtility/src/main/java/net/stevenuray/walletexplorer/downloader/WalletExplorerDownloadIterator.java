@@ -2,10 +2,11 @@ package net.stevenuray.walletexplorer.downloader;
 
 import java.util.Iterator;
 import java.util.List;
+
 import org.joda.time.DateTime;
 import org.joda.time.Interval;
 
-import net.stevenuray.walletexplorer.walletattribute.dto.WalletTransaction;
+import net.stevenuray.walletexplorer.wallettransactions.dto.WalletTransaction;
 
 /**Wraps a WalletExplorerQuerier to turn it into an iterator. 
  * Will throw an unchecked FailureToRetrieveDataException if there is problems 

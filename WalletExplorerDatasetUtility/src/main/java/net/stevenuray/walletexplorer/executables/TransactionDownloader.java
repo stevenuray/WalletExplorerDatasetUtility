@@ -13,7 +13,7 @@ import net.stevenuray.walletexplorer.downloader.Downloader;
 import net.stevenuray.walletexplorer.downloader.WalletExplorerAPIConfigSingleton;
 import net.stevenuray.walletexplorer.persistence.DataPipelineFactories;
 import net.stevenuray.walletexplorer.persistence.timable.BasicTimableWalletNameDataPipelineFactory;
-import net.stevenuray.walletexplorer.walletattribute.dto.WalletTransaction;
+import net.stevenuray.walletexplorer.wallettransactions.dto.WalletTransaction;
 
 import org.apache.log4j.Appender;
 import org.apache.log4j.BasicConfigurator;

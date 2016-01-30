@@ -13,23 +13,10 @@ import com.mongodb.client.MongoDatabase;
  * @author Steven Uray 2015-10-12 
  */
 public class WalletCollection {
-	private final MongoClient mongoClient;
-	public MongoClient getMongoClient(){
-		return mongoClient;
-	}
-	private final MongoDatabase database;
-	public MongoDatabase getDatabase(){
-		return database;
-	}
 	private final MongoCollection<Document> collection;
-	public MongoCollection<Document> getCollection(){
-		return collection;
-	}	
-	private final String collectionName;	
-	public String getCollectionName() {
-		return collectionName;
-	}
-
+	private final String collectionName;
+	private final MongoDatabase database;
+	private final MongoClient mongoClient;
 	public WalletCollection(MongoClient mongoClient,MongoDatabase database,
 			String collectionName){
 		this.mongoClient = mongoClient;
@@ -37,11 +24,24 @@ public class WalletCollection {
 		this.collectionName = collectionName;		
 		this.collection = this.database.getCollection(collectionName);
 	}
-	
 	public WalletCollection(MongoDatabaseConnection mongoDatabaseConnection,String collectionName){
 		this.mongoClient = mongoDatabaseConnection.getMongoClient();
 		this.database = mongoDatabaseConnection.getMongoDatabase();
 		this.collectionName = collectionName;
 		this.collection = this.database.getCollection(collectionName);
+	}	
+	public MongoCollection<Document> getCollection(){
+		return collection;
+	}	
+	public String getCollectionName() {
+		return collectionName;
+	}
+
+	public MongoDatabase getDatabase(){
+		return database;
+	}
+	
+	public MongoClient getMongoClient(){
+		return mongoClient;
 	}
 }

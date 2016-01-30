@@ -1,8 +1,8 @@
 package net.stevenuray.walletexplorer.mongodb.converters;
 
 import net.stevenuray.walletexplorer.conversion.objects.Converter;
-import net.stevenuray.walletexplorer.walletattribute.dto.ConvertedWalletTransactionOutput;
-import net.stevenuray.walletexplorer.walletattribute.dto.TransactionOutput;
+import net.stevenuray.walletexplorer.wallettransactions.dto.ConvertedWalletTransactionOutput;
+import net.stevenuray.walletexplorer.wallettransactions.dto.TransactionOutput;
 
 import org.bson.Document;
 

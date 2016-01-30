@@ -1,10 +1,12 @@
 package net.stevenuray.walletexplorer.categories;
 
 import java.util.Iterator;
+
 import org.joda.time.Interval;
+
 import net.stevenuray.walletexplorer.persistence.timable.TimableDataProducer;
 import net.stevenuray.walletexplorer.persistence.timable.TimableWalletNameDataProducerFactory;
-import net.stevenuray.walletexplorer.walletattribute.dto.ConvertedWalletTransaction;
+import net.stevenuray.walletexplorer.wallettransactions.dto.ConvertedWalletTransaction;
 
 public class FactoryWalletCategoryTransactionSumsBuilderFiller implements
 		TransactionSumsBuilderFiller {

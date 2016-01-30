@@ -1,4 +1,4 @@
-package net.stevenuray.walletexplorer.walletattribute.dto;
+package net.stevenuray.walletexplorer.wallettransactions.dto;
 
 public class TransactionOutput {
 	private final double amount;

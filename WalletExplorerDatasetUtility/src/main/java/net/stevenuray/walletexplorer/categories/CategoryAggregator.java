@@ -4,7 +4,8 @@ import java.util.Iterator;
 
 import net.stevenuray.walletexplorer.aggregator.aggregationperiod.AggregationTimespan;
 import net.stevenuray.walletexplorer.persistence.timable.TimableWalletNameDataProducerFactory;
-import net.stevenuray.walletexplorer.walletattribute.dto.ConvertedWalletTransaction;
+import net.stevenuray.walletexplorer.wallettransactions.dto.ConvertedWalletTransaction;
+
 import org.joda.time.Interval;
 
 public class CategoryAggregator{

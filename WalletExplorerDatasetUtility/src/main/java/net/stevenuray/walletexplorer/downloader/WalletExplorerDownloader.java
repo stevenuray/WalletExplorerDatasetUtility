@@ -6,7 +6,7 @@ import org.joda.time.DateTime;
 import org.joda.time.Interval;
 
 import net.stevenuray.walletexplorer.persistence.timable.TimableDataProducer;
-import net.stevenuray.walletexplorer.walletattribute.dto.WalletTransaction;
+import net.stevenuray.walletexplorer.wallettransactions.dto.WalletTransaction;
 
 /**Wraps a WalletExplorerDownloadIterator to implement TimableDataProducer. 
  * @author Steven Uray 

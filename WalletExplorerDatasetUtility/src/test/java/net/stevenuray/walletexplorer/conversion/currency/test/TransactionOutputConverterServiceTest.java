@@ -8,8 +8,8 @@ import java.math.RoundingMode;
 import net.stevenuray.walletexplorer.conversion.currency.HistoricalBTCToUSDConverter;
 import net.stevenuray.walletexplorer.conversion.currency.TransactionOutputConverterService;
 import net.stevenuray.walletexplorer.testobjects.TestTransactionOutputs;
-import net.stevenuray.walletexplorer.walletattribute.dto.ConvertedWalletTransactionOutput;
-import net.stevenuray.walletexplorer.walletattribute.dto.TransactionOutput;
+import net.stevenuray.walletexplorer.wallettransactions.dto.ConvertedWalletTransactionOutput;
+import net.stevenuray.walletexplorer.wallettransactions.dto.TransactionOutput;
 
 import org.joda.time.DateTime;
 import org.junit.Before;

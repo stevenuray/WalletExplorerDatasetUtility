@@ -1,11 +1,11 @@
-package net.stevenuray.walletexplorer.walletattribute.dto;
+package net.stevenuray.walletexplorer.wallettransactions.dto;
 
 import java.util.Collection;
 import java.util.Collections;
 
 import org.joda.time.DateTime;
 
-public class WalletTransaction implements WalletAttribute{
+public class WalletTransaction{
 	public enum TransactionDirection{
 		RECEIVED,
 		SENT

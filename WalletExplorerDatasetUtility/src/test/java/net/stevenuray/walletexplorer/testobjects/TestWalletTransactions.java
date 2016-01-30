@@ -2,9 +2,9 @@ package net.stevenuray.walletexplorer.testobjects;
 
 import java.util.Collection;
 
-import net.stevenuray.walletexplorer.walletattribute.dto.TransactionOutput;
-import net.stevenuray.walletexplorer.walletattribute.dto.WalletTransaction;
-import net.stevenuray.walletexplorer.walletattribute.dto.WalletTransaction.TransactionDirection;
+import net.stevenuray.walletexplorer.wallettransactions.dto.TransactionOutput;
+import net.stevenuray.walletexplorer.wallettransactions.dto.WalletTransaction;
+import net.stevenuray.walletexplorer.wallettransactions.dto.WalletTransaction.TransactionDirection;
 
 import org.joda.time.DateTime;
 

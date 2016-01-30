@@ -2,7 +2,7 @@ package net.stevenuray.walletexplorer.downloader;
 
 import net.sf.json.JSONObject;
 import net.stevenuray.walletexplorer.conversion.objects.Converter;
-import net.stevenuray.walletexplorer.walletattribute.dto.TransactionOutput;
+import net.stevenuray.walletexplorer.wallettransactions.dto.TransactionOutput;
 
 public class TransactionOutputJSONConverter implements Converter<TransactionOutput,JSONObject>{
 

@@ -6,10 +6,10 @@ import java.util.Iterator;
 import java.util.List;
 
 import net.stevenuray.walletexplorer.conversion.objects.Converter;
-import net.stevenuray.walletexplorer.walletattribute.dto.ConvertedWalletTransaction;
-import net.stevenuray.walletexplorer.walletattribute.dto.ConvertedWalletTransactionOutput;
-import net.stevenuray.walletexplorer.walletattribute.dto.TransactionOutput;
-import net.stevenuray.walletexplorer.walletattribute.dto.WalletTransaction;
+import net.stevenuray.walletexplorer.wallettransactions.dto.ConvertedWalletTransaction;
+import net.stevenuray.walletexplorer.wallettransactions.dto.ConvertedWalletTransactionOutput;
+import net.stevenuray.walletexplorer.wallettransactions.dto.TransactionOutput;
+import net.stevenuray.walletexplorer.wallettransactions.dto.WalletTransaction;
 
 import org.apache.commons.collections4.IteratorUtils;
 import org.joda.time.DateTime;
