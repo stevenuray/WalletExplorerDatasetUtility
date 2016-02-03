@@ -1,4 +1,4 @@
-package net.stevenuray.walletexplorer.aggregator.aggregationperiod;
+package net.stevenuray.walletexplorer.aggregation.aggregationperiod;
 
 import java.util.ArrayList;
 import java.util.List;

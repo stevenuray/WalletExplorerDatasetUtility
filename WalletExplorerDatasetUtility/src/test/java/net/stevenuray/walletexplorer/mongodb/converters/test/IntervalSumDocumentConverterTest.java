@@ -1,7 +1,7 @@
 package net.stevenuray.walletexplorer.mongodb.converters.test;
 
 import static org.junit.Assert.*;
-import net.stevenuray.walletexplorer.aggregator.aggregationperiod.IntervalSum;
+import net.stevenuray.walletexplorer.aggregation.aggregationperiod.IntervalSum;
 import net.stevenuray.walletexplorer.mongodb.converters.IntervalSumDocumentConverter;
 import net.stevenuray.walletexplorer.testobjects.TestIntervalSums;
 

@@ -1,7 +1,8 @@
-package net.stevenuray.walletexplorer.aggregator;
+package net.stevenuray.walletexplorer.aggregation;
 
-import net.stevenuray.walletexplorer.aggregator.aggregationperiod.IntervalSum;
+import net.stevenuray.walletexplorer.aggregation.aggregationperiod.IntervalSum;
 import net.stevenuray.walletexplorer.dto.TransactionIntervalSum;
+
 import org.bson.Document;
 import org.joda.time.Interval;
 

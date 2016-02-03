@@ -1,6 +1,6 @@
 package net.stevenuray.walletexplorer.mongodb;
 
-import net.stevenuray.walletexplorer.aggregator.aggregationperiod.AggregationPeriod;
+import net.stevenuray.walletexplorer.aggregation.aggregationperiod.AggregationPeriod;
 
 public class CollectionNameService {
 	private static final String CONVERSION_BASE = "_To_";

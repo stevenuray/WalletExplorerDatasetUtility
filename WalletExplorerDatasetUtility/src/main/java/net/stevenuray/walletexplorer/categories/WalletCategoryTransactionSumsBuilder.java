@@ -3,12 +3,12 @@ package net.stevenuray.walletexplorer.categories;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.stevenuray.walletexplorer.aggregator.aggregationperiod.AggregationPeriodListBuilder;
-import net.stevenuray.walletexplorer.aggregator.aggregationperiod.AggregationTimespan;
-import net.stevenuray.walletexplorer.aggregator.aggregationperiod.IntervalSum;
-import net.stevenuray.walletexplorer.aggregator.aggregationperiod.IntervalSumBuilder;
-import net.stevenuray.walletexplorer.aggregator.aggregationperiod.SimpleIntervalSumBuilder;
-import net.stevenuray.walletexplorer.aggregator.aggregationperiod.TimedSum;
+import net.stevenuray.walletexplorer.aggregation.aggregationperiod.AggregationPeriodListBuilder;
+import net.stevenuray.walletexplorer.aggregation.aggregationperiod.AggregationTimespan;
+import net.stevenuray.walletexplorer.aggregation.aggregationperiod.IntervalSum;
+import net.stevenuray.walletexplorer.aggregation.aggregationperiod.IntervalSumBuilder;
+import net.stevenuray.walletexplorer.aggregation.aggregationperiod.SimpleIntervalSumBuilder;
+import net.stevenuray.walletexplorer.aggregation.aggregationperiod.TimedSum;
 import net.stevenuray.walletexplorer.wallettransactions.dto.ConvertedWalletTransaction;
 
 import org.joda.time.DateTime;

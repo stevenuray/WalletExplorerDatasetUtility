@@ -1,6 +1,6 @@
 package net.stevenuray.walletexplorer.dto;
 
-import net.stevenuray.walletexplorer.aggregator.aggregationperiod.IntervalSum;
+import net.stevenuray.walletexplorer.aggregation.aggregationperiod.IntervalSum;
 
 public interface TransactionIntervalSum {
 	public IntervalSum getTransactionIntervalSum();

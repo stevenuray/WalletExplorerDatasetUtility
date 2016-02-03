@@ -5,10 +5,10 @@ import static org.junit.Assert.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.stevenuray.walletexplorer.aggregator.aggregationperiod.AggregationPeriod;
-import net.stevenuray.walletexplorer.aggregator.aggregationperiod.AggregationPeriodFactory;
-import net.stevenuray.walletexplorer.aggregator.aggregationperiod.AggregationPeriodListBuilder;
-import net.stevenuray.walletexplorer.aggregator.aggregationperiod.AggregationPeriodFactory.AggregationSize;
+import net.stevenuray.walletexplorer.aggregation.aggregationperiod.AggregationPeriod;
+import net.stevenuray.walletexplorer.aggregation.aggregationperiod.AggregationPeriodFactory;
+import net.stevenuray.walletexplorer.aggregation.aggregationperiod.AggregationPeriodListBuilder;
+import net.stevenuray.walletexplorer.aggregation.aggregationperiod.AggregationPeriodFactory.AggregationSize;
 
 import org.joda.time.DateTime;
 import org.joda.time.Duration;

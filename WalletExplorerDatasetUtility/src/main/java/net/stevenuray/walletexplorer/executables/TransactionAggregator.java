@@ -8,11 +8,11 @@ import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import net.stevenuray.walletexplorer.aggregator.AggregationResults;
-import net.stevenuray.walletexplorer.aggregator.CollectionAggregator;
-import net.stevenuray.walletexplorer.aggregator.WalletTransactionSum;
-import net.stevenuray.walletexplorer.aggregator.aggregationperiod.AggregationPeriod;
-import net.stevenuray.walletexplorer.aggregator.aggregationperiod.AggregationPeriodFactory;
+import net.stevenuray.walletexplorer.aggregation.AggregationResults;
+import net.stevenuray.walletexplorer.aggregation.CollectionAggregator;
+import net.stevenuray.walletexplorer.aggregation.WalletTransactionSum;
+import net.stevenuray.walletexplorer.aggregation.aggregationperiod.AggregationPeriod;
+import net.stevenuray.walletexplorer.aggregation.aggregationperiod.AggregationPeriodFactory;
 import net.stevenuray.walletexplorer.conversion.objects.Converter;
 import net.stevenuray.walletexplorer.mongodb.CollectionNameService;
 import net.stevenuray.walletexplorer.mongodb.MongoDBConnectionService;

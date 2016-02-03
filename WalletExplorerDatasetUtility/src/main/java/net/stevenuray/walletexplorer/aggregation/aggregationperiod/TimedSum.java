@@ -1,4 +1,4 @@
-package net.stevenuray.walletexplorer.aggregator.aggregationperiod;
+package net.stevenuray.walletexplorer.aggregation.aggregationperiod;
 
 import org.joda.time.DateTime;
 

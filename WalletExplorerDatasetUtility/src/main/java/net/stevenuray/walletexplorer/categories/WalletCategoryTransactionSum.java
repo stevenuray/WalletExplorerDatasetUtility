@@ -1,6 +1,6 @@
 package net.stevenuray.walletexplorer.categories;
 
-import net.stevenuray.walletexplorer.aggregator.aggregationperiod.IntervalSum;
+import net.stevenuray.walletexplorer.aggregation.aggregationperiod.IntervalSum;
 import net.stevenuray.walletexplorer.dto.Namable;
 import net.stevenuray.walletexplorer.dto.TransactionIntervalSum;
 

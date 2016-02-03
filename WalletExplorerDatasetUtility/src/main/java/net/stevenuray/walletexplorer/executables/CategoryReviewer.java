@@ -4,10 +4,10 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import net.stevenuray.walletexplorer.aggregator.aggregationperiod.AggregationPeriod;
-import net.stevenuray.walletexplorer.aggregator.aggregationperiod.AggregationPeriodFactory;
-import net.stevenuray.walletexplorer.aggregator.aggregationperiod.AggregationTimespan;
-import net.stevenuray.walletexplorer.categories.CategoryAggregator;
+import net.stevenuray.walletexplorer.aggregation.CategoryAggregator;
+import net.stevenuray.walletexplorer.aggregation.aggregationperiod.AggregationPeriod;
+import net.stevenuray.walletexplorer.aggregation.aggregationperiod.AggregationPeriodFactory;
+import net.stevenuray.walletexplorer.aggregation.aggregationperiod.AggregationTimespan;
 import net.stevenuray.walletexplorer.categories.WalletCategory;
 import net.stevenuray.walletexplorer.categories.WalletCategoryTransactionSum;
 import net.stevenuray.walletexplorer.categories.WalletCategoryTransactionSums;

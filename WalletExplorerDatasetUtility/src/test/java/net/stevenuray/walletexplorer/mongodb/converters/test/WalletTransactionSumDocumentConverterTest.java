@@ -1,7 +1,7 @@
 package net.stevenuray.walletexplorer.mongodb.converters.test;
 
 import static org.junit.Assert.*;
-import net.stevenuray.walletexplorer.aggregator.WalletTransactionSum;
+import net.stevenuray.walletexplorer.aggregation.WalletTransactionSum;
 import net.stevenuray.walletexplorer.mongodb.converters.WalletTransactionSumDocumentConverter;
 import net.stevenuray.walletexplorer.testobjects.TestWalletTransactionSums;
 

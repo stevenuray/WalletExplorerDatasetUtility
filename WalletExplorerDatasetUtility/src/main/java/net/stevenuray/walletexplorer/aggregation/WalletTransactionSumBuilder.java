@@ -1,9 +1,9 @@
-package net.stevenuray.walletexplorer.aggregator;
+package net.stevenuray.walletexplorer.aggregation;
 
-import net.stevenuray.walletexplorer.aggregator.aggregationperiod.IntervalSum;
-import net.stevenuray.walletexplorer.aggregator.aggregationperiod.IntervalSumBuilder;
-import net.stevenuray.walletexplorer.aggregator.aggregationperiod.SimpleIntervalSumBuilder;
-import net.stevenuray.walletexplorer.aggregator.aggregationperiod.TimedSum;
+import net.stevenuray.walletexplorer.aggregation.aggregationperiod.IntervalSum;
+import net.stevenuray.walletexplorer.aggregation.aggregationperiod.IntervalSumBuilder;
+import net.stevenuray.walletexplorer.aggregation.aggregationperiod.SimpleIntervalSumBuilder;
+import net.stevenuray.walletexplorer.aggregation.aggregationperiod.TimedSum;
 import net.stevenuray.walletexplorer.wallettransactions.dto.ConvertedWalletTransaction;
 
 import org.joda.time.DateTime;

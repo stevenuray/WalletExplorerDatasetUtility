@@ -1,4 +1,4 @@
-package net.stevenuray.walletexplorer.aggregator;
+package net.stevenuray.walletexplorer.aggregation;
 
 import java.util.Iterator;
 

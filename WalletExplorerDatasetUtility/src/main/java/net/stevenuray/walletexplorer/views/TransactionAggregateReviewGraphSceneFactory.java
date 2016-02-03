@@ -2,7 +2,7 @@ package net.stevenuray.walletexplorer.views;
 
 import javafx.scene.Scene;
 import javafx.scene.chart.LineChart;
-import net.stevenuray.walletexplorer.aggregator.WalletTransactionSums;
+import net.stevenuray.walletexplorer.aggregation.WalletTransactionSums;
 import net.stevenuray.walletexplorer.categories.WalletCategoryTransactionSums;
 import net.stevenuray.walletexplorer.executables.WalletReviewer;
 

@@ -8,14 +8,14 @@ import net.stevenuray.walletexplorer.persistence.timable.TimableDataProducer;
 import net.stevenuray.walletexplorer.persistence.timable.TimableWalletNameDataProducerFactory;
 import net.stevenuray.walletexplorer.wallettransactions.dto.ConvertedWalletTransaction;
 
-public class FactoryWalletCategoryTransactionSumsBuilderFiller implements
+public class FactoryBasedWalletCategoryTransactionSumsBuilderFiller implements
 		TransactionSumsBuilderFiller {
 	private final TimableWalletNameDataProducerFactory<ConvertedWalletTransaction> producerFactory;
 	private final WalletCategoryTransactionSumsBuilder builder;
 	private final Iterator<String> walletNames;
 	private final Interval timespan;
 	
-	public FactoryWalletCategoryTransactionSumsBuilderFiller(
+	public FactoryBasedWalletCategoryTransactionSumsBuilderFiller(
 			TimableWalletNameDataProducerFactory<ConvertedWalletTransaction> producerFactory,
 			Iterator<String> walletNames,Interval timespan,WalletCategoryTransactionSumsBuilder builder){
 		this.producerFactory = producerFactory;

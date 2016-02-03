@@ -1,7 +1,7 @@
 package net.stevenuray.walletexplorer.testobjects;
 
-import net.stevenuray.walletexplorer.aggregator.WalletTransactionSum;
-import net.stevenuray.walletexplorer.aggregator.aggregationperiod.IntervalSum;
+import net.stevenuray.walletexplorer.aggregation.WalletTransactionSum;
+import net.stevenuray.walletexplorer.aggregation.aggregationperiod.IntervalSum;
 
 import org.joda.time.DateTime;
 import org.joda.time.Interval;

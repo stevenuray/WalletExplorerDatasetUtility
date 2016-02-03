@@ -1,10 +1,10 @@
-package net.stevenuray.walletexplorer.aggregator;
+package net.stevenuray.walletexplorer.aggregation;
 
 import java.util.Iterator;
 import java.util.List;
 
-import net.stevenuray.walletexplorer.aggregator.aggregationperiod.AggregationPeriod;
-import net.stevenuray.walletexplorer.aggregator.aggregationperiod.AggregationPeriodListBuilder;
+import net.stevenuray.walletexplorer.aggregation.aggregationperiod.AggregationPeriod;
+import net.stevenuray.walletexplorer.aggregation.aggregationperiod.AggregationPeriodListBuilder;
 import net.stevenuray.walletexplorer.mongodb.WalletCollection;
 import net.stevenuray.walletexplorer.persistence.DataConsumer;
 import net.stevenuray.walletexplorer.persistence.DataPipeline;
