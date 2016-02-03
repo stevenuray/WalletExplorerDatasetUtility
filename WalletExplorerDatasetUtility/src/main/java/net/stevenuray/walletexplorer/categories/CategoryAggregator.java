@@ -20,12 +20,12 @@ public class CategoryAggregator{
 	}
 	
 	public WalletCategoryTransactionSums getTransactionSums(AggregationTimespan aggregationTimespan) throws Exception{
-		TransactionSumsBuilderFiller builderFiller = getTransactionSumsCreator(aggregationTimespan);	
+		TransactionSumsBuilderFiller builderFiller = getTransactionSumsBuilderFiller(aggregationTimespan);	
 		WalletCategoryTransactionSums transactionSums = builderFiller.getSums();
 		return transactionSums;
 	}
 
-	private TransactionSumsBuilderFiller getTransactionSumsCreator(
+	private TransactionSumsBuilderFiller getTransactionSumsBuilderFiller(
 			AggregationTimespan aggregationTimespan) {
 		Iterator<String> walletsNameIterator = walletCategory.getWalletNameIterator();
 		Interval timespan = aggregationTimespan.getTimespan();
@@ -34,21 +34,5 @@ public class CategoryAggregator{
 		TransactionSumsBuilderFiller builderFiller = 
 				new FactoryWalletCategoryTransactionSumsBuilderFiller(producerFactory,walletsNameIterator,timespan,builder);
 		return builderFiller;
-	}
-					
-	//TODO possibly refactor this into MongoDBCategoryProvider
-	/*TODO remove after verifying this is not needed. 
-	@SuppressWarnings("unchecked")
-	private Iterator<ConvertedWalletTransaction> getConvertedWalletTransactionProvider(Interval timespan) {
-		Iterator<DataProducer<ConvertedWalletTransaction>> dataProducerIterator = 
-				categoryProvider.getDataProducers(walletCategory, timespan);
-		Collection<Iterator<ConvertedWalletTransaction>> iterators = 
-				new ArrayList<Iterator<ConvertedWalletTransaction>>();
-		while(dataProducerIterator.hasNext()){
-			DataProducer<ConvertedWalletTransaction> dataProducer = dataProducerIterator.next();
-			iterators.add(dataProducer.getData());
-		}		
-		return IteratorUtils.chainedIterator(iterators);
-	}
-	*/
+	}	
 }
