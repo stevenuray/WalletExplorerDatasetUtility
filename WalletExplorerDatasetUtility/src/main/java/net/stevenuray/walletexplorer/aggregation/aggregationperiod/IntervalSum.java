@@ -3,36 +3,29 @@ package net.stevenuray.walletexplorer.aggregation.aggregationperiod;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
-import org.bson.Document;
 import org.joda.time.Interval;
 
+/**IntervalSum represents some sum of events over a period of time, such as a day, week, or month. 
+ * The units of this sum is left to the user to choose. 
+ * @author Steven Uray
+ */
 public class IntervalSum {
-	private final Interval timespan;
-	public Interval getTimespan(){
-		return timespan;
-	}
 	private final double sum;
-	public Double getSum(){
-		return sum;
-	}
-	
+	private final Interval timespan;
+		
 	public IntervalSum(Interval timespan,double sum){
 		this.timespan = timespan;
 		this.sum = sum;
 	}
 	
-	public IntervalSum(Document document){
-		timespan = new Interval(document.get("timespan"));
-		sum = document.getDouble("sum");
+	public Double getSum(){
+		return sum;
 	}
 	
-	public Document toDocument() {
-		Document document = new Document();
-		document.append("timespan", timespan.toString());
-		document.append("sum",sum);
-		return document;		
+	public Interval getTimespan(){
+		return timespan;
 	}
-	
+		
 	public String toPrettyString(){
 		BigDecimal sumBD = new BigDecimal(sum);
 		BigDecimal sumRounded = sumBD.setScale(2, RoundingMode.HALF_EVEN);

@@ -72,6 +72,7 @@ public class CollectionAggregator {
 	}
 	
 	private void createFirstAggregateBuilder(){		
+		//TODO create and implement ascending time order list here. 
 		//Exploiting the fact the list should be in ascending order. 
 		Interval firstAggregationInterval = ascendingPeriodList.get(0);
 		currentAggregateBuilder = new WalletTransactionSumBuilder(walletName,firstAggregationInterval);

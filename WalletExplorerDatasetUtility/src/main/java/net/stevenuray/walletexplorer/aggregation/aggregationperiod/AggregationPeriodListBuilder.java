@@ -52,9 +52,7 @@ public class AggregationPeriodListBuilder {
 			lastTime = currentTime;
 			Duration periodDuration = aggregationPeriod.getPeriod().toDurationFrom(currentTime);
 			currentTime = currentTime.plus(periodDuration);
-		}
-		
+		}		
 		return ascendingList;
-	}
-	
+	}	
 }

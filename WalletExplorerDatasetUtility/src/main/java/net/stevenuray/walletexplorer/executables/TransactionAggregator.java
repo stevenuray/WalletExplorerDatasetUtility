@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -14,6 +16,7 @@ import net.stevenuray.walletexplorer.aggregation.WalletTransactionSum;
 import net.stevenuray.walletexplorer.aggregation.aggregationperiod.AggregationPeriod;
 import net.stevenuray.walletexplorer.aggregation.aggregationperiod.AggregationPeriodFactory;
 import net.stevenuray.walletexplorer.conversion.objects.Converter;
+import net.stevenuray.walletexplorer.general.WalletExplorerConfig;
 import net.stevenuray.walletexplorer.mongodb.CollectionNameService;
 import net.stevenuray.walletexplorer.mongodb.MongoDBConnectionService;
 import net.stevenuray.walletexplorer.mongodb.MongoDBConsumer;
@@ -35,20 +38,21 @@ import org.joda.time.Interval;
 import com.mongodb.MongoClient;
 import com.mongodb.client.MongoDatabase;
 
-public class TransactionAggregator {	
-	private static final int MAX_CONVERSION_QUEUE_SIZE = 10000; 
-	@SuppressWarnings("unused")
-	private static final String TEST_COLLECTION = "FortuneJack.com_To_USD_Per_Month";
-	private static AggregationPeriod testAggregationPeriod;
-
+public class TransactionAggregator {		
 	public static void main(String[] args) {						
-		setMongoLogInfo();
-		testAggregationPeriod = getAggregationPeriod();				
-		AggregationPeriod aggregationPeriod = getAggregationPeriod();
-		aggregateAllUsdCollections(aggregationPeriod);
+		setMongoLogInfo();					
+		Collection<AggregationPeriod> aggregationPeriods = getAggregationPeriods();
+		aggregateAllUsdCollectionsForAggregationPeriods(aggregationPeriods);
 		
 		//TODO DEVELOPMENT 
 		System.out.println("Aggregation Completed!");			
+	}
+	
+	private static void aggregateAllUsdCollectionsForAggregationPeriods(
+			Collection<AggregationPeriod> aggregationPeriods){
+		for(AggregationPeriod aggregationPeriod : aggregationPeriods){
+			aggregateAllUsdCollections(aggregationPeriod);
+		}
 	}
 		
 	private static void aggregateAllUsdCollections(AggregationPeriod aggregationPeriod){		
@@ -75,6 +79,8 @@ public class TransactionAggregator {
 	private static void aggregateCollection(
 			String walletName,WalletCollection unAggregatedCollection,Interval timespan,
 			AggregationPeriod aggregationPeriod){
+		System.out.println("AggregationPeriod: "+aggregationPeriod.getName());
+		int maxConversionQueueSize = WalletExplorerConfig.MAX_QUEUE_LENGTH;
 		DataPipeline<ConvertedWalletTransaction, WalletTransactionSum> producerConsumerPair = 
 				getProducerConsumerPair(unAggregatedCollection,timespan,aggregationPeriod);
 		/*TODO Adjust timespan here so when the aggregate collection is empty on first creation 
@@ -83,7 +89,7 @@ public class TransactionAggregator {
 		Interval aggregationTimespan = getAggregationInterval(unAggregatedCollection,timespan);
 		CollectionAggregator collectionAggregator = 
 				new CollectionAggregator(producerConsumerPair,walletName,unAggregatedCollection,
-						testAggregationPeriod,aggregationTimespan,MAX_CONVERSION_QUEUE_SIZE);	
+						aggregationPeriod,aggregationTimespan,maxConversionQueueSize);	
 		//TODO print these to console or log 
 		AggregationResults aggregateResults = collectionAggregator.aggregateCollection();
 	}
@@ -128,8 +134,22 @@ public class TransactionAggregator {
 		return aggregateCollection;
 	}
 	
-	private static AggregationPeriod getAggregationPeriod(){
-		return AggregationPeriodFactory.getAggregationPeriod(AggregationPeriodFactory.AggregationSize.MONTH);
+	private static Collection<AggregationPeriod> getAggregationPeriods(){
+		Collection<AggregationPeriod> aggregationPeriodCollection = new ArrayList<>();
+		aggregationPeriodCollection.add(getMonth());
+		/*TODO fix issue where if there is no transactions for a collection in a year, 
+		 * index out of bounds will occur and crash entire program. 
+		 */
+		//aggregationPeriodCollection.add(getYear());
+		return aggregationPeriodCollection;
+	}
+	
+	private static AggregationPeriod getMonth(){
+		return AggregationPeriodFactory.getAggregationPeriod(AggregationPeriodFactory.AggregationSize.YEAR);
+	}
+	
+	private static AggregationPeriod getYear(){
+		return AggregationPeriodFactory.getAggregationPeriod(AggregationPeriodFactory.AggregationSize.YEAR);
 	}
 	
 	//TODO replace with a factory of some kind
