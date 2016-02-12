@@ -27,5 +27,9 @@ public class WalletNames implements Iterable<String>{
 	@Override
 	public Iterator<String> iterator() {
 		return walletNamesSet.iterator();
+	}
+	
+	public long size(){
+		return walletNamesSet.size();
 	}	
 }
