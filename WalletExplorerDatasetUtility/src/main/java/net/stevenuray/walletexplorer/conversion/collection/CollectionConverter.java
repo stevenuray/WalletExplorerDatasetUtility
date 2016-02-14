@@ -21,7 +21,12 @@ import net.stevenuray.walletexplorer.persistence.PushToConsumerCallable;
 import net.stevenuray.walletexplorer.wallettransactions.dto.ConvertedWalletTransaction;
 import net.stevenuray.walletexplorer.wallettransactions.dto.WalletTransaction;
 
+import org.apache.log4j.Appender;
+import org.apache.log4j.BasicConfigurator;
+import org.apache.log4j.ConsoleAppender;
+import org.apache.log4j.Layout;
 import org.apache.log4j.Logger;
+import org.apache.log4j.PatternLayout;
 import org.joda.time.Duration;
 import org.joda.time.Interval;
 
@@ -46,7 +51,19 @@ public class CollectionConverter {
 		this.executor = getExecutor(5);
 		log.debug("Collection Converter Created!");
 	}	
-
+	
+	public CollectionConverter(
+			DataPipeline<WalletTransaction, ConvertedWalletTransaction> dataPipeline,
+			Converter<WalletTransaction,ConvertedWalletTransaction> converter,Interval conversionTimespan,
+			int maxQueueSize,int maxThreads,Logger log){			
+		this.dataPipeline = dataPipeline;
+		this.converter = converter;	
+		this.maxQueueSize = maxQueueSize;		
+		this.log = log;					
+		this.executor = getExecutor(maxThreads);
+		log.debug("Collection Converter Created!");
+	}
+	
 	public ConversionResults convertCollection() throws ExecutionException, InterruptedException{		
 		dataPipeline.start();
 		Iterator<WalletTransaction> producerIterator = dataPipeline.getData();
@@ -62,17 +79,12 @@ public class CollectionConverter {
 			 * multiple users of a MongoCursor. 
 			 */
 			BlockingQueue<WalletTransaction> unconvertedQueue = unconvertedQueueFuture.get();
-			transactionsLoaded += unconvertedQueue.size();
+			transactionsLoaded += unconvertedQueue.size();			
 			log.info("Transactions Loaded: "+transactionsLoaded);
 			Future<BlockingQueue<ConvertedWalletTransaction>> convertedQueueFuture = 
 					submitConversion(unconvertedQueue,executor);
 			Future<BulkOperationResult> consumerPushResultFuture = submitConvertedQueue(convertedQueueFuture,executor);			
-			consumerPushResultFutures.add(consumerPushResultFuture);						
-			/*
-			BulkOperationResult result = consumerPushResultFuture.get();
-			transactionsConverted += result.getOperations();
-			log.info("Transactions Count: "+transactionsConverted);		
-			*/							
+			consumerPushResultFutures.add(consumerPushResultFuture);										
 		}	
 		
 		finishCollectionConversion(consumerPushResultFutures);		
@@ -87,14 +99,14 @@ public class CollectionConverter {
 		conversionResults.endConversion();
 		logConversionStatistics();		
 	}
-		
+
 	private long getConversionResultsInSeconds() {
 		Interval conversionTimespan = conversionResults.getConversionTimespan();
 		Duration conversionDuration = conversionTimespan.toDuration();
 		long conversionResultsInSeconds = conversionDuration.getStandardSeconds();
 		return conversionResultsInSeconds;
 	}
-	
+		
 	private ThreadPoolExecutor getExecutor(int maxThreads) {
 		long keepAliveSeconds = 60;
 		BlockingQueue<Runnable> queue = new ArrayBlockingQueue<>(100);
@@ -103,7 +115,7 @@ public class CollectionConverter {
 				maxThreads,maxThreads,keepAliveSeconds,TimeUnit.SECONDS,queue,handler);		
 		return threadPoolExecutor;
 	}
-	
+		
 	private void logConversionStatistics(){
 		log.info("Transactions Conversion Successes: "+conversionResults.getSuccessfulConversions());
 		log.info("Transactions Conversion Failures: "+conversionResults.getFailedConversions());

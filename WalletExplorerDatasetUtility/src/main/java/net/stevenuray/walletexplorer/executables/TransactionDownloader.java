@@ -1,18 +1,12 @@
 package net.stevenuray.walletexplorer.executables;
 
-import java.io.File;
-import java.nio.charset.Charset;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.Iterator;
 import java.util.logging.Level;
 
 import net.stevenuray.walletexplorer.conversion.objects.Converter;
 import net.stevenuray.walletexplorer.conversion.objects.DirectConverter;
 import net.stevenuray.walletexplorer.downloader.Downloader;
-import net.stevenuray.walletexplorer.downloader.WalletExplorerAPIConfigSingleton;
 import net.stevenuray.walletexplorer.persistence.DataPipelineFactories;
-import net.stevenuray.walletexplorer.persistence.timable.BasicTimableWalletNameDataPipelineFactory;
+import net.stevenuray.walletexplorer.persistence.timable.BasicTimableWalletNameDataFactory;
 import net.stevenuray.walletexplorer.walletnames.TextFileWalletNamesFactory;
 import net.stevenuray.walletexplorer.walletnames.WalletNames;
 import net.stevenuray.walletexplorer.walletnames.WalletNamesFactory;
@@ -33,16 +27,7 @@ public class TransactionDownloader {
 		disableMongoLogInfo();		
 		executeNewDownloadCycle();
 	}
-		
-	private static int calculateWalletNamesLength(Iterator<String> walletNames){
-		int count = 0; 
-		while(walletNames.hasNext()){
-			walletNames.next();
-			count++;
-		}
-		return count;
-	}
-		
+			
 	private static void disableMongoLogInfo(){
 		java.util.logging.Logger mongoLogger = java.util.logging.Logger.getLogger("org.mongodb.driver");
 		mongoLogger.setLevel(Level.WARNING);
@@ -51,14 +36,13 @@ public class TransactionDownloader {
 	private static void executeNewDownloadCycle(){
 		logNewDownloadCycleStart();		
 		WalletNames walletNames = getWalletNamesOrQuit();
-		LOG.info("Wallets to download: "+walletNames.size());
-		Iterator<String> walletNamesIterator = walletNames.iterator();
-		Downloader<WalletTransaction,WalletTransaction> walletExplorerDownloader = getDownloader(walletNamesIterator);
+		LOG.info("Wallets to download: "+walletNames.size());	
+		Downloader<WalletTransaction,WalletTransaction> walletExplorerDownloader = getDownloader(walletNames);
 		walletExplorerDownloader.downloadAndSaveAllWalletTransactions();
 	}
 	
-	private static Downloader<WalletTransaction,WalletTransaction> getDownloader(Iterator<String> walletNames){
-		BasicTimableWalletNameDataPipelineFactory<WalletTransaction,WalletTransaction> pipelineFactory = 
+	private static Downloader<WalletTransaction,WalletTransaction> getDownloader(WalletNames walletNames){
+		BasicTimableWalletNameDataFactory<WalletTransaction,WalletTransaction> pipelineFactory = 
 				DataPipelineFactories.getWalletExplorerToMongoDB();
 		Converter<WalletTransaction,WalletTransaction> directConverter = new DirectConverter<>();
 		Downloader<WalletTransaction,WalletTransaction> walletExplorerDownloader = 

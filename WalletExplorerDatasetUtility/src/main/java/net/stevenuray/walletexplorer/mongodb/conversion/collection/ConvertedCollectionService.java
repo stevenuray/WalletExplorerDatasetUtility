@@ -1,4 +1,4 @@
-package net.stevenuray.walletexplorer.conversion.collection;
+package net.stevenuray.walletexplorer.mongodb.conversion.collection;
 
 import net.stevenuray.walletexplorer.mongodb.CollectionNameService;
 import net.stevenuray.walletexplorer.mongodb.WalletCollection;

@@ -5,6 +5,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import net.stevenuray.walletexplorer.conversion.objects.Converter;
+import net.stevenuray.walletexplorer.mongodb.datapipeline.MongoDBPipelineComponent;
 import net.stevenuray.walletexplorer.persistence.timable.TimableDataConsumer;
 import net.stevenuray.walletexplorer.persistence.timable.TimeNotFoundException;
 

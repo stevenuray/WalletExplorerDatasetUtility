@@ -1,4 +1,9 @@
-package net.stevenuray.walletexplorer.persistence;
+package net.stevenuray.walletexplorer.persistence.walletdatafactories;
+
+import net.stevenuray.walletexplorer.persistence.BasicDataPipeline;
+import net.stevenuray.walletexplorer.persistence.DataConsumer;
+import net.stevenuray.walletexplorer.persistence.DataPipeline;
+import net.stevenuray.walletexplorer.persistence.DataProducer;
 
 /**Represents a pair of factories that construct objects based on a wallet name from WalletExplorer.com.
  *  It is common for data producers and consumers to produce specific objects to represent a 
