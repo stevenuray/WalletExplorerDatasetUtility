@@ -23,5 +23,9 @@ public class WalletExplorerQuerierFactory implements TimableWalletNameDataProduc
 	public TimableDataProducer<WalletTransaction> getDataProducer(String walletName, Interval timespan) {
 		WalletExplorerDownloader downloader = new WalletExplorerDownloader(walletName,maxQueueSize,timespan);
 		return downloader;
+	}
+
+	protected String getConvertedWalletName(String walletName, String currencySymbol) {
+		return null;
 	}	
 }

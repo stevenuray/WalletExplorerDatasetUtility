@@ -7,25 +7,29 @@ import java.util.Set;
 
 /**Represents a set of wallet names that represent bitcoin companies as WalletExplorer.com defines them. 
  * All names in WalletNames are assumed to be valid names that will return transactions when given to 
- * WalletExplorer's API.
+ * WalletExplorer's API. Example wallet names are "Bitstamp.net-old", "BTC-e.com", etc. 
  * @author Steven Uray
  */
 public class WalletNames implements Iterable<String>{
-	private final Set<String> walletNamesSet = new HashSet<String>();
-	
-	public WalletNames(Iterator<String> walletNames){
+	private final Set<String> walletNamesSet = new HashSet<String>();	
+		
+	public WalletNames(Iterator<String> walletNames){		 
 		while(walletNames.hasNext()){
 			String nextWalletName = walletNames.next();
-			walletNamesSet.add(nextWalletName);
+			walletNamesSet.add(nextWalletName);			
 		}		
 	}
 	
 	public Set<String> getWalletNamesSetUnmodifiable(){
-		return Collections.unmodifiableSet(walletNamesSet);
+		return Collections.unmodifiableSet(walletNamesSet);		
 	}
 	
 	@Override
 	public Iterator<String> iterator() {
 		return walletNamesSet.iterator();
+	}
+	
+	public long size(){
+		return walletNamesSet.size();
 	}	
 }

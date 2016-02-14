@@ -8,9 +8,9 @@ import net.stevenuray.walletexplorer.aggregation.WalletTransactionSum;
 import net.stevenuray.walletexplorer.aggregation.WalletTransactionSums;
 import net.stevenuray.walletexplorer.conversion.objects.Converter;
 import net.stevenuray.walletexplorer.mongodb.MongoDBConnectionService;
-import net.stevenuray.walletexplorer.mongodb.MongoDBProducer;
 import net.stevenuray.walletexplorer.mongodb.WalletCollection;
 import net.stevenuray.walletexplorer.mongodb.converters.WalletTransactionSumDocumentConverter;
+import net.stevenuray.walletexplorer.mongodb.datapipeline.MongoDBProducer;
 import net.stevenuray.walletexplorer.persistence.DataProducer;
 import net.stevenuray.walletexplorer.views.TransactionAggregateReviewGraphSceneFactory;
 

@@ -15,7 +15,8 @@ import net.stevenuray.walletexplorer.general.WalletExplorerConfig;
 import net.stevenuray.walletexplorer.persistence.DataConsumer;
 import net.stevenuray.walletexplorer.persistence.DataPipeline;
 import net.stevenuray.walletexplorer.persistence.PushToConsumerCallable;
-import net.stevenuray.walletexplorer.persistence.WalletNameDataPipelineFactory;
+import net.stevenuray.walletexplorer.persistence.walletdatafactories.WalletNameDataPipelineFactory;
+import net.stevenuray.walletexplorer.walletnames.WalletNames;
 
 import org.apache.log4j.Appender;
 import org.apache.log4j.BasicConfigurator;
@@ -45,11 +46,11 @@ public class Downloader<T,U> {
 	private int masterTotalInputTransactions = 0;
 	private int masterTotalInsertedTransactions = 0;
 	private final WalletNameDataPipelineFactory<T,U> dataPipelineFactory;		
-	private final Iterator<String> walletNames;
+	private final WalletNames walletNames;
 	
 	public Downloader(
 			WalletNameDataPipelineFactory<T,U> producerConsumerFactory,
-			Iterator<String> walletNames,Converter<T,U> converter){
+			WalletNames walletNames,Converter<T,U> converter){
 		this.dataPipelineFactory = producerConsumerFactory;
 		this.walletNames = walletNames;
 		this.converter = converter;
@@ -57,8 +58,9 @@ public class Downloader<T,U> {
 
 	public void downloadAndSaveAllWalletTransactions() {		
 		int walletsDownloaded = 0; 
-		while (walletNames.hasNext()) {
-			String nextWalletName = walletNames.next();
+		Iterator<String> walletNamesIterator = walletNames.iterator();
+		while (walletNamesIterator.hasNext()) {
+			String nextWalletName = walletNamesIterator.next();
 			try {								
 				LOG.info("Downloading Wallet: "+nextWalletName);
 				downloadWalletTransactions(nextWalletName);

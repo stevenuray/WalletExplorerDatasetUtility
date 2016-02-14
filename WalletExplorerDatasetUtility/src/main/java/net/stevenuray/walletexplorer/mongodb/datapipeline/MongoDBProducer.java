@@ -1,9 +1,11 @@
-package net.stevenuray.walletexplorer.mongodb;
+package net.stevenuray.walletexplorer.mongodb.datapipeline;
 
 import java.util.Iterator;
 
 import net.stevenuray.walletexplorer.conversion.objects.Converter;
 import net.stevenuray.walletexplorer.conversion.objects.IteratorAdapter;
+import net.stevenuray.walletexplorer.mongodb.DocumentProducer;
+import net.stevenuray.walletexplorer.mongodb.WalletCollection;
 import net.stevenuray.walletexplorer.persistence.DataProducer;
 import net.stevenuray.walletexplorer.persistence.timable.AscendingTimeIterator;
 import net.stevenuray.walletexplorer.persistence.timable.AscendingTimeIteratorInstance;
@@ -18,8 +20,8 @@ import com.mongodb.MongoTimeoutException;
 
 public class MongoDBProducer<T> extends MongoDBPipelineComponent<T> implements TimableDataProducer<T>{	
 	private final Converter<T,Document> converter;
-	private final Interval transactionTimespan;
 	private final DataProducer<Document> documentProducer;
+	private final Interval transactionTimespan;
 	
 	public MongoDBProducer(
 			WalletCollection walletCollection, Interval transactionTimespan,Converter<T,Document> converter){
@@ -55,7 +57,7 @@ public class MongoDBProducer<T> extends MongoDBPipelineComponent<T> implements T
 	}
 
 	@Override
-	public void start() {
+	public void start() {		
 		documentProducer.start();	
 	}
 
@@ -70,7 +72,7 @@ public class MongoDBProducer<T> extends MongoDBPipelineComponent<T> implements T
 		Iterator<Document> documentIterator = documentProducer.getData();
 		return documentIterator;
 	}
-
+	
 	private Iterator<Document> tryGetDocuments(){
 		try{
 			return getDocuments();

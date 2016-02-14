@@ -1,18 +1,20 @@
-package net.stevenuray.walletexplorer.mongodb;
+package net.stevenuray.walletexplorer.mongodb.datapipeline;
 
 import org.bson.Document;
 import org.joda.time.Interval;
 
 import net.stevenuray.walletexplorer.conversion.objects.Converter;
 import net.stevenuray.walletexplorer.general.WalletExplorerConfig;
+import net.stevenuray.walletexplorer.mongodb.CollectionNameService;
+import net.stevenuray.walletexplorer.mongodb.WalletCollection;
 import net.stevenuray.walletexplorer.persistence.timable.TimableDataProducer;
 import net.stevenuray.walletexplorer.persistence.timable.TimableWalletNameDataProducerFactory;
 
-public class MongoDBProducerFactory<ConvertedWalletTransaction> 
+public class MongoDBConvertedTransactionProducerFactory<ConvertedWalletTransaction> 
 	extends MongoDBPipelineComponentFactory<ConvertedWalletTransaction> 
 	implements TimableWalletNameDataProducerFactory<ConvertedWalletTransaction>{
 
-	public MongoDBProducerFactory(Converter<ConvertedWalletTransaction, Document> converter) {
+	public MongoDBConvertedTransactionProducerFactory(Converter<ConvertedWalletTransaction, Document> converter) {
 		super(converter);	
 	}
 
@@ -31,18 +33,5 @@ public class MongoDBProducerFactory<ConvertedWalletTransaction>
 				new MongoDBProducer<ConvertedWalletTransaction>(
 						convertedWalletCollection,timespan,super.getConverter());
 		return producer;
-	}
-
-	private WalletCollection getConvertedCollection(String walletName){
-		//TODO swap for forex currency symbol passed in by argument here.	
-		String convertedWalletName = getConvertedWalletName(walletName,"USD");
-		WalletCollection walletCollection = getWalletCollection(convertedWalletName);
-		return walletCollection;
-	}
-
-	private String getConvertedWalletName(String walletName,String currencySymbol) {
-		CollectionNameService collectionNameService = new CollectionNameService();		 
-		String convertedWalletName = collectionNameService.getConvertedCollectionName(walletName, currencySymbol);
-		return convertedWalletName;
-	}	
+	}		
 }

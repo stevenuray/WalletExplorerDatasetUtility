@@ -1,7 +1,8 @@
-package net.stevenuray.walletexplorer.mongodb;
+package net.stevenuray.walletexplorer.mongodb.datapipeline;
 
 import org.joda.time.DateTime;
 
+import net.stevenuray.walletexplorer.mongodb.WalletCollection;
 import net.stevenuray.walletexplorer.mongodb.queries.WalletExplorerCollectionEarliestTimeQuerier;
 import net.stevenuray.walletexplorer.mongodb.queries.WalletExplorerCollectionLatestTimeQuerier;
 import net.stevenuray.walletexplorer.persistence.timable.TimeNotFoundException;
