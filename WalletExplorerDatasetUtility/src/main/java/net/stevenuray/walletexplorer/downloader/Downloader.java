@@ -14,7 +14,7 @@ import net.stevenuray.walletexplorer.dto.BulkOperationResult;
 import net.stevenuray.walletexplorer.general.WalletExplorerConfig;
 import net.stevenuray.walletexplorer.persistence.DataConsumer;
 import net.stevenuray.walletexplorer.persistence.DataPipeline;
-import net.stevenuray.walletexplorer.persistence.PushToConsumerCallable;
+import net.stevenuray.walletexplorer.persistence.ConsumerPusher;
 import net.stevenuray.walletexplorer.persistence.walletdatafactories.WalletNameDataPipelineFactory;
 import net.stevenuray.walletexplorer.walletnames.WalletNames;
 
@@ -125,8 +125,8 @@ public class Downloader<T,U> {
 	
 	private Future<BulkOperationResult> submitToConsumer(
 			ExecutorService executor,Future<BlockingQueue<U>> convertedQueueFuture,DataConsumer<U> consumer){
-		PushToConsumerCallable<U> consumerPusher = 
-				new PushToConsumerCallable<U>(convertedQueueFuture,consumer);
+		ConsumerPusher<U> consumerPusher = 
+				new ConsumerPusher<U>(convertedQueueFuture,consumer);
 		Future<BulkOperationResult> consumerPushFuture = executor.submit(consumerPusher);
 		return consumerPushFuture;
 	}

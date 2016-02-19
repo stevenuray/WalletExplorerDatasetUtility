@@ -14,11 +14,11 @@ import net.stevenuray.walletexplorer.dto.BulkOperationResult;
  *
  * @param <T>
  */
-public class PushToConsumerCallable<T> implements Callable<BulkOperationResult>{
+public class ConsumerPusher<T> implements Callable<BulkOperationResult>{
 	private final Future<BlockingQueue<T>> sourceFuture;
 	private final DataConsumer<T> consumer;
 	
-	public PushToConsumerCallable(Future<BlockingQueue<T>> sourceFuture,DataConsumer<T> consumer){
+	public ConsumerPusher(Future<BlockingQueue<T>> sourceFuture,DataConsumer<T> consumer){
 		this.sourceFuture = sourceFuture;
 		this.consumer = consumer;
 	}

@@ -17,7 +17,7 @@ import net.stevenuray.walletexplorer.conversion.objects.QueueConverterCallable;
 import net.stevenuray.walletexplorer.dto.BulkOperationResult;
 import net.stevenuray.walletexplorer.persistence.DataConsumer;
 import net.stevenuray.walletexplorer.persistence.DataPipeline;
-import net.stevenuray.walletexplorer.persistence.PushToConsumerCallable;
+import net.stevenuray.walletexplorer.persistence.ConsumerPusher;
 import net.stevenuray.walletexplorer.wallettransactions.dto.ConvertedWalletTransaction;
 import net.stevenuray.walletexplorer.wallettransactions.dto.WalletTransaction;
 
@@ -133,8 +133,8 @@ public class CollectionConverter {
 	private Future<BulkOperationResult> submitConvertedQueue(
 			Future<BlockingQueue<ConvertedWalletTransaction>> convertedQueueFuture,ExecutorService executor) {
 		DataConsumer<ConvertedWalletTransaction> consumer = dataPipeline.getConsumer();
-		PushToConsumerCallable<ConvertedWalletTransaction> consumerPusher = 
-				new PushToConsumerCallable<>(convertedQueueFuture,consumer);
+		ConsumerPusher<ConvertedWalletTransaction> consumerPusher = 
+				new ConsumerPusher<>(convertedQueueFuture,consumer);
 		return executor.submit(consumerPusher);
 	}
 
