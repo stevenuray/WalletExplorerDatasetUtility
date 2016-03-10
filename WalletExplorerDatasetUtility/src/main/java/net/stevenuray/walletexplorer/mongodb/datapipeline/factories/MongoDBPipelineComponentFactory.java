@@ -1,4 +1,4 @@
-package net.stevenuray.walletexplorer.mongodb.datapipeline;
+package net.stevenuray.walletexplorer.mongodb.datapipeline.factories;
 
 import org.bson.Document;
 

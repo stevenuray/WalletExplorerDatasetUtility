@@ -65,7 +65,7 @@ public class Downloader<T,U> {
 				LOG.info("Downloading Wallet: "+nextWalletName);
 				downloadWalletTransactions(nextWalletName);
 				walletsDownloaded++;
-				LOG.info("Wallets Downloaded: "+walletsDownloaded);
+				LOG.info("Wallets Downloaded: "+walletsDownloaded+"/"+walletNames.size());
 			} catch (Exception e) {
 				LOG.error("Failed to download wallet: "+nextWalletName);
 				e.printStackTrace();
@@ -107,7 +107,7 @@ public class Downloader<T,U> {
 		result.complete();
 		logResult(walletName,result);		
 	}
-			
+	
 	private void logResult(String walletName,BulkOperationResult result){
 		Duration resultDuration = result.getTimeSpan().toDuration();	
 		String resultString = "Downloaded Wallet "+walletName+" in: ";		

@@ -3,7 +3,7 @@ package net.stevenuray.walletexplorer.mongodb;
 import com.mongodb.MongoClient;
 import com.mongodb.client.MongoDatabase;
 
-//TODO make non-static and extract interfaces
+//TODO make this class get it's configuration from a config file instead of hard coded variables.
 public class MongoDBConnectionService {
 	public static final int MONGODB_PORT = 27017;
 	public static final String MONGODB_HOST = "localhost";	

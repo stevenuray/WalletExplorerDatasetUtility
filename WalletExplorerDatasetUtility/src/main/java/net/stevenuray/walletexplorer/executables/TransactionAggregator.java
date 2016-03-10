@@ -19,10 +19,10 @@ import net.stevenuray.walletexplorer.conversion.objects.Converter;
 import net.stevenuray.walletexplorer.general.WalletExplorerConfig;
 import net.stevenuray.walletexplorer.mongodb.CollectionNameService;
 import net.stevenuray.walletexplorer.mongodb.MongoDBConnectionService;
-import net.stevenuray.walletexplorer.mongodb.MongoDBConsumer;
 import net.stevenuray.walletexplorer.mongodb.WalletCollection;
 import net.stevenuray.walletexplorer.mongodb.converters.ConvertedWalletTransactionDocumentConverter;
 import net.stevenuray.walletexplorer.mongodb.converters.WalletTransactionSumDocumentConverter;
+import net.stevenuray.walletexplorer.mongodb.datapipeline.MongoDBConsumer;
 import net.stevenuray.walletexplorer.mongodb.datapipeline.MongoDBProducer;
 import net.stevenuray.walletexplorer.mongodb.queries.WalletExplorerCollectionEarliestTimeQuerier;
 import net.stevenuray.walletexplorer.persistence.DataConsumer;
@@ -71,7 +71,7 @@ public class TransactionAggregator {
 	
 	private static void aggregateWalletName(String nextWalletName,AggregationPeriod aggregationPeriod){				
 		WalletCollection convertedWalletCollection = getConvertedWalletCollection(nextWalletName);
-		//TODO PASS IN ACTUAL TIMESPAN
+		//TODO PASS IN ACTUAL TIMESPAN		
 		Interval timespan = new Interval(new DateTime(0),new DateTime());
 		aggregateCollection(nextWalletName,convertedWalletCollection,timespan,aggregationPeriod);				
 	}
@@ -81,14 +81,14 @@ public class TransactionAggregator {
 			AggregationPeriod aggregationPeriod){
 		System.out.println("AggregationPeriod: "+aggregationPeriod.getName());
 		int maxConversionQueueSize = WalletExplorerConfig.MAX_QUEUE_LENGTH;
-		DataPipeline<ConvertedWalletTransaction, WalletTransactionSum> producerConsumerPair = 
+		DataPipeline<ConvertedWalletTransaction, WalletTransactionSum> dataPipeline = 
 				getProducerConsumerPair(unAggregatedCollection,timespan,aggregationPeriod);
 		/*TODO Adjust timespan here so when the aggregate collection is empty on first creation 
 		 * the aggregator creates aggregation intervals from the first possible full interval instead of from 1970. 		 
 		 */
 		Interval aggregationTimespan = getAggregationInterval(unAggregatedCollection,timespan);
 		CollectionAggregator collectionAggregator = 
-				new CollectionAggregator(producerConsumerPair,walletName,unAggregatedCollection,
+				new CollectionAggregator(dataPipeline,walletName,unAggregatedCollection,
 						aggregationPeriod,aggregationTimespan,maxConversionQueueSize);	
 		//TODO print these to console or log 
 		AggregationResults aggregateResults = collectionAggregator.aggregateCollection();

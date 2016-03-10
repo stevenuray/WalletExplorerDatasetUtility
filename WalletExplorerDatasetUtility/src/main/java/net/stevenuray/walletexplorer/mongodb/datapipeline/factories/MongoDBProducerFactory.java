@@ -1,4 +1,4 @@
-package net.stevenuray.walletexplorer.mongodb.datapipeline;
+package net.stevenuray.walletexplorer.mongodb.datapipeline.factories;
 
 import org.bson.Document;
 import org.joda.time.Interval;
@@ -6,6 +6,7 @@ import org.joda.time.Interval;
 import net.stevenuray.walletexplorer.conversion.objects.Converter;
 import net.stevenuray.walletexplorer.general.WalletExplorerConfig;
 import net.stevenuray.walletexplorer.mongodb.WalletCollection;
+import net.stevenuray.walletexplorer.mongodb.datapipeline.MongoDBProducer;
 import net.stevenuray.walletexplorer.persistence.timable.TimableDataProducer;
 import net.stevenuray.walletexplorer.persistence.timable.TimableWalletNameDataProducerFactory;
 import net.stevenuray.walletexplorer.wallettransactions.dto.WalletTransaction;

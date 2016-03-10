@@ -16,7 +16,7 @@ import net.stevenuray.walletexplorer.wallettransactions.dto.WalletTransaction;
 public class WalletExplorerDownloadIterator implements Iterator<WalletTransaction>{
 	private int currentIndex = 0;	
 	private List<WalletTransaction> currentList;
-	private final WalletExplorerQuerier querier;
+	private final DescendingTimeWalletExplorerQuerier querier;
 	private final String walletName;
 	
 	/**	 
@@ -27,7 +27,7 @@ public class WalletExplorerDownloadIterator implements Iterator<WalletTransactio
 	 */
 	public WalletExplorerDownloadIterator(String walletName,int maxQueueSize,Interval timespanLimit){
 		this.walletName = walletName;
-		querier = new WalletExplorerQuerier(walletName,timespanLimit);
+		querier = new DescendingTimeWalletExplorerQuerier(walletName,timespanLimit);
 	}
 	
 	public DateTime getEarliestTime() {

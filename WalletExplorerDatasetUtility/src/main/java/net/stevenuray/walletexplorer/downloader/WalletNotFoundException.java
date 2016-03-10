@@ -6,5 +6,7 @@ package net.stevenuray.walletexplorer.downloader;
  */
 @SuppressWarnings("serial")
 public class WalletNotFoundException extends IllegalArgumentException {
-
+	public WalletNotFoundException(String errorMessage){
+		super(errorMessage);
+	}
 }

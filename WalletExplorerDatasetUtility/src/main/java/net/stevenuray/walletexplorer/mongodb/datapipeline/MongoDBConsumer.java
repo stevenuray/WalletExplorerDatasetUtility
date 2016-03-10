@@ -1,11 +1,12 @@
-package net.stevenuray.walletexplorer.mongodb;
+package net.stevenuray.walletexplorer.mongodb.datapipeline;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
 import net.stevenuray.walletexplorer.conversion.objects.Converter;
-import net.stevenuray.walletexplorer.mongodb.datapipeline.MongoDBPipelineComponent;
+import net.stevenuray.walletexplorer.mongodb.WalletCollection;
+import net.stevenuray.walletexplorer.mongodb.converters.WalletTransactionDocumentConverter;
 import net.stevenuray.walletexplorer.persistence.timable.TimableDataConsumer;
 import net.stevenuray.walletexplorer.persistence.timable.TimeNotFoundException;
 
@@ -18,6 +19,7 @@ import com.mongodb.MongoWriteException;
 import com.mongodb.client.MongoCollection;
 
 public class MongoDBConsumer<T> extends MongoDBPipelineComponent<T> implements TimableDataConsumer<T>{
+	private final String DATE_KEY = WalletTransactionDocumentConverter.DATE_KEY;
 	private final Converter<T,Document> converter;
 	
 	public MongoDBConsumer(WalletCollection walletCollection,Converter<T,Document> converter){
@@ -71,8 +73,15 @@ public class MongoDBConsumer<T> extends MongoDBPipelineComponent<T> implements T
 
 	@Override
 	public void start() {
-		//MongoDB does not need to implement this method. 		
+		setupAscendingTimeIndex();	
 	}
+	
+	private void setupAscendingTimeIndex() {
+		MongoCollection<Document> collection = getWalletCollection().getCollection();
+		Document indexDocument = new Document();
+		indexDocument.append(DATE_KEY, 1);
+		collection.createIndex(indexDocument);		
+	} 
 
 	private Document convert(T item){
 		Document nextDocument = converter.to(item);

@@ -21,12 +21,7 @@ import net.stevenuray.walletexplorer.persistence.ConsumerPusher;
 import net.stevenuray.walletexplorer.wallettransactions.dto.ConvertedWalletTransaction;
 import net.stevenuray.walletexplorer.wallettransactions.dto.WalletTransaction;
 
-import org.apache.log4j.Appender;
-import org.apache.log4j.BasicConfigurator;
-import org.apache.log4j.ConsoleAppender;
-import org.apache.log4j.Layout;
 import org.apache.log4j.Logger;
-import org.apache.log4j.PatternLayout;
 import org.joda.time.Duration;
 import org.joda.time.Interval;
 

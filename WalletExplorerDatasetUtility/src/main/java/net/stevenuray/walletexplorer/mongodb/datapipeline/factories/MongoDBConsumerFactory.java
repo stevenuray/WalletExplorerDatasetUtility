@@ -1,10 +1,10 @@
-package net.stevenuray.walletexplorer.mongodb.datapipeline;
+package net.stevenuray.walletexplorer.mongodb.datapipeline.factories;
 
 import org.bson.Document;
 
 import net.stevenuray.walletexplorer.conversion.objects.Converter;
-import net.stevenuray.walletexplorer.mongodb.MongoDBConsumer;
 import net.stevenuray.walletexplorer.mongodb.WalletCollection;
+import net.stevenuray.walletexplorer.mongodb.datapipeline.MongoDBConsumer;
 import net.stevenuray.walletexplorer.persistence.timable.TimableDataConsumer;
 import net.stevenuray.walletexplorer.persistence.timable.TimableWalletNameDataConsumerFactory;
 
