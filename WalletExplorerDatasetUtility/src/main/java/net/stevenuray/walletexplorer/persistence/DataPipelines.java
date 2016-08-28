@@ -2,7 +2,6 @@ package net.stevenuray.walletexplorer.persistence;
 
 import net.stevenuray.walletexplorer.conversion.objects.Converter;
 import net.stevenuray.walletexplorer.downloader.WalletExplorerQuerierFactory;
-import net.stevenuray.walletexplorer.general.WalletExplorerConfig;
 import net.stevenuray.walletexplorer.mongodb.converters.ConvertedWalletTransactionDocumentConverter;
 import net.stevenuray.walletexplorer.mongodb.converters.WalletTransactionDocumentConverter;
 import net.stevenuray.walletexplorer.mongodb.datapipeline.factories.MongoDBConsumerFactory;
@@ -47,9 +46,8 @@ public class DataPipelines {
 		return factory;
 	}
 	
-	public static TimableWalletNameDataProducerFactory<WalletTransaction> getWalletExplorerProducer() {
-		int maxQueueLength = WalletExplorerConfig.MAX_QUEUE_LENGTH;
-		TimableWalletNameDataProducerFactory<WalletTransaction> factory = new WalletExplorerQuerierFactory(maxQueueLength);
+	public static TimableWalletNameDataProducerFactory<WalletTransaction> getWalletExplorerProducer() {		
+		TimableWalletNameDataProducerFactory<WalletTransaction> factory = new WalletExplorerQuerierFactory();
 		return factory;
 	}
 }

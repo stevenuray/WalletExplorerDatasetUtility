@@ -8,24 +8,18 @@ import net.stevenuray.walletexplorer.persistence.timable.TimableWalletNameDataPr
 import net.stevenuray.walletexplorer.wallettransactions.dto.WalletTransaction;
 
 public class WalletExplorerQuerierFactory implements TimableWalletNameDataProducerFactory<WalletTransaction>{
-	private final int maxQueueSize;
-	
-	public WalletExplorerQuerierFactory(int maxQueueSize){
-		this.maxQueueSize = maxQueueSize;
+	public WalletExplorerQuerierFactory(){
+		
 	}
 	
 	public TimableDataProducer<WalletTransaction> getDataProducer(String walletName) {	
 		Interval maxTimespan = WalletExplorerConfig.getMaxTimespan();
-		WalletExplorerDownloader downloader = new WalletExplorerDownloader(walletName,maxQueueSize,maxTimespan);
+		WalletExplorerDownloader downloader = new WalletExplorerDownloader(walletName,maxTimespan);
 		return downloader;
 	}
 
 	public TimableDataProducer<WalletTransaction> getDataProducer(String walletName, Interval timespan) {
-		WalletExplorerDownloader downloader = new WalletExplorerDownloader(walletName,maxQueueSize,timespan);
+		WalletExplorerDownloader downloader = new WalletExplorerDownloader(walletName,timespan);
 		return downloader;
-	}
-
-	protected String getConvertedWalletName(String walletName, String currencySymbol) {
-		return null;
 	}	
 }

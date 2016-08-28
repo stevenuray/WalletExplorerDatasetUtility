@@ -22,11 +22,10 @@ public class WalletExplorerDownloadIterator implements Iterator<WalletTransactio
 	
 	/**	 
 	 * @param walletName - Wallet name of the desired blockchain entity, i.e Bitstamp, Bitfinex, etc.  
-	 * @param maxQueueSize - The maximum size of the download queue. Larger means faster but more memory.
 	 * @param timespanLimit - Transactions must be within this timespan to be returned. 
 	 * The actual dataset may have a different timespan. 
 	 */
-	public WalletExplorerDownloadIterator(String walletName,int maxQueueSize,Interval timespanLimit){
+	public WalletExplorerDownloadIterator(String walletName,Interval timespanLimit){
 		this.walletName = walletName;
 		querier = new DescendingTimeWalletExplorerQuerier(walletName,timespanLimit);
 	}
@@ -59,11 +58,9 @@ public class WalletExplorerDownloadIterator implements Iterator<WalletTransactio
 		if(shouldDownloadNewPageOfTransactions()){
 			//TODO possibly implement a better response.
 			tryToGetNewPageOfDownloadedTransactionsOrThrowException();
-			currentIndex = 0; 
-			return getNextWalletTransactionFromPageAndAdjustIndex();
-		} else{
-			return getNextWalletTransactionFromPageAndAdjustIndex();
-		}		
+			currentIndex = 0; 			
+		} 		
+		return getNextWalletTransactionFromPageAndAdjustIndex();
 	}
 		
 	private boolean shouldDownloadNewPageOfTransactions(){

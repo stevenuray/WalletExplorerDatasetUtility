@@ -12,19 +12,16 @@ import net.stevenuray.walletexplorer.wallettransactions.dto.WalletTransaction;
  * @author Steven Uray 
  */
 public class WalletExplorerDownloader implements TimableDataProducer<WalletTransaction>{
-	private final WalletExplorerDownloadIterator downloadIterator;
-	private final int maxQueueSize;
+	private final WalletExplorerDownloadIterator downloadIterator;	
 	private final Interval timespanLimit;
 	/**	 
 	 * @param walletName - Wallet name of the desired blockchain entity, i.e Bitstamp, Bitfinex, etc.  
-	 * @param maxQueueSize - The maximum size of the download queue. Larger means faster but more memory.
 	 * @param timespanLimit - Transactions must be within this timespan to be returned. 
 	 * The actual dataset may have a different timespan. 
 	 */
-	public WalletExplorerDownloader(String walletName,int maxQueueSize,Interval timespanLimit){
-		this.maxQueueSize = maxQueueSize;
+	public WalletExplorerDownloader(String walletName,Interval timespanLimit){		
 		this.timespanLimit = timespanLimit;
-		this.downloadIterator = new WalletExplorerDownloadIterator(walletName,maxQueueSize,timespanLimit);
+		this.downloadIterator = new WalletExplorerDownloadIterator(walletName,timespanLimit);
 	}
 	
 	@Override
@@ -37,7 +34,7 @@ public class WalletExplorerDownloader implements TimableDataProducer<WalletTrans
 	public TimableDataProducer<WalletTransaction> fromTime(DateTime earliestTime) {
 		String walletName = downloadIterator.getWalletName();
 		Interval adjustedTimespanLimit = new Interval(earliestTime,timespanLimit.getEnd());
-		return new WalletExplorerDownloader(walletName,maxQueueSize,adjustedTimespanLimit);
+		return new WalletExplorerDownloader(walletName,adjustedTimespanLimit);
 	}
 
 	public Iterator<WalletTransaction> getData() {
