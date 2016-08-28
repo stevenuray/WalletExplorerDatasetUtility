@@ -1,5 +1,6 @@
 package net.stevenuray.walletexplorer.downloader;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -14,8 +15,8 @@ import net.stevenuray.walletexplorer.wallettransactions.dto.WalletTransaction;
  * @author Steven Uray  
  */
 public class WalletExplorerDownloadIterator implements Iterator<WalletTransaction>{
-	private int currentIndex = 0;	
-	private List<WalletTransaction> currentList;
+	private int currentIndex = 0;		
+	private List<WalletTransaction> currentPage = new ArrayList<>();
 	private final DescendingTimeWalletExplorerQuerier querier;
 	private final String walletName;
 	
@@ -54,33 +55,32 @@ public class WalletExplorerDownloadIterator implements Iterator<WalletTransactio
 	 * @throws FailureToRetrieveDataException - If there was a problem getting data from WalletExplorer. 
 	 * This is most commonly due to networking errors. 
 	 */
-	public WalletTransaction next() {
-		//Will happen on the very first call
-		if(currentList == null){
-			tryToGetNewListOfDownloadedTransactionsOrThrowException();
-		}
-		
-		if(currentIndex < currentList.size()){
-			return getNextWalletTransactionFromListAndAdjustIndex();			
-		} else{
+	public WalletTransaction next() {	
+		if(shouldDownloadNewPageOfTransactions()){
 			//TODO possibly implement a better response.
-			tryToGetNewListOfDownloadedTransactionsOrThrowException();
+			tryToGetNewPageOfDownloadedTransactionsOrThrowException();
 			currentIndex = 0; 
-			return getNextWalletTransactionFromListAndAdjustIndex();
+			return getNextWalletTransactionFromPageAndAdjustIndex();
+		} else{
+			return getNextWalletTransactionFromPageAndAdjustIndex();
 		}		
 	}
+		
+	private boolean shouldDownloadNewPageOfTransactions(){
+		return (currentIndex >= currentPage.size());
+	}
 
-	private WalletTransaction getNextWalletTransactionFromListAndAdjustIndex(){				
-		WalletTransaction nextTransaction = currentList.get(currentIndex);
+	private WalletTransaction getNextWalletTransactionFromPageAndAdjustIndex(){				
+		WalletTransaction nextTransaction = currentPage.get(currentIndex);
 		currentIndex++;
 		return nextTransaction;		
 	}
 
-	private void tryToGetNewListOfDownloadedTransactionsOrThrowException(){
+	private void tryToGetNewPageOfDownloadedTransactionsOrThrowException(){
 		try{
-			currentList = querier.getNextWalletTransactions();
+			currentPage = querier.getNextWalletTransactions();
 		} catch(Exception e){
-			throw new FailureToRetrieveDataException();
+			throw new FailureToRetrieveDataException(e);
 		}
 	}
 }

@@ -29,7 +29,9 @@ public class WalletExplorerDownloader implements TimableDataProducer<WalletTrans
 	
 	@Override
 	public void finish() {
-		//WalletExplorerDownloader does not need to implement this optional method.		
+		/*WalletExplorerDownloader does not need to implement this method, 
+		 * because it does not need to 'finish' anything, close resources, etc. 
+		 */
 	}
 
 	public TimableDataProducer<WalletTransaction> fromTime(DateTime earliestTime) {
@@ -52,6 +54,8 @@ public class WalletExplorerDownloader implements TimableDataProducer<WalletTrans
 
 	@Override
 	public void start() {
-		//WalletExplorerDownloader does not need to implement this optional method. 		
+		/*WalletExplorerDownloader does not need to implement this method, 
+		 * because it does not need to "start" anything, open resources, etc. 
+		 */
 	}
 }

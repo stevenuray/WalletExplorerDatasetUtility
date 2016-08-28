@@ -3,6 +3,7 @@ package net.stevenuray.walletexplorer.downloader;
 import org.joda.time.DateTime;
 
 import net.sf.json.JSONArray;
+import net.sf.json.JSONException;
 import net.sf.json.JSONObject;
 import net.sf.json.JSONSerializer;
 
@@ -24,24 +25,30 @@ public class WalletExplorerClient {
 		JSONObject firstSubWalletTransaction = (JSONObject) subWalletTransactions.get(lastValueIndex);
 		DateTime earliestTime = getTimeOfSubWalletTransaction(firstSubWalletTransaction);
 		return earliestTime;				
-	}
-	
+	} 
+	 
 	public DateTime getLatestTime(String walletName) {		
 		MultivaluedMapImpl queryParams = getWalletExplorerQueryParams(walletName,0l);	
 		JSONObject latestQueryJsonObject = tryToGetQueryResponseOrThrowRuntimeException(queryParams,walletName);		
-		JSONArray subWalletTransactions = getSubWalletTransactionsFromResponse(latestQueryJsonObject);
+		JSONArray subWalletTransactions = getSubWalletTransactionsFromResponse(latestQueryJsonObject); 
 		JSONObject firstSubWalletTransaction = (JSONObject) subWalletTransactions.get(0);
 		DateTime latestTime = getTimeOfSubWalletTransaction(firstSubWalletTransaction);
 		return latestTime;			
 	}
 	
+	public long getTxsCount(String walletName) {	
+		MultivaluedMapImpl queryParams = getWalletExplorerQueryParams(walletName,0);	
+		JSONObject latestQueryJsonObject = tryToGetQueryResponseOrThrowRuntimeException(queryParams,walletName);		
+		return getWalletTransactionsCount(latestQueryJsonObject);		
+	}
+
 	public JSONObject sendQuery(MultivaluedMapImpl queryParams, String walletName){
 		ClientResponse response = getClientResponse(queryParams);
-		JSONObject responseJson = getJSONObjectFromWalletExplorerResponse(response);
+		JSONObject responseJson = getJSONObjectFromWalletExplorerResponseOrThrowException(response);
 		throwWalletNotFoundExceptionIfNecessary(responseJson,walletName);
 		return responseJson;
 	}
-
+	
 	private ClientResponse getClientResponse(MultivaluedMapImpl queryParams) {
 		WebResource webResource = getWalletExplorerWebResource();
 		ClientResponse response = 
@@ -49,16 +56,15 @@ public class WalletExplorerClient {
 		return response;
 	}
 	
-	private JSONObject getJSONObjectFromWalletExplorerResponse(ClientResponse response) {
+	private JSONObject getJSONObjectFromWalletExplorerResponseOrThrowException(ClientResponse response) {
 		String jsonStr = response.getEntity(String.class);
-		JSONObject json = (JSONObject) JSONSerializer.toJSON(jsonStr);
-		return json;
-	}
-	
-	public long getTxsCount(String walletName) {	
-		MultivaluedMapImpl queryParams = getWalletExplorerQueryParams(walletName,0);	
-		JSONObject latestQueryJsonObject = tryToGetQueryResponseOrThrowRuntimeException(queryParams,walletName);		
-		return getWalletTransactionsCount(latestQueryJsonObject);		
+		try{			
+			JSONObject json = (JSONObject) JSONSerializer.toJSON(jsonStr);
+			return json;
+		} catch(JSONException e){
+			System.err.println("Could not make json string from: "+jsonStr);
+			throw e;
+		}
 	}
 	
 	private WebResource getWalletExplorerWebResource() {
