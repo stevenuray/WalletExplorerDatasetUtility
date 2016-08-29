@@ -1,7 +1,7 @@
-package net.stevenuray.walletexplorer.downloader.test;
+package net.stevenuray.walletexplorer.downloader.general.test;
 
 import net.sf.json.JSONObject;
-import net.stevenuray.walletexplorer.downloader.WalletTransactionJSONConverter;
+import net.stevenuray.walletexplorer.downloader.general.WalletTransactionJSONConverter;
 import net.stevenuray.walletexplorer.testobjects.TestWalletExplorerResponses;
 
 

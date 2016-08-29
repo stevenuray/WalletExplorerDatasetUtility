@@ -1,4 +1,4 @@
-package net.stevenuray.walletexplorer.downloader;
+package net.stevenuray.walletexplorer.downloader.general;
 
 import java.util.Date;
 import java.util.Iterator;
@@ -28,7 +28,8 @@ import org.joda.time.Duration;
 
 public class Downloader<T,U> {
 	private static final Logger LOG = getLog();			
-		
+	
+	//TODO get log in non-programmatic way, i.e by .properties or .xml file. 
 	private static Logger getLog() {
 		BasicConfigurator.configure();		
 		Logger log = Logger.getLogger(Downloader.class.getName());
@@ -106,8 +107,20 @@ public class Downloader<T,U> {
 		dataPipeline.finish();
 		result.complete();
 		logResult(walletName,result);		
+		//Sleeping between wallets to avoid hitting rate limits on wallet explorer. 
+		trySleep(Duration.standardSeconds(10));
 	}
 	
+	private void trySleep(Duration sleepTime) {			
+		long sleepSeconds = sleepTime.getStandardSeconds();
+		LOG.info("Waiting "+sleepSeconds+" seconds to avoid exceeding download rate limits on WalletExplorer.");
+		try{
+			Thread.sleep(sleepTime.getMillis());
+		} catch(InterruptedException e){
+			return;
+		}		
+	}
+
 	private void logResult(String walletName,BulkOperationResult result){
 		Duration resultDuration = result.getTimeSpan().toDuration();	
 		String resultString = "Downloaded Wallet "+walletName+" in: ";		

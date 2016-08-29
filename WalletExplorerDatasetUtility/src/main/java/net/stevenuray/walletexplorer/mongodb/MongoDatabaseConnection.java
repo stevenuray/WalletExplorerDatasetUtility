@@ -1,4 +1,4 @@
-package net.stevenuray.walletexplorer.dto;
+package net.stevenuray.walletexplorer.mongodb;
 
 import com.mongodb.MongoClient;
 import com.mongodb.client.MongoDatabase;

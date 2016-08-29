@@ -1,4 +1,4 @@
-package net.stevenuray.walletexplorer.downloader;
+package net.stevenuray.walletexplorer.downloader.dto;
 
 /**Decorates an exception thrown by users of WalletExplorer's API. 
  * 

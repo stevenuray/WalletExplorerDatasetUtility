@@ -1,4 +1,4 @@
-package net.stevenuray.walletexplorer.downloader;
+package net.stevenuray.walletexplorer.downloader.general;
 
 
 

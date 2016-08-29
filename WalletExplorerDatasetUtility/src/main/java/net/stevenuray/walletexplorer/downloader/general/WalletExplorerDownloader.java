@@ -1,10 +1,11 @@
-package net.stevenuray.walletexplorer.downloader;
+package net.stevenuray.walletexplorer.downloader.general;
 
 import java.util.Iterator;
 
 import org.joda.time.DateTime;
 import org.joda.time.Interval;
 
+import net.stevenuray.walletexplorer.downloader.ratelimiting.RateLimit;
 import net.stevenuray.walletexplorer.persistence.timable.TimableDataProducer;
 import net.stevenuray.walletexplorer.wallettransactions.dto.WalletTransaction;
 
@@ -14,14 +15,18 @@ import net.stevenuray.walletexplorer.wallettransactions.dto.WalletTransaction;
 public class WalletExplorerDownloader implements TimableDataProducer<WalletTransaction>{
 	private final WalletExplorerDownloadIterator downloadIterator;	
 	private final Interval timespanLimit;
+	private final RateLimit rateLimit;
+	
 	/**	 
 	 * @param walletName - Wallet name of the desired blockchain entity, i.e Bitstamp, Bitfinex, etc.  
 	 * @param timespanLimit - Transactions must be within this timespan to be returned. 
+	 * @param rateLimit - Maximum queries to be sent in a given timespan. 
 	 * The actual dataset may have a different timespan. 
 	 */
-	public WalletExplorerDownloader(String walletName,Interval timespanLimit){		
+	public WalletExplorerDownloader(String walletName,Interval timespanLimit,RateLimit rateLimit){		
 		this.timespanLimit = timespanLimit;
-		this.downloadIterator = new WalletExplorerDownloadIterator(walletName,timespanLimit);
+		this.downloadIterator = new WalletExplorerDownloadIterator(walletName,timespanLimit,rateLimit);
+		this.rateLimit = rateLimit;
 	}
 	
 	@Override
@@ -34,7 +39,7 @@ public class WalletExplorerDownloader implements TimableDataProducer<WalletTrans
 	public TimableDataProducer<WalletTransaction> fromTime(DateTime earliestTime) {
 		String walletName = downloadIterator.getWalletName();
 		Interval adjustedTimespanLimit = new Interval(earliestTime,timespanLimit.getEnd());
-		return new WalletExplorerDownloader(walletName,adjustedTimespanLimit);
+		return new WalletExplorerDownloader(walletName,adjustedTimespanLimit,rateLimit);
 	}
 
 	public Iterator<WalletTransaction> getData() {

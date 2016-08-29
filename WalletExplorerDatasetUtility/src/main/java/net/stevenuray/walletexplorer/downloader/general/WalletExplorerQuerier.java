@@ -1,4 +1,4 @@
-package net.stevenuray.walletexplorer.downloader;
+package net.stevenuray.walletexplorer.downloader.general;
 
 import java.util.ArrayList;
 import java.util.List;

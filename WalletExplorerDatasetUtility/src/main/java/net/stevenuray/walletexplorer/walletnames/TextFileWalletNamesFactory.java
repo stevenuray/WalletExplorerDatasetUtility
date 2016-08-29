@@ -6,7 +6,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Iterator;
 
-import net.stevenuray.walletexplorer.downloader.WalletExplorerAPIConfigSingleton;
+import net.stevenuray.walletexplorer.downloader.general.WalletExplorerAPIConfigSingleton;
 
 public class TextFileWalletNamesFactory implements WalletNamesFactory {
 

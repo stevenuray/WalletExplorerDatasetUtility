@@ -1,10 +1,10 @@
-package net.stevenuray.walletexplorer.downloader.test;
+package net.stevenuray.walletexplorer.downloader.general.test;
 
 import org.joda.time.DateTime;
 import org.joda.time.Interval;
 
-import net.stevenuray.walletexplorer.downloader.DescendingTimeWalletExplorerQuerier;
-import net.stevenuray.walletexplorer.downloader.WalletExplorerQuerier;
+import net.stevenuray.walletexplorer.downloader.general.DescendingTimeWalletExplorerQuerier;
+import net.stevenuray.walletexplorer.downloader.general.WalletExplorerQuerier;
 import net.stevenuray.walletexplorer.general.WalletExplorerConfig;
 
 /**Playground for live testing against the WalletExplorer API. 

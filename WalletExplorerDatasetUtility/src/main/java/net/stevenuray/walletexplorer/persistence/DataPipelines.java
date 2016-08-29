@@ -1,7 +1,7 @@
 package net.stevenuray.walletexplorer.persistence;
 
 import net.stevenuray.walletexplorer.conversion.objects.Converter;
-import net.stevenuray.walletexplorer.downloader.WalletExplorerQuerierFactory;
+import net.stevenuray.walletexplorer.downloader.general.WalletExplorerQuerierFactory;
 import net.stevenuray.walletexplorer.mongodb.converters.ConvertedWalletTransactionDocumentConverter;
 import net.stevenuray.walletexplorer.mongodb.converters.WalletTransactionDocumentConverter;
 import net.stevenuray.walletexplorer.mongodb.datapipeline.factories.MongoDBConsumerFactory;

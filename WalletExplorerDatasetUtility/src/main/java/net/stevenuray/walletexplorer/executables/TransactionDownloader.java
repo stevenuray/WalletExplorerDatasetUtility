@@ -4,7 +4,7 @@ import java.util.logging.Level;
 
 import net.stevenuray.walletexplorer.conversion.objects.Converter;
 import net.stevenuray.walletexplorer.conversion.objects.DirectConverter;
-import net.stevenuray.walletexplorer.downloader.Downloader;
+import net.stevenuray.walletexplorer.downloader.general.Downloader;
 import net.stevenuray.walletexplorer.persistence.DataPipelineFactories;
 import net.stevenuray.walletexplorer.persistence.timable.BasicTimableWalletNameDataFactory;
 import net.stevenuray.walletexplorer.walletnames.TextFileWalletNamesFactory;

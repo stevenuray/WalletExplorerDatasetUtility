@@ -1,7 +1,5 @@
 package net.stevenuray.walletexplorer.mongodb;
 
-import net.stevenuray.walletexplorer.dto.MongoDatabaseConnection;
-
 import org.bson.Document;
 
 import com.mongodb.MongoClient;

@@ -1,4 +1,4 @@
-package net.stevenuray.walletexplorer.downloader;
+package net.stevenuray.walletexplorer.downloader.general;
 
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
@@ -7,6 +7,7 @@ import java.nio.charset.StandardCharsets;
  * 
  * @author Steven Uray 
  */
+//TODO factor these out into environment varibles or into a config file. 
 public class WalletExplorerAPIConfigSingleton {
 	public final static String LOGIN = "developer";
 	public final static String CALLER = "WalletExplorerDatasetUtility";
