@@ -2,6 +2,9 @@
 engines:
   fixme:
     enabled: true
+  markdownlint:
+    enabled: true
+
 ratings:
   paths: []
 exclude_paths: []
