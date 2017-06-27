@@ -3,7 +3,7 @@
 
 WalletExplorer uses machine learning to associate transactions in the blockchain with various bitcoin services. This is useful for analysis of the bitcoin economy. The dataset size of WalletExplorer is currently above 12 Gigabytes and will grow as time progresses. Downloading this dataset to local storage and providing tools to bring it out of storage and into a Java program is a primary function of this program. Analysis of this dataset is another primary function. 
 
-#Example Products: 
+# Example Products: 
 
 The activity of a bitcoin service. 
 
