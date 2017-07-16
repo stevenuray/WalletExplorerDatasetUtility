@@ -1,7 +1,7 @@
 #General
 
-/target/
+target/**
 
 #IntelliJ Related
-.idea/
+.idea/**
 WalletExplorerDatasetUtility.iml
