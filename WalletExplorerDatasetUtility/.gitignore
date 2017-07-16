@@ -1,1 +1,7 @@
+#General
+
 /target/
+
+#IntelliJ Related
+.idea/
+WalletExplorerDatasetUtility.iml
