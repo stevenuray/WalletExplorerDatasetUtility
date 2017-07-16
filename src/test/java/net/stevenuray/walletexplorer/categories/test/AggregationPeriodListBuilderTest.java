@@ -36,23 +36,6 @@ public class AggregationPeriodListBuilderTest {
 		assertEquals(expectedIntervals,returnedIntervals);
 	}
 
-	@Test(expected=IllegalArgumentException.class)
-	public void throwsIllegalArgumentExceptionIfTimespanIsShorterThanAggregationPeriodDuration() {
-		//Setup		
-		//Interval parameter.
-		Duration totalTimespanDuration = Duration.standardDays(7);
-		DateTime weekAgo = new DateTime().minus(totalTimespanDuration);
-		DateTime rightNow = new DateTime();
-		Interval totalTimespan = new Interval(weekAgo,rightNow);
-		
-		//AggregationPeriod parameter.
-		AggregationSize month = AggregationSize.MONTH;
-		AggregationPeriod monthPeriod = AggregationPeriodFactory.getAggregationPeriod(month);
-		
-		//Exercise + Verify
-		fail("not yet fully implemented");	
-	}
-
 	private List<Interval> getExpectedIntervals() {
 		DateTime januaryStart = new DateTime(2014,1,1,0,0,0);
 		DateTime febuaryStart = new DateTime(2014,2,1,0,0,0);
