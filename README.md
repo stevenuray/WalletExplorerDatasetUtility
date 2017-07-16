@@ -30,3 +30,6 @@ Multiple bitcoin services grouped into a category.
 * An abstract persistence layer, so users can use whatever they want. 
 * Ease of dataset use, users should be provided with a strong set of tools that make getting the data in and out of storage as easy as possible, so they can focus on the data. 
 
+# Gotchas:
+* If you are experiencing compilation issues due to JavaFX, make sure your JDK supports JavaFX. This most commonly occurs when using OpenJDK, and can be fixed on Ubuntu with `sudo apt-get install openjfx`.
+
